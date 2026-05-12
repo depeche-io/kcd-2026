@@ -1,0 +1,5 @@
+.env
+factory.kubeconfig
+factory.kubeconfig.host
+*.token
+gitops-checkout/

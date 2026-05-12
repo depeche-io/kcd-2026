@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kepler
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc        # HQ
+    namespace: kepler
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    repoURL: https://sustainable-computing-io.github.io/kepler-helm-chart
+    chart: kepler
+    targetRevision: 0.5.10
+    helm:
+      releaseName: kepler
+      values: |
+        # Kepler reads kernel/eBPF stats; needs privileged DaemonSet on each node.
+        # On k3d (containers as nodes) this works out of the box.
+        serviceMonitor:
+          enabled: true
+          labels:
+            release: kube-prometheus-stack    # picked up by HQ Prometheus
+        # Reasonable resource limits for a laptop.
+        resources:
+          requests: { cpu: 50m, memory: 100Mi }
+          limits:   { memory: 400Mi }
+        # Built-in dashboards
+        dashboard:
+          enabled: true
+          labels:
+            grafana_dashboard: "1"

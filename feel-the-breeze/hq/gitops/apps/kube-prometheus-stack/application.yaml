@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc        # HQ itself
+    namespace: monitoring
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff: { duration: 10s, factor: 2, maxDuration: 3m }
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 66.3.0
+      helm:
+        releaseName: kube-prometheus-stack
+        # Inline values keep the demo readable on a slide.
+        values: |
+          fullnameOverride: kube-prometheus-stack
+
+          grafana:
+            adminPassword: prom-operator
+            defaultDashboardsEnabled: true
+            sidecar:
+              dashboards: { enabled: true, label: grafana_dashboard }
+              datasources: { enabled: true }
+            service:
+              type: ClusterIP
+            # Add a 'cluster' variable to the default dashboards so we can
+            # switch between hq and factory in the UI.
+            grafana.ini:
+              auth.anonymous:
+                enabled: true
+                org_role: Viewer
+
+          prometheus:
+            prometheusSpec:
+              # Mount the additional-scrape-configs Secret created out-of-band
+              # by hq/bootstrap-argocd.sh (it contains the factory bearer token).
+              additionalScrapeConfigs:
+                name: additional-scrape-configs
+                key: prometheus-additional.yaml
+              # And mount the raw factory CA + token so the scrape jobs can
+              # reference them by file path.
+              secrets:
+                - factory-credentials
+              serviceMonitorSelectorNilUsesHelmValues: false
+              podMonitorSelectorNilUsesHelmValues: false
+              ruleSelectorNilUsesHelmValues: false
+              # Label all HQ-local metrics with cluster=hq for clean joins.
+              externalLabels:
+                cluster: hq
+              retention: 6h
+              resources:
+                requests: { cpu: 100m, memory: 512Mi }
+
+          # Trim HQ-host components that don't exist in k3s/k3d.
+          kubeControllerManager: { enabled: false }
+          kubeScheduler:        { enabled: false }
+          kubeEtcd:             { enabled: false }
+          kubeProxy:            { enabled: false }
+
+          alertmanager:
+            enabled: false        # quiet for the demo

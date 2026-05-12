@@ -1,0 +1,77 @@
+# Two ArgoCD Applications, both targeting the *factory* cluster.
+# This is the visible demonstration that HQ's ArgoCD remotely controls factory.
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: factory-node-exporter
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: factory                                 # registered in bootstrap-argocd.sh
+    namespace: monitoring
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-node-exporter
+    targetRevision: 4.39.0
+    helm:
+      releaseName: node-exporter
+      values: |
+        fullnameOverride: node-exporter
+        # Match the labels used by HQ's additional-scrape-configs.yaml
+        podLabels:
+          app.kubernetes.io/name: node-exporter
+        service:
+          port: 9100
+          targetPort: 9100
+          portName: metrics
+        resources:
+          requests: { cpu: 10m, memory: 32Mi }
+          limits:   { memory: 64Mi }
+        # Don't install a ServiceMonitor — HQ Prometheus can't see factory's
+        # CRDs, and we scrape factory via additionalScrapeConfigs anyway.
+        prometheus:
+          monitor:
+            enabled: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: factory-kube-state-metrics
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: factory
+    namespace: monitoring
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-state-metrics
+    targetRevision: 5.27.0
+    helm:
+      releaseName: kube-state-metrics
+      values: |
+        fullnameOverride: kube-state-metrics
+        podLabels:
+          app.kubernetes.io/name: kube-state-metrics
+        resources:
+          requests: { cpu: 10m, memory: 64Mi }
+          limits:   { memory: 128Mi }
+        prometheus:
+          monitor:
+            enabled: false

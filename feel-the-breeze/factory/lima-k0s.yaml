@@ -1,0 +1,73 @@
+# Lima template for the "factory" cluster.
+# Single-node k0s on Ubuntu 24.04. Sized for a Pi-class workload.
+#
+# Networking:
+#   - default user-mode NAT only (no socket_vmnet required).
+#   - portForwards exposes the k0s API on the host's 127.0.0.1:6443.
+#   - k3d pods reach factory through host.k3d.internal -> host:6443.
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img"
+    arch: "x86_64"
+  - location: "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+cpus: 2
+memory: "1.5GiB"
+disk: "12GiB"
+
+mounts: []
+
+provision:
+  # System-level: install k0s as root.
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update -qq
+      apt-get install -y -qq curl ca-certificates
+
+      curl -sSLf https://get.k0s.sh | sh
+      k0s install controller --single
+      k0s start
+
+      for i in $(seq 1 60); do
+        if [ -f /var/lib/k0s/pki/admin.conf ] && k0s status >/dev/null 2>&1; then
+          break
+        fi
+        sleep 2
+      done
+
+      ln -sf /var/lib/k0s/bin/kubectl /usr/local/bin/kubectl
+
+  # User-level: drop a kubeconfig in the lima user's home for in-VM convenience.
+  # Runs as the default lima user, so $HOME is correct without LIMA_CIDATA_*.
+  - mode: user
+    script: |
+      #!/bin/bash
+      set -eux
+      mkdir -p "$HOME/.kube"
+      sudo k0s kubeconfig admin | sudo tee "$HOME/.kube/config" >/dev/null
+      sudo chown "$(id -u):$(id -g)" "$HOME/.kube/config"
+      chmod 600 "$HOME/.kube/config"
+
+probes:
+  - description: "k0s API is responding"
+    script: |
+      #!/bin/bash
+      set -eu
+      for i in $(seq 1 90); do
+        if sudo k0s kubectl get --raw='/healthz' >/dev/null 2>&1; then
+          exit 0
+        fi
+        sleep 2
+      done
+      echo "k0s did not become healthy in time" >&2
+      exit 1
+    hint: "Run 'limactl shell factory sudo k0s status' to investigate."
+
+portForwards:
+  - guestPort: 6443
+    hostIP: "0.0.0.0"
+    hostPort: 6443
