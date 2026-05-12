@@ -1,0 +1,39 @@
+#cloud-config
+hostname: factory-pi
+manage_etc_hosts: true
+
+users:
+  - name: ubuntu
+    groups: [adm, sudo]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICsfyCYHczC3h0s15XvKfWGQb1G2mLLqec6Wgi6rbuyx david.pech@prgm-dpech1
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINR16O0SpixE+neTQcgXC+hgDAiCX0co3EZa0KCzDCGH petr-rais@petr-rais-dell
+
+package_update: true
+package_upgrade: false
+packages:
+  - curl
+  - ca-certificates
+  - avahi-daemon
+  - uhubctl
+
+runcmd:
+  - curl -sSLf https://get.k0s.sh | sh
+  - k0s install controller --single
+  - k0s start
+  - |
+    for i in $(seq 1 60); do
+      if [ -f /var/lib/k0s/pki/admin.conf ] && k0s status >/dev/null 2>&1; then
+        break
+      fi
+      sleep 2
+    done
+  - printf '#!/bin/sh\nexec k0s kubectl "$@"\n' > /usr/local/bin/kubectl
+  - chmod +x /usr/local/bin/kubectl
+  - mkdir -p /home/ubuntu/.kube
+  - k0s kubeconfig admin | sed 's|https://localhost:6443|https://factory-pi.local:6443|' > /home/ubuntu/.kube/config
+  - chown ubuntu:ubuntu /home/ubuntu/.kube/config
+  - chmod 600 /home/ubuntu/.kube/config

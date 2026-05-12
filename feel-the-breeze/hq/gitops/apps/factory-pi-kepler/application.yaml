@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: factory-pi-kepler
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: factory-pi
+    namespace: kepler
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    repoURL: https://sustainable-computing-io.github.io/kepler-helm-chart
+    chart: kepler
+    targetRevision: 0.5.10
+    helm:
+      releaseName: kepler
+      values: |
+        serviceMonitor:
+          enabled: true
+        resources:
+          requests: { cpu: 50m, memory: 100Mi }
+          limits:   { memory: 400Mi }
+        dashboard:
+          enabled: false

@@ -54,6 +54,7 @@ spec:
               # reference them by file path.
               secrets:
                 - factory-credentials
+                - factory-pi-credentials
               serviceMonitorSelectorNilUsesHelmValues: false
               podMonitorSelectorNilUsesHelmValues: false
               ruleSelectorNilUsesHelmValues: false

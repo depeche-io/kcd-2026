@@ -1,0 +1,34 @@
+# ServiceAccount that ArgoCD on HQ will use to control the factory-pi cluster.
+# Apply this on the Pi before running pi/up.sh.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hq-control
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hq-controller
+  namespace: hq-control
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hq-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: hq-controller
+    namespace: hq-control
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hq-controller-token
+  namespace: hq-control
+  annotations:
+    kubernetes.io/service-account.name: hq-controller
+type: kubernetes.io/service-account-token

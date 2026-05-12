@@ -46,6 +46,29 @@ kubectl -n argocd rollout status statefulset/argocd-application-controller --tim
 # 2. Register the factory cluster as an ArgoCD destination (Secret in argocd ns).
 # ---------------------------------------------------------------------------
 echo "==> Registering factory cluster"
+# factory-pi placeholder — pi/up.sh overwrites this with real credentials once the Pi is up.
+kubectl apply -n argocd -f - <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cluster-factory-pi
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: factory-pi
+  server: https://factory-pi.local:6443
+  config: |
+    {
+      "bearerToken": "placeholder",
+      "tlsClientConfig": {
+        "insecure": true
+      }
+    }
+EOF
+
+echo "==> Registering factory cluster"
 SERVER=$(awk '/server:/{print $2; exit}' ./factory.kubeconfig.host)
 CA=$(awk '/certificate-authority-data:/{print $2; exit}' ./factory.kubeconfig.host)
 TOKEN=$(awk '/token:/{print $2; exit}' ./factory.kubeconfig.host)
@@ -90,6 +113,20 @@ type: Opaque
 data:
   token: $(printf %s "$TOKEN" | base64 | tr -d '\n')
   ca.crt: ${CA}
+EOF
+
+# factory-pi-credentials: placeholder so Prometheus can mount the volume at
+# startup even before the Pi is registered. pi/up.sh fills in real values.
+kubectl apply -n monitoring -f - <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: factory-pi-credentials
+  namespace: monitoring
+type: Opaque
+data:
+  token: cGxhY2Vob2xkZXI=
+  ca.crt: cGxhY2Vob2xkZXI=
 EOF
 
 # additionalScrapeConfigs Secret consumed by kube-prometheus-stack.
@@ -148,6 +185,9 @@ kubectl apply -n argocd -f ./hq/gitops/apps/kube-prometheus-stack/application.ya
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-prometheus-crds/application.yaml
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-kepler/application.yaml
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-exporters/application.yaml
+kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-prometheus-crds/application.yaml
+kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-kepler/application.yaml
+kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-exporters/application.yaml
 
 echo "==> Waiting for kube-prometheus-stack to sync (this can take a few minutes)"
 for i in $(seq 1 60); do

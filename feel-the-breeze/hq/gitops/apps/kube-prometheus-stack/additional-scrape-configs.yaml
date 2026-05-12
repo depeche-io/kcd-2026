@@ -143,3 +143,149 @@
       replacement: host.k3d.internal:6443
     - source_labels: [__meta_kubernetes_pod_node_name]
       target_label: instance
+
+# ── factory-pi (Raspberry Pi k0s — factory-pi.local resolved via CoreDNS patch in pi/up.sh) ──
+
+- job_name: 'factory-pi/kubelet'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  kubernetes_sd_configs:
+    - role: node
+      api_server: https://factory-pi.local:6443
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory-pi
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - target_label: __address__
+      replacement: factory-pi.local:6443
+    - source_labels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/${1}/proxy/metrics
+
+- job_name: 'factory-pi/cadvisor'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  kubernetes_sd_configs:
+    - role: node
+      api_server: https://factory-pi.local:6443
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory-pi
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - target_label: __address__
+      replacement: factory-pi.local:6443
+    - source_labels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+
+- job_name: 'factory-pi/node-exporter'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  kubernetes_sd_configs:
+    - role: pod
+      api_server: https://factory-pi.local:6443
+      namespaces:
+        names: [monitoring]
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory-pi
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+      regex: prometheus-node-exporter
+      action: keep
+    - source_labels: [__meta_kubernetes_pod_container_port_name]
+      regex: metrics
+      action: keep
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+      regex: (.+);(.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/${2}:9100/proxy/metrics
+    - target_label: __address__
+      replacement: factory-pi.local:6443
+    - source_labels: [__meta_kubernetes_pod_node_name]
+      target_label: instance
+
+- job_name: 'factory-pi/kube-state-metrics'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  kubernetes_sd_configs:
+    - role: pod
+      api_server: https://factory-pi.local:6443
+      namespaces:
+        names: [monitoring]
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory-pi
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+      regex: kube-state-metrics
+      action: keep
+    - source_labels: [__meta_kubernetes_pod_container_port_name]
+      regex: http-metrics
+      action: keep
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+      regex: (.+);(.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/${2}:8080/proxy/metrics
+    - target_label: __address__
+      replacement: factory-pi.local:6443
+
+- job_name: 'factory-pi/kepler'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  kubernetes_sd_configs:
+    - role: pod
+      api_server: https://factory-pi.local:6443
+      namespaces:
+        names: [kepler]
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-pi-credentials/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/secrets/factory-pi-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory-pi
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+      regex: kepler
+      action: keep
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+      regex: (.+);(.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/${2}:9102/proxy/metrics
+    - target_label: __address__
+      replacement: factory-pi.local:6443
+    - source_labels: [__meta_kubernetes_pod_node_name]
+      target_label: instance
