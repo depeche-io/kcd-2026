@@ -71,7 +71,7 @@
     - target_label: cluster
       replacement: factory
     - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-      regex: node-exporter
+      regex: prometheus-node-exporter
       action: keep
     - source_labels: [__meta_kubernetes_pod_container_port_name]
       regex: metrics
@@ -114,3 +114,32 @@
       replacement: /api/v1/namespaces/${1}/pods/${2}:8080/proxy/metrics
     - target_label: __address__
       replacement: host.k3d.internal:6443
+
+# 4. Kepler on factory (DaemonSet in kepler namespace, port 9102).
+- job_name: 'factory/kepler'
+  scheme: https
+  tls_config:
+    ca_file: /etc/prometheus/secrets/factory-credentials/ca.crt
+  bearer_token_file: /etc/prometheus/secrets/factory-credentials/token
+  kubernetes_sd_configs:
+    - role: pod
+      api_server: https://host.k3d.internal:6443
+      namespaces:
+        names: [kepler]
+      tls_config:
+        ca_file: /etc/prometheus/secrets/factory-credentials/ca.crt
+      bearer_token_file: /etc/prometheus/secrets/factory-credentials/token
+  relabel_configs:
+    - target_label: cluster
+      replacement: factory
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+      regex: kepler
+      action: keep
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+      regex: (.+);(.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/${2}:9102/proxy/metrics
+    - target_label: __address__
+      replacement: host.k3d.internal:6443
+    - source_labels: [__meta_kubernetes_pod_node_name]
+      target_label: instance

@@ -26,9 +26,6 @@ spec:
       releaseName: node-exporter
       values: |
         fullnameOverride: node-exporter
-        # Match the labels used by HQ's additional-scrape-configs.yaml
-        podLabels:
-          app.kubernetes.io/name: node-exporter
         service:
           port: 9100
           targetPort: 9100

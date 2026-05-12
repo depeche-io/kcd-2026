@@ -1,0 +1,17 @@
+{
+  "name": "feel-the-breeze-slides",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev slides.md --open",
+    "build": "slidev build slides.md",
+    "export": "slidev export slides.md",
+    "export:pdf": "slidev export slides.md --output feel-the-breeze.pdf"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.50.0",
+    "@slidev/theme-default": "^0.25.0",
+    "slidev-addon-qrcode": "^1.0.2",
+    "vue": "^3.4.0"
+  }
+}

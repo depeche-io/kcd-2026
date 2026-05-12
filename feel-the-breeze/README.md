@@ -107,4 +107,69 @@ hq/
       kepler/
 expose/
   cloudflared.sh             Quick tunnel to Grafana
+slides/
+  package.json               Slidev deps + scripts (dev / build / export)
+  slides.md                  The 12-slide deck (1 intro + 10 + 1 outro)
+  style.css                  CNCF-blue overrides on top of @slidev/theme-default
+  components/                Custom Vue components used in the deck
+    CO2Bar.vue               Horizontal bar chart for the transport-CO2 slide
+    KeplerLive.vue           Iframe wrapper around the live Grafana Kepler dashboard
+  public/                    Static assets — drop logos + backup screenshot here
 ```
+
+## Slides
+
+The talk's slide deck lives in `slides/` and is built with [Slidev](https://sli.dev).
+
+### Develop / preview
+
+```bash
+cd slides
+npm install        # one-time; pulls @slidev/cli, default theme, qrcode addon
+npm run dev        # opens http://localhost:3030 with hot-reload
+```
+
+Press `p` for presenter mode (speaker notes on a second monitor), `o` for overview,
+`d` to draw on the slide.
+
+### Build a static bundle
+
+```bash
+cd slides
+npm run build      # outputs slides/dist/, deployable on any static host
+```
+
+### Export to PDF (offline fallback for the conference)
+
+```bash
+cd slides
+npm run export     # produces slides-export.pdf
+# or
+npm run export:pdf # produces feel-the-breeze.pdf
+```
+
+PDF export needs Playwright Chromium under the hood — Slidev installs it on first run.
+
+### Editing the deck
+
+* All 12 slides live in a single file: `slides/slides.md` (one slide per `---`-separated block).
+* The chart on slide 2 (CO₂ per transport mode) is data-driven via `CO2Bar.vue` —
+  edit the `:rows="[...]"` array in the slide to change values.
+* The live Grafana iframe on slide 8 takes a `url` prop in `KeplerLive.vue` — set it
+  to the cloudflared URL emitted by `./expose/cloudflared.sh` before going on stage,
+  and drop a backup PNG at `slides/public/kepler-screenshot.png`.
+* QR code on slide 11 is rendered at build time by `slidev-addon-qrcode` — just
+  edit the `value="..."` prop in `slides.md` to change the target URL.
+* Brand colors come from `slides/style.css` (`--kcd-blue: #0086FF`).
+
+### Pre-talk checklist
+
+0. **Disable corporate VPN/firewall** before the demo — the TLS-intercepting proxy
+   blocks ArgoCD's Helm chart fetches. Re-enable after the talk.
+
+1. Drop logos into `slides/public/` (see `slides/public/.placeholder` for the list).
+2. Update the GitHub repo URL in slide 11's `<QRCode value="...">` and the outro slide.
+3. Bring the cloudflared Grafana URL up before the demo and paste it into
+   `<KeplerLive url="...">` on slide 8.
+4. `npm run export:pdf` and stash `feel-the-breeze.pdf` on a USB stick — projector
+   surprises happen.

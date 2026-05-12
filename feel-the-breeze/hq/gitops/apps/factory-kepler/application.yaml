@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kepler
+  name: factory-kepler
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
-    server: https://kubernetes.default.svc        # HQ
+    name: factory                                  # workloads live here
     namespace: kepler
   syncPolicy:
     automated: { prune: true, selfHeal: true }
@@ -25,15 +25,11 @@ spec:
         # Kepler reads kernel/eBPF stats; needs privileged DaemonSet on each node.
         # On k3d (containers as nodes) this works out of the box.
         serviceMonitor:
-          enabled: true
-          labels:
-            release: kube-prometheus-stack    # picked up by HQ Prometheus
-        # Reasonable resource limits for a laptop.
+          enabled: true   # CRD provided by factory-prometheus-crds app
+        # HQ Prometheus scrapes Kepler via additionalScrapeConfigs (proxy), not via operator discovery.
         resources:
           requests: { cpu: 50m, memory: 100Mi }
           limits:   { memory: 400Mi }
-        # Built-in dashboards
+        # Dashboard lives on HQ Grafana, not on factory.
         dashboard:
-          enabled: true
-          labels:
-            grafana_dashboard: "1"
+          enabled: false
