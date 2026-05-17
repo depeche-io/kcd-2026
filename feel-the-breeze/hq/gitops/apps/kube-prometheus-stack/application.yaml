@@ -47,7 +47,7 @@ spec:
             prometheusSpec:
               # Mount the additional-scrape-configs Secret created out-of-band
               # by hq/bootstrap-argocd.sh (it contains the factory bearer token).
-              additionalScrapeConfigsSecret:
+              additionalScrapeConfigs:
                 name: additional-scrape-configs
                 key: prometheus-additional.yaml
               # And mount the raw factory CA + token so the scrape jobs can

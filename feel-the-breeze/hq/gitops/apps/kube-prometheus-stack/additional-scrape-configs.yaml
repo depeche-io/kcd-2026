@@ -289,3 +289,11 @@
       replacement: factory-pi.local:6443
     - source_labels: [__meta_kubernetes_pod_node_name]
       target_label: instance
+
+# 5. Solar simulator metrics exported directly on the Pi host.
+- job_name: 'factory-pi/solar-simulation'
+  metrics_path: /metrics
+  static_configs:
+    - targets: ['factory-pi.local:8000']
+      labels:
+        cluster: 'factory-pi'

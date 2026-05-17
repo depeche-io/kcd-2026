@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-vetrak
+  namespace: default
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: smart-vetrak
+  template:
+    metadata:
+      labels:
+        app: smart-vetrak
+    spec:
+      containers:
+        - name: alpine
+          image: alpine:3.22
+          command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - apk add --no-cache curl >/dev/null && curl -fsS http://factory-pi.local:8000/vetrak/on
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - apk add --no-cache curl >/dev/null && curl -fsS http://factory-pi.local:8000/vetrak/off
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vetrak-autoscaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: smart-vetrak
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 10
+  pollingInterval: 5
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        metricName: solar_generation_watts
+        query: max(solar_generation_watts{cluster="factory-pi"})
+        threshold: "1.5"
+        ignoreNullValues: "false"
