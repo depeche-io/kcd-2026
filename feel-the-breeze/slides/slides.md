@@ -313,27 +313,29 @@ multiply by 1000 pods. That's the moment people get it.
 layout: default
 ---
 
-# Carbon-aware HPA: the **solar + fan** demo 🌞🌬️
+# Carbon-aware HPA: **solar + fan + LED** demo 🌞🌬️💡
 
 ```
-┌─────────┐   ┌─────────┐   ┌──────┐   ┌──────────┐   ┌────┐   ┌─────┐
-│  ☀️→ PV │──▶│ INA219  │──▶│ MQTT │──▶│ Prometheus│──▶│KEDA│──▶│ 🌬️ │
-│  panel  │   │ sensor  │   │broker│   │ exporter  │   │HPA │   │ fan │
-└─────────┘   └─────────┘   └──────┘   └──────────┘   └────┘   └─────┘
-                                                          │
-                                                          ▼
-                                                   nginx Deployment
-                                                    replicas: 1..N
+┌───────────────┐   ┌──────────────┐   ┌──────────┐   ┌────┐   ┌───────────────┐
+│ Simulated sun │──▶│ Pi REST API  │──▶│Prometheus│──▶│KEDA│──▶│ LED controller│
+│ /sun /cloud   │   │ /metrics     │   │          │   │HPA │   │ replicas 0..1 │
+└───────────────┘   └──────────────┘   └──────────┘   └────┘   └───────────────┘
+                              │
+                              ├──────────────▶ fan-controller pod (always 1)
+                              │                 lifecycle: /vetrak/on|off
+                              └──────────────▶ led-controller pod
+                                                lifecycle: /led/on|off
 ```
 
 <div class="mt-6 text-lg">
-  Lamp on panel → replicas scale up → fan spins faster → <strong>front row gets a breeze.</strong>
+  Higher simulated solar power → HPA starts LED controller pod → LED strip turns on.
+  Low solar power → pod scales to zero → LED turns off.
 </div>
 
 <div class="mt-4 text-base opacity-90">
-  Silly hardware, real loop. The same control flow on a real grid:
+  Same principle for real grids:
   <strong>KEDA + carbon-aware-keda-operator</strong> reads
-  <strong>WattTime / Electricity Maps</strong> and time-shifts batch jobs to greener hours.
+  <strong>WattTime / Electricity Maps</strong> and shifts work to greener hours.
 </div>
 
 <div class="kcd-source">
@@ -341,10 +343,10 @@ layout: default
 </div>
 
 <!--
-The fun bit. David lights the panel. The current rises. The MQTT message lands in
-Prometheus. KEDA reads the metric. Replicas go from 1 to N. The fan accelerates. The
-front row feels actual wind. Then we tie it back: this exact loop, swap the panel for
-WattTime's API, and you've got carbon-aware batch scheduling at planet scale.
+This is the clean loop slide: /sun pushes solar_generation_watts up, KEDA creates an HPA,
+LED controller scales from 0 to 1 and calls /led/on on the Pi. /cloud does the opposite.
+Fan controller is separated in its own pod so the audience sees two independent actuators.
+Then tie it back to real carbon-aware scheduling with grid APIs.
 -->
 
 ---

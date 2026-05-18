@@ -89,6 +89,31 @@ set -a; source .env; set +a
   dashboard with the `cluster` label set to `factory` to show cross-cluster scrape.
 * Open the Kepler dashboard to show power per pod on HQ.
 
+### Solar simulation mode (no physical panel)
+
+For rehearsals without real PV hardware:
+
+```bash
+# switch simulated solar production
+./pi/solar-sim.sh sun
+./pi/solar-sim.sh cloud
+./pi/solar-sim.sh blackout   # cloud + turn off LED and fan
+./pi/solar-sim.sh recover    # sun + turn fan back on
+
+# run 3 demo cycles: 15s sun, 15s cloud
+./pi/solar-sim.sh pulse 3 15 15
+```
+
+On HQ this drives two controller pods in `default` namespace:
+
+* `smart-vetrak-controller` (fan) — KEDA/HPA scales `1` in `sun/cloud`, `0` in `blackout`
+* `smart-led-controller` (LED strip) — KEDA/HPA scales `0..1` from `solar_generation_watts`
+
+Grafana dashboard for this loop is provisioned from:
+
+* `hq/manifests/grafana-solar-demo-dashboard.yaml`
+* Dashboard title: **Solar Control Loop Demo**
+
 ## Files
 
 ```
@@ -115,6 +140,8 @@ slides/
     CO2Bar.vue               Horizontal bar chart for the transport-CO2 slide
     KeplerLive.vue           Iframe wrapper around the live Grafana Kepler dashboard
   public/                    Static assets — drop logos + backup screenshot here
+docs/
+  demo-runbook.md            Operator checklist for live demo and recovery steps
 ```
 
 ## Slides

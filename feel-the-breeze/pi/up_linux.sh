@@ -236,8 +236,11 @@ if ! kubectl get crd scaledobjects.keda.sh >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "==> Deploying smart-vetrak + ScaledObject on HQ"
+echo "==> Deploying fan + LED controllers (LED autoscaled by KEDA/HPA) on HQ"
 kubectl apply -f ./hq/manifests/smart-vetrak.yaml
+
+echo "==> Applying Grafana solar demo dashboard"
+kubectl apply -f ./hq/manifests/grafana-solar-demo-dashboard.yaml
 
 cat <<EOF
 
@@ -247,7 +250,7 @@ cat <<EOF
     CoreDNS:   factory-pi.local -> $PI_IP (inside k3d)
     ArgoCD:    cluster 'factory-pi' + 3 Applications (+ KEDA on HQ)
     Prometheus: scraping factory-pi/* via factory-pi.local:6443
-    Demo:      smart-vetrak scaled by solar_generation_watts
+    Demo:      fan controller autoscaled by fan_controller_enabled + LED controller autoscaled by solar_generation_watts
 
 Check ArgoCD:
     kubectl -n argocd get applications | grep factory-pi
@@ -259,4 +262,8 @@ Check scrape targets:
 Test simulation endpoints on Pi:
     curl http://factory-pi.local:8000/sun
     curl http://factory-pi.local:8000/cloud
+
+Presentation helpers:
+    ./pi/solar-sim.sh blackout   # cloud + LED off + fan off
+    ./pi/solar-sim.sh recover    # sun + fan on
 EOF

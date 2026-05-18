@@ -1,55 +1,128 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: smart-vetrak
+  name: smart-vetrak-controller
   namespace: default
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
-      app: smart-vetrak
+      app: smart-vetrak-controller
   template:
     metadata:
       labels:
-        app: smart-vetrak
+        app: smart-vetrak-controller
     spec:
       containers:
-        - name: alpine
-          image: alpine:3.22
-          command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+        - name: fan-controller
+          image: curlimages/curl:8.10.1
+          command: ["/bin/sh", "-c", "sleep infinity"]
           lifecycle:
             postStart:
               exec:
                 command:
                   - /bin/sh
                   - -c
-                  - apk add --no-cache curl >/dev/null && curl -fsS http://factory-pi.local:8000/vetrak/on
+                  - curl -fsS --retry 5 --retry-connrefused --retry-delay 1 http://factory-pi.local:8000/vetrak/on || true
             preStop:
               exec:
                 command:
                   - /bin/sh
                   - -c
-                  - apk add --no-cache curl >/dev/null && curl -fsS http://factory-pi.local:8000/vetrak/off
+                  - curl -fsS --retry 3 --retry-connrefused --retry-delay 1 http://factory-pi.local:8000/vetrak/off || true
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: vetrak-autoscaler
+  name: fan-autoscaler
   namespace: default
 spec:
+  # Fan is normally enabled (sun/cloud), but should scale to 0 on blackout.
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: smart-vetrak
+    name: smart-vetrak-controller
+  idleReplicaCount: 0
   minReplicaCount: 0
   maxReplicaCount: 1
   cooldownPeriod: 10
   pollingInterval: 5
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 0
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        metricName: fan_controller_enabled
+        query: max(fan_controller_enabled{cluster="factory-pi"})
+        activationThreshold: "0.5"
+        threshold: "0.5"
+        ignoreNullValues: "false"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-led-controller
+  namespace: default
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: smart-led-controller
+  template:
+    metadata:
+      labels:
+        app: smart-led-controller
+    spec:
+      containers:
+        - name: led-controller
+          image: curlimages/curl:8.10.1
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - curl -fsS --retry 5 --retry-connrefused --retry-delay 1 http://factory-pi.local:8000/led/on || true
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - curl -fsS --retry 3 --retry-connrefused --retry-delay 1 http://factory-pi.local:8000/led/off || true
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: led-autoscaler
+  namespace: default
+spec:
+  # KEDA creates an HPA for this Deployment and drives replicas from Prometheus.
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: smart-led-controller
+  # Keep 0 replicas while trigger is inactive (explicit for predictable demos).
+  idleReplicaCount: 0
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 10
+  pollingInterval: 5
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 0
   triggers:
     - type: prometheus
       metadata:
         serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
         metricName: solar_generation_watts
         query: max(solar_generation_watts{cluster="factory-pi"})
+        activationThreshold: "1.5"
         threshold: "1.5"
         ignoreNullValues: "false"
