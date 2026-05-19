@@ -241,6 +241,8 @@ kubectl apply -f ./hq/manifests/smart-vetrak.yaml
 
 echo "==> Applying Grafana solar demo dashboard"
 kubectl apply -f ./hq/manifests/grafana-solar-demo-dashboard.yaml
+echo "==> Applying Grafana Kepler power dashboard"
+kubectl apply -f ./hq/manifests/grafana-kepler-power-dashboard.yaml
 
 cat <<EOF
 
@@ -259,11 +261,12 @@ Check scrape targets:
     kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090
     xdg-open http://localhost:9090/targets
 
-Test simulation endpoints on Pi:
+Pi API quick checks:
     curl http://factory-pi.local:8000/sun
     curl http://factory-pi.local:8000/cloud
+    curl http://factory-pi.local:8000/state
 
 Presentation helpers:
-    ./pi/solar-sim.sh blackout   # cloud + LED off + fan off
-    ./pi/solar-sim.sh recover    # sun + fan on
+    ./pi/solar-sim.sh blackout   # force LED/fan off
+    ./pi/solar-sim.sh recover    # return to auto mode
 EOF

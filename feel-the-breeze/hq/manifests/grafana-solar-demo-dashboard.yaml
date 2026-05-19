@@ -24,7 +24,7 @@ data:
         {
           "id": 1,
           "type": "timeseries",
-          "title": "Simulated Solar Power (W)",
+          "title": "Measured Solar Power (W)",
           "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
           "datasource": "Prometheus",
           "fieldConfig": {
@@ -139,7 +139,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   { "color": "red", "value": null },
-                  { "color": "green", "value": 1.5 }
+                  { "color": "green", "value": 0.5 }
                 ]
               }
             },
@@ -195,7 +195,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 1.5",
+              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.5",
               "legendFormat": "solar-mode"
             }
           ],
@@ -336,7 +336,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 1.5",
+              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.5",
               "legendFormat": "keda-led-active"
             }
           ],

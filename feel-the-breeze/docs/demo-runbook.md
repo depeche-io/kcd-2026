@@ -33,6 +33,7 @@ kubectl --context k3d-hq -n monitoring port-forward svc/kube-prometheus-stack-gr
 
 Dashboard:
 - `Solar Control Loop Demo`
+- `Kepler Power Monitor`
 
 ## 2. Demo sequence (talk track)
 
@@ -43,18 +44,16 @@ Dashboard:
 ```
 
 Expected:
-- `solar_generation_watts ~= 3.5`
+- `solar_generation_watts > 0.5`
 - fan pod ON (`smart-vetrak-controller=1`)
 - led pod ON (`smart-led-controller=1`)
 
-### B) Cloud mode
+### B) Cloud mode (automatic from real power)
 
-```bash
-./pi/solar-sim.sh cloud
-```
+Reduce panel input so measured power drops below `0.5 W`.
 
 Expected (after scrape/poll delay):
-- `solar_generation_watts ~= 0.2`
+- `solar_generation_watts <= 0.5`
 - fan pod stays ON (`smart-vetrak-controller=1`)
 - led pod scales OFF (`smart-led-controller=0`)
 

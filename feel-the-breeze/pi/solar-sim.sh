@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Drive the simulated solar input exposed by the Pi REST API.
+# Helper for Pi solar-control API (real meter mode).
 # Usage:
 #   ./pi/solar-sim.sh sun
 #   ./pi/solar-sim.sh cloud
 #   ./pi/solar-sim.sh blackout
 #   ./pi/solar-sim.sh recover
-#   ./pi/solar-sim.sh pulse [count] [on_seconds] [off_seconds]
+#   ./pi/solar-sim.sh state
 set -euo pipefail
 
 BASE_URL="${SOLAR_API_BASE_URL:-http://factory-pi.local:8000}"
@@ -19,7 +19,7 @@ Usage:
   $0 blackout
   $0 off
   $0 recover
-  $0 pulse [count] [on_seconds] [off_seconds]
+  $0 state
 
 Env:
   SOLAR_API_BASE_URL   default: http://factory-pi.local:8000
@@ -34,9 +34,11 @@ call() {
 
 case "$MODE" in
   sun)
+    # In real-meter mode this is informational only.
     call "/sun"
     ;;
   cloud)
+    # In real-meter mode this is informational only.
     call "/cloud"
     ;;
   blackout|off)
@@ -47,19 +49,8 @@ case "$MODE" in
     # Native API endpoint: raise simulated solar + force fan back on.
     call "/recover"
     ;;
-  pulse)
-    COUNT="${2:-3}"
-    ON_SEC="${3:-15}"
-    OFF_SEC="${4:-15}"
-    for _ in $(seq 1 "$COUNT"); do
-      echo "==> sun (${ON_SEC}s)"
-      call "/sun" >/dev/null
-      sleep "$ON_SEC"
-      echo "==> cloud (${OFF_SEC}s)"
-      call "/cloud" >/dev/null
-      sleep "$OFF_SEC"
-    done
-    echo "==> done"
+  state)
+    call "/state"
     ;;
   *)
     usage

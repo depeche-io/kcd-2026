@@ -4,7 +4,7 @@ metadata:
   name: smart-vetrak-controller
   namespace: default
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: smart-vetrak-controller
@@ -123,6 +123,6 @@ spec:
         serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
         metricName: solar_generation_watts
         query: max(solar_generation_watts{cluster="factory-pi"})
-        activationThreshold: "1.5"
-        threshold: "1.5"
+        activationThreshold: "0.5"
+        threshold: "0.5"
         ignoreNullValues: "false"
