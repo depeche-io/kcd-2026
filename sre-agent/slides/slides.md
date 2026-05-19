@@ -116,15 +116,6 @@ layout: default
   Hold this layout — next slide is the same picture, much more honest.
 </div>
 
-<!--
-The 30-second version. KubeCon Atlanta / Paris this year: every other booth had some
-flavor of "AI SRE" or "autonomous incident responder". The pitch is always identical:
-an alert fires, the agent investigates, the agent fixes the issue, you don't even
-wake up. The next slide is the same layout — same boxes, same positions — but the
-honest, broader version. So you can mentally flip between the marketing pitch and the
-trench reality.
--->
-
 ---
 layout: default
 ---
@@ -157,16 +148,6 @@ layout: default
 </div>
 
 </div>
-
-<!--
-Same picture, honest version. Left column: KubeCon was an MCP-fest. Trust boundaries
-got zero airtime. Almost every "production" demo was on a hand-crafted scenario.
-Right column: the pitch is the same, but read the asterisks. "Investigates" only works
-on systems the agent has been *told* exist. "Fixes" means a PR — and your on-call still
-has to merge it. The realistic win is not "wake up to a green dashboard". The realistic
-win is "the first 20 minutes of context-gathering on every incident drops to 2".
-That's still huge — but it's a different sales pitch.
--->
 
 ---
 layout: default
@@ -442,6 +423,7 @@ layout: two-cols
 # Problem: MCP on top of API
 
 - MCP tools are not aligned to human promptingo
+- IDs vs. human-readable
 
 Our Approach:
 - `/init`-like instruction for such MCPs
@@ -478,207 +460,89 @@ TODO: what you can't do
 layout: default
 ---
 
-# Build it yourself, or buy a platform? 🛒
+# Claude Code vs. Claude Agent SDK
 
-<div class="grid grid-cols-3 gap-4 mt-4 text-sm">
+Same thing, so they say...
 
-<div class="kcd-card">
+Problem: 60s for MCP startup - fails 10% times
 
-### 🛍️ Buy a platform
-- Fast to demo
-- Slack app + webhooks + nice UI
-- Pre-baked integrations (PagerDuty, Datadog, GitHub)
-- ❌ Your **local** MCPs / scripts / clusters? Up to them.
-- ❌ Pricing tied to seats or alerts — both grow
+Our approach - retry 3 times the evalution on this failure.
 
-</div>
+Problem: either use allowList for permission or callback function for "Bash" tool
 
-<div class="kcd-card">
+Our approach: yes, we parse shell ourselves...
 
-### 🧰 Build with an SDK
-**Our choice: Claude Agent SDK**
-- ✅ Reuse everything you already run locally
-  - `kubectl`, `gh`, `psql`, internal CLIs
-- ✅ One auth boundary: the dev's laptop / a sandboxed pod
-- ⚠️ Childhood diseases (see right column)
-
-</div>
-
-<div class="kcd-card">
-
-### 🧪 Roll your own loop
-- LangChain / LangGraph / your own
-- Total control, total surface area
-- You will rewrite the tool-router 3 times
-- ❌ You will **also** rewrite the retry/timeout/loop-detector
-
-</div>
-
-</div>
-
-<div class="mt-5">
-
-### Real "childhood diseases" we hit with the Agent SDK
-
-<div class="grid grid-cols-2 gap-3 text-sm mt-2">
-
-<div class="kcd-card kcd-card-warn">
-  🐚 We ended up <strong>parsing bash commands ourselves</strong> — to gate `rm`, `kubectl delete`, `helm uninstall` before exec.
-</div>
-<div class="kcd-card kcd-card-warn">
-  ⏱️ <strong>60 s startup timeout</strong> for MCP servers — fine locally, weird on a cold container with cold DNS.
-</div>
-<div class="kcd-card kcd-card-warn">
-  🗂️ Some MCP servers <strong>log to FS dirs</strong> on the container — discovered by running out of disk.
-</div>
-<div class="kcd-card kcd-card-warn">
-  🧵 <strong>Sessions ≠ Slack threads.</strong> We had to map thread_ts → session_id ourselves to keep context.
-</div>
-
-</div>
-
-</div>
-
-<div class="kcd-source">
-  Honest answer: "platform vs. SDK" depends on whether you have local MCPs/scripts you want to reuse. We did, so SDK won.
-</div>
-
-<!--
-The question every team asks: do we buy one of those vendor platforms, or do we build?
-Honest answer: it depends on whether you already have a pile of local tooling — CLIs,
-scripts, internal MCP servers — that you want the agent to reuse. We did. So we picked
-the Claude Agent SDK and stayed on-prem. The bottom row is the real "told you so"
-list — things the SDK got wrong-ish that we had to wrap. Watch out for: bash command
-parsing (don't trust the LLM not to `rm -rf`), 60-second MCP startup timeout, MCP
-servers writing logs to arbitrary filesystem paths, and — biggest one — Slack thread
-≠ agent session; we had to maintain that mapping ourselves.
--->
 
 ---
 layout: default
 ---
 
-# Slack integration is the hard part 💬
+# Problem: Is this Bash safe?
 
-<div class="grid grid-cols-2 gap-6 mt-4">
+Agents wants to run tool Bash: `...`
 
-<div>
+(New feature - auto-mode classifier)
 
-### What we wanted
+`python vibe-coded-script-previously-written.py`
 
-- React to `@agent` (and only `@agent`)
-- Understand the **whole thread**, not just the mention
-- Notice activity on related channels (`#incidents`, `#alerts`, `#releases`)
-- Keep ~1 day of channel history as **background context**
+Our Approach:
+- Write into context folder is not allowed
+- Only very limited white-list of command, no piping `|`
 
-### What the Slack API gives you
-
-- One event at a time
-- Thread context only if you ask, paginated, rate-limited
-- `bot.user.id` ≠ `@agent` mention in some scopes
-- Conversation lists require admin scopes most platforms don't grant
-
-</div>
-
-<div>
-
-### Two paths we tried
-
-<div class="kcd-card mt-2">
-  <strong>A. "Vibe-coded" listener</strong><br/>
-  Custom bot online 24/7, keeps a rolling 1-day buffer per channel,
-  injects into a structured knowledge base for the agent.<br/>
-  <em class="opacity-80">Pros: full context. Cons: you own a stateful service that must never lose Slack tokens.</em>
-</div>
-
-<div class="kcd-card mt-2">
-  <strong>B. Offer Slack as a tool (MCP)</strong><br/>
-  Agent calls a Slack MCP server on-demand to fetch what it needs.<br/>
-  <em class="opacity-80">Pros: stateless, fewer scopes. Cons: every question = N API calls, rate-limit roulette.</em>
-</div>
-
-<div class="mt-4 kcd-card kcd-card-danger text-sm">
-  ⚠️ <strong>Loop guard first</strong>: agent must <em>never</em> react to its own messages, or to a thread it already replied in within X seconds. Ours fired twice before we added the cooldown.
-</div>
-
-</div>
-
-</div>
-
-<!--
-Slack is where this lives or dies. We wanted the agent to react only to @agent mentions,
-but ALSO be aware of related channels — `#incidents`, `#alerts`, `#releases` — so it
-can spot "oh wait, there's a planned migration happening right now". The Slack API
-makes that surprisingly painful: events come one at a time, thread context costs
-extra calls, and the scopes you'd need to passively read a channel are admin-only on
-most workspaces. We tried two designs. Plan A: a custom 24/7 listener that keeps a
-day of rolling history per channel and injects it into a knowledge base. Plan B: a
-Slack MCP that the agent calls when it needs to look. We're currently running A for a
-few key channels and B for everything else. The single most important guard, no
-matter which path: the agent must never react to its own messages, and must
-cooldown on threads where it just replied. We learned this the way you'd expect.
--->
+Not great...
 
 ---
 layout: default
 ---
 
-# Tools vs. MCP servers vs. local bash 🐚
+# Problem: Context Or Code?
 
-<div class="grid grid-cols-3 gap-4 mt-4 text-sm">
+Slack Output, Slack Fetching
 
-<div class="kcd-card kcd-card-ok">
+Hard to decide, even having both and experimenting between them.
 
+---
+layout: default
+---
 
-</div>
+# Slack Context
 
-<div class="kcd-card">
+Our original idea:
+- we absolutely must share the context of all slack alerting channels, so the agent is aware of some general situation and can leverage it
 
-### 🥈 Native tools (function calls)
-- Strongly typed inputs, JSON in / JSON out
-- LLM picks the right one ~most of the time
-- ⚠️ Brittle once you have **30+** of them
-- ⚠️ Tool descriptions become a context budget problem
+TODO: Screen of MD context
 
-</div>
+TODO: of benefits
 
-<div class="kcd-card kcd-card-warn">
+---
+layout: default
+---
 
-### 🥉 MCP servers
-- Spec is great, ergonomics still bumpy
-- Spawns a process; cold-start adds latency
-- LLM sometimes "forgets" an MCP exists between turns
-- Schema drift between MCP versions = silent failures
+# Problem: Slack Context
 
-</div>
+- it uses tools like Grep|Sed - skips the context on purpose
 
-</div>
+TODO: Error - message not found
 
-<div class="mt-6 kcd-card text-base">
-  💡 Counter-intuitive finding: for many tasks, Claude was <strong>noticeably better</strong> at
-  <code>ls</code> / <code>grep</code> / <code>cat</code> in a sandboxed dir than at calling a custom tool
-  that did the same thing. The LLM has read more bash than your API.
-</div>
+---
+layout: default
+---
 
-<div class="mt-3 text-sm opacity-80">
-  ⚠️ This is partly a <em>2025</em> observation. Models since late-'25 got noticeably better at
-  many-tool routing — so this advice will rot. Re-benchmark when you upgrade models.
-</div>
+# Problem: User Trust Lost
 
-<div class="kcd-source">
-  We compared: read-only repo of YAML manifests via (a) <code>bash+grep</code>, (b) a typed `search_manifest` tool, (c) an MCP server. <code>bash+grep</code> won on quality and latency.
-</div>
+TODO: timeout
 
-<!--
-The hottest take in the talk. We benchmarked the same task three ways: read-only repo
-of Kubernetes manifests, agent has to find which deployment owns a specific config
-key. Path A: give it bash in a sandbox. Path B: give it a typed `search_manifest`
-function. Path C: an MCP server doing the same. Bash won on quality AND latency.
-The LLM has read more bash than your custom API. Tools and MCPs are still useful —
-especially when the action is dangerous, or the data is huge — but don't reach for an
-MCP server before you've tried "let it grep". Caveat: this is a 2025 observation, and
-the newest models are much better at many-tool routing. Re-test when you upgrade.
--->
+TODO: face-palm
+
+---
+layout: default
+---
+
+# Getting Feedback - Slack Reactions
+
+TODO: examples
+
+<div class="opacity-50 text-sm mt-8">[ TODO: fill in — read emoji reactions (facepalm 🤦, 👍, ❌) as signal ]</div>
 
 ---
 layout: default
@@ -686,11 +550,7 @@ layout: default
 
 # General recon vs. research 🔍
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — quick recon vs. deep-dive research ]</div>
-
-<!--
-TODO
--->
+TODO: kafka
 
 ---
 layout: default
@@ -698,11 +558,7 @@ layout: default
 
 # Research: "are we vulnerable?" 🛡️
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — CVE / advisory research, SBOM cross-check, blast-radius ]</div>
-
-<!--
-TODO
--->
+TODO: image
 
 ---
 layout: default
@@ -710,47 +566,25 @@ layout: default
 
 # Recurring & historical fixes 🔁
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — how the agent uses history of past incidents & fixes ]</div>
+TODO: image
 
-<!--
-TODO
--->
 
 ---
 layout: default
 ---
 
-# Slack problems, continued 💬
+# Provide links 🔗
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — more Slack edge cases beyond the earlier slide ]</div>
+TODO: image with links
 
-<!--
-TODO
--->
 
 ---
 layout: default
 ---
 
-# IDs vs. human-readable — provide links 🔗
+# Security Layers
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — surface IDs/UUIDs as clickable links, not raw strings ]</div>
-
-<!--
-TODO
--->
-
----
-layout: default
----
-
-# Evaluating human responses 🤦
-
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — read emoji reactions (facepalm 🤦, 👍, ❌) as signal ]</div>
-
-<!--
-TODO
--->
+TODO: screen from security
 
 ---
 layout: default
@@ -758,23 +592,48 @@ layout: default
 
 # Security: secrets & context 🔒
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — never post passwords, sanitize context, redaction ]</div>
-
-<!--
-TODO
--->
+TODO: screen from protection
 
 ---
 layout: default
 ---
 
-# MCPs in practice (incl. security review) 🧩
+# Do we trust it?
 
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — MCP server pitfalls + the security-review MCP example ]</div>
+Absolutely no. (period)
 
-<!--
-TODO
--->
+You must have separate tokens as limited as you can have.
+
+---
+layout: default
+---
+
+# Prepare a Patch
+
+Our Approach - too scared so far to give a GitLab token
+
+TODO: patch
+
+---
+layout: default
+---
+
+# Big Win: Metrics MCP
+
+TODO: enumerate use-cases
+
+Not there yet:
+Predict `when disk will be full`
+
+---
+layout: default
+---
+
+# Real Adoption?
+
+TODO: harold smiling
+
+Main Reason: locally you have more powerful setup, accesses etc.
 
 ---
 layout: default
@@ -798,7 +657,7 @@ Build your SRE Agent.
 
 Become an AI Engineer.
 
-Save your job.
+Secure your job.
 
 ---
 layout: cover
@@ -816,7 +675,6 @@ class: text-center
 <div class="text-left text-lg">
   <div class="opacity-90">
     <strong>David Pech</strong><br/>
-    <span class="text-base font-mono opacity-80">github.com/depeche-io</span>
   </div>
   <div class="mt-6 opacity-90 text-base">
     Slides + notes:<br/>
