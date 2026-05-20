@@ -27,8 +27,6 @@ css: ./style.css
   <strong>David Pech</strong> — Wrike
 </div>
 
-<img src="/kcd-logo-white.png" class="abs-tr m-6 h-32 opacity-95" alt="KCD Czech & Slovak" />
-
 <div class="abs-bl m-6 text-sm opacity-75">
   KCD Czech-Slovak 2026 · Prague
 </div>
@@ -38,48 +36,11 @@ css: ./style.css
 </div>
 
 ---
-layout: default
----
 
 # Intro: who, what, why
 
-<div class="grid grid-cols-2 gap-8 mt-4">
+TODO: about me
 
-<div>
-
-### Who
-- Platform / SRE team at a mid-sized shop
-- Kubernetes, Argo, Prometheus, Puppet legacy
-- On-call rotations
-
-### What we built
-- A Slack-resident agent: `@ops-responder-agent`
-- Answers questions about incidents in **our** stack
-- Reads alerts, dashboards, runbooks, git history
-
-</div>
-
-<div>
-
-### Why
-- LLM chat is great at *general* — useless at *our* Puppet module at 3 AM
-- Most "SRE copilots" are **a junior sysadmin in a trench coat**
-- We wanted the agent that knows:
-  - which env, which team, which CVE
-  - what the last responder said in Slack
-  - whether this alert recurs every Tuesday
-
-### The honest split
-- 1/3 vibe-coding Python &nbsp;<span class="kcd-pill">easy</span>
-- 1/3 prompt engineering &nbsp;<span class="kcd-pill">80→95%</span>
-- 1/3 **security** &nbsp;<span class="kcd-pill" style="background:var(--kcd-danger)">hard</span>
-
-</div>
-
-</div>
-
----
-layout: default
 ---
 
 # The Golden Grail of SRE Agents <span class="kcd-pill">v1 — short</span>
@@ -112,12 +73,6 @@ layout: default
 
 </div>
 
-<div class="abs-bl m-6 text-sm opacity-70">
-  Hold this layout — next slide is the same picture, much more honest.
-</div>
-
----
-layout: default
 ---
 
 # The Golden Grail of SRE Agents <span class="kcd-pill" style="background:var(--kcd-warn)">v2 — broader</span>
@@ -150,16 +105,12 @@ layout: default
 </div>
 
 ---
-layout: default
----
 
 # Booth promise: the "$$$ profit" demo 💰
 
 <div class="grid grid-cols-2 gap-6 mt-4">
 
 <div>
-
-### The flow they ship on a 30-second loop
 
 ```
 ┌────────────────────────────────────────────┐
@@ -177,7 +128,6 @@ layout: default
                     ▼
               🟢 PR auto-merged
               🟢 ArgoCD synced
-              🟢 alert cleared
                     ▼
                 💰 $$$ profit
 ```
@@ -201,8 +151,6 @@ layout: default
 </div>
 
 ---
-layout: default
----
 
 # What we actually shipped 🛠️
 
@@ -211,8 +159,7 @@ layout: default
 
 TODO: make this slide nice, do NOT ADD more text
 
-TODO: image logo.png
-
+<img src="/logo.png" alt="logo.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 Who is it for?
 - We are not sure
 - Ops + maybe: DevOps, Developer, Managers...
@@ -221,8 +168,6 @@ What it should do?
 - We don't know
 - Investigate, research, maybe: fix things? Do we really want that?
 
----
-layout: default
 ---
 
 # Technicals
@@ -240,9 +185,8 @@ layout: default
 
 
 TODO: make it nicer
+TODO: make title smarter
 
----
-layout: default
 ---
 
 # Wrong Approach
@@ -261,24 +205,17 @@ Context and the workflow are.
 
 
 ---
-layout: default
----
 
 # What Can You get Without Context
 
 
-TODO: image pagerduty-event.png
-
-
----
-layout: default
+<img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Guess Work
 
 
-TODO: image pagerduty-sre-agent.png
-
+<img src="/pagerduty-sre-agent.png" alt="pagerduty-sre-agent.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 Resume: Not bad given how few context it has.
 
 Useful: absolutely not.
@@ -286,8 +223,6 @@ Useful: absolutely not.
 @PagerDuty booth discussion on KubeCon NA 2025: "Can we add more context?" "No."
 (but it might have changed since...)
 
----
-layout: two-cols
 ---
 
 # You Need to Provide More Context
@@ -300,8 +235,8 @@ Problem:
 - CLAUDE.md (AGENTS.md) in each repo
 - You should not provide out-of-date, legacy information (THIS IS BIG)
 
----
-layout: two-cols
+TODO: some icon of big problem
+
 ---
 
 # MCP vs. tool use for Wiki
@@ -321,8 +256,6 @@ Typically 30 - 110 tool uses (Grep|Read|Glob) for single prompt
 
 ~80MB of context, 8MB .tf, 3MB .md
 
----
-layout: two-cols
 ---
 
 # Session vs. Separate each run
@@ -350,21 +283,17 @@ Example:
 ```
 
 ---
-layout: two-cols
----
 
 # Problem: How to Get Result in Reasonable time
 
-TODO: image timeout.png
-
+<img src="/timeout.png" alt="timeout.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 Highly model + thiking budget dependant.
 
-TODO: image timeout-definition.png
-
+<img src="/timeout-definition.png" alt="timeout-definition.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 It doesn't work well. Number of steps was even worse.
 
----
-layout: two-cols
+Also - we can't easily switch fast. vs in-depth answers.
+
 ---
 
 # Slack Output
@@ -373,10 +302,7 @@ layout: two-cols
 - have a script replace .md / something to `Block Kit`
 - explain that in a context
 
-TODO: image slack-output.png
-
----
-layout: two-cols
+<img src="/slack-output.png" alt="slack-output.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Problem: Output Gets Polluted
@@ -385,13 +311,9 @@ Thinking: off
 
 "Extended thinking"
 
-TODO: image slack-broken.png
-TODO: image slack-broken2.png
-
-TODO: image force-output.png
-
----
-layout: two-cols
+<img src="/slack-broken.png" alt="slack-broken.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/slack-broken2.png" alt="slack-broken2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/force-output.png" alt="force-output.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Problem: MCP on top of API
@@ -402,11 +324,7 @@ layout: two-cols
 Our Approach:
 - `/init`-like instruction for such MCPs
 
-TODO: image netbox-usage.png
-
-
----
-layout: two-cols
+<img src="/mcp-netbox.png" alt="mcp-netbox.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Problem: MCP Offer Too Wide Data
@@ -414,29 +332,20 @@ layout: two-cols
 - Superadmin token will give you all the teams in your company
 - You need only those that have category 'ops'
 
-TODO: image pd-instructions.png
-
+<img src="/pd-instructions.png" alt="pd-instructions.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 Either you spend tokens on each usage + time or doesn't work well.
 
----
-layout: two-cols
 ---
 
 # How People Interact With SRE Agent
 
-TODO: image example-cant-do.png
-
----
-layout: two-cols
+<img src="/example-cant-do.png" alt="example-cant-do.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Examples
 
-TODO: examples-1.png
-TODO: examples-2.png
-
----
-layout: default
+<img src="/examples-1.png" alt="examples-1.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/examples-2.png" alt="examples-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Claude Code vs. Claude Agent SDK
@@ -451,8 +360,6 @@ Problem: either use allowList for permission or callback function for "Bash" too
 
 Our approach: yes, we parse shell ourselves...
 
----
-layout: default
 ---
 
 # Problem: Is this Bash safe?
@@ -470,8 +377,6 @@ Our Approach:
 Not great...
 
 ---
-layout: default
----
 
 # Problem: Context Or Code?
 
@@ -480,102 +385,68 @@ Slack Output, Slack Fetching
 Hard to decide, even having both and experimenting between them.
 
 ---
-layout: default
----
 
 # Slack Context
 
 Our original idea:
 - we absolutely must share the context of all slack alerting channels, so the agent is aware of some general situation and can leverage it
 
-TODO: image slack-input.png
-
-TODO: image slack-orientation.png
-
----
-layout: default
+<img src="/slack-input.png" alt="slack-input.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/slack-orientation.png" alt="slack-orientation.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Problem: Slack Context
 
 - it uses tools like Grep|Sed - skips the context on purpose
 
-TODO: image slack-error.png
-TODO: image slack-error-2.png
-
----
-layout: default
+<img src="/slack-error.png" alt="slack-error.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/slack-error-2.png" alt="slack-error-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Problem: User Trust Lost
 
-TODO: image trust-1.png
-TODO: image trust-2.png
-
----
-layout: default
+<img src="/trust-1.png" alt="trust-1.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/trust-2.png" alt="trust-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Getting Feedback - Slack Reactions
 
-TODO: image reaction-1.png
-TODO: image reaction-2.png
-TODO: image reaction-3.png
-
----
-layout: default
+<img src="/reaction-1.png" alt="reaction-1.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/reaction-2.png" alt="reaction-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/reaction-3.png" alt="reaction-3.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # General recon vs. research 🔍
 
-TODO: image kafka-1.png
-TODO: image kafka-2.png
-TODO: image db.png
-
----
-layout: default
+<img src="/kafka-1.png" alt="kafka-1.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/kafka-2.png" alt="kafka-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/db.png" alt="db.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Research: "are we vulnerable?" 🛡️
 
-TODO: image vulnerable.png
-
----
-layout: default
+<img src="/vulnerable.png" alt="vulnerable.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Recurring & historical fixes 🔁
 
-TODO: image recurring.png
-TODO: image recurring-2.png
-
----
-layout: default
+<img src="/recurring.png" alt="recurring.png" class="rounded shadow my-3 max-h-80 mx-auto" />
+<img src="/recurring-2.png" alt="recurring-2.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Provide links 🔗
 
-TODO: image links.png
-
-
----
-layout: default
+<img src="/links.png" alt="links.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Security Layers
 
-TODO: image security-layers.png
-
----
-layout: default
+<img src="/security-layers.png" alt="security-layers.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Security: secrets & context 🔒
 
-TODO: image secrets.png
-
----
-layout: default
+<img src="/secrets.png" alt="secrets.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Do we trust it?
@@ -585,38 +456,32 @@ Absolutely no. (period)
 You must have separate tokens as limited as you can have.
 
 ---
-layout: default
----
 
 # Prepare a Patch
 
 Our Approach - too scared so far to give a GitLab token
 
-TODO: image patch.png
-
----
-layout: default
+<img src="/patch.png" alt="patch.png" class="rounded shadow my-3 max-h-80 mx-auto" />
 ---
 
 # Big Win: Metrics MCP
 
-TODO: enumerate use-cases
+TODO: add image metrics.png
+
 
 Not there yet:
 Predict `when disk will be full`
 
----
-layout: default
+(Logs and Traces coming...)
+
 ---
 
 # Real Adoption?
 
-TODO: harold smiling
+TODO: add "harold-meme" smiling
 
 Main Reason: locally you have more powerful setup, accesses etc.
 
----
-layout: default
 ---
 
 # Key takeaways
@@ -628,8 +493,6 @@ Start small and build iteratively.
 It's Product - focus on value it brings and user feedback
 
 ---
-layout: default
----
 
 # Real takeaways
 
@@ -640,7 +503,6 @@ Become an AI Engineer.
 Secure your job.
 
 ---
-layout: cover
 class: text-center
 ---
 
@@ -678,8 +540,6 @@ class: text-center
 </div>
 
 </div>
-
-<img src="/kcd-logo-white.png" class="abs-tr m-6 h-24 opacity-90" alt="KCD Czech & Slovak" />
 
 <div class="abs-bl m-6 text-sm opacity-75">
   KCD Czech-Slovak 2026 · #SREAgent · #KCDCzechSlovak2026
