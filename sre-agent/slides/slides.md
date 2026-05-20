@@ -738,15 +738,12 @@ class: text-center
   <QRCode
     :width="220"
     :height="220"
-    value="https://github.com/depeche-io/kcd-2026/tree/main/sre-agent"
-    render-as="svg"
-    type="image/png"
-    :margin="1"
-    :color="{ dark: '#ffffff', light: '#003a99' }"
+    type="svg"
+    data="https://github.com/depeche-io/kcd-2026/tree/main/sre-agent"
+    :margin="4"
+    :dotsOptions="{ color: '#ffffff' }"
+    :backgroundOptions="{ color: '#003a99' }"
   />
-  <div class="mt-3 text-sm font-mono opacity-90">
-    /sre-agent
-  </div>
 </div>
 
 </div>
