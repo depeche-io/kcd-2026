@@ -100,7 +100,7 @@ css: ./style.css
 ## Reality Check
 
 - 🏷️ Seeing 80% of booths for the last time
-- 🧪 Just a few vendor with real production "read-write" experience
+- 🧪 Just a few vendors with real production "read-write" experience
 - 🔌 **MCP-everywhere** - just wrapping original API servers oftentimes
 
 </div>
@@ -225,7 +225,7 @@ css: ./style.css
 
 # Wrong Approach
 
-Vendor are selling the tool: `run agent on your alerts,`
+Vendors are selling the tool: `run agent on your alerts,`
 
 <div class="mt-3 mb-3 text-center text-3xl py-6 rounded-lg" style="background:linear-gradient(135deg,#7c3aed 0%,#0086FF 100%); color:#fff; font-weight:700; letter-spacing:0.02em;">
   ✨ &nbsp; AI &nbsp; magic &nbsp; will &nbsp; happen<sup class="text-base align-super">™</sup> &nbsp; ✨
@@ -243,7 +243,7 @@ Context and the workflow are.
 
 ---
 
-# What Can You get Without Context
+# What Can You Get Without Context
 
 
 <img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-72" />
@@ -260,7 +260,7 @@ Context and the workflow are.
 
 <div>
 
-Resume: Not bad given how few context it has.
+Resume: Not bad given how little context it has.
 
 Useful: absolutely not.
 
@@ -324,11 +324,11 @@ Our Approach:
 - each @mention is a new session
 
 Trade-off:
-- less tokens
+- fewer tokens
 - more time taken each run
 - some details are lost
 
-Suprisingly - not a problem
+Surprisingly - not a problem
 
 </div>
 
@@ -351,7 +351,7 @@ Example:
 
 ---
 
-# Problem: How to Get Result in Reasonable time
+# Problem: How to Get Result in a Reasonable Time
 
 <img src="/timeout.png" alt="timeout.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-32" />
 
@@ -359,7 +359,7 @@ Example:
 
 <div>
 
-Highly model + thiking budget dependant.
+Highly model + thinking budget dependent.
 
 It doesn't work well. Number of steps was even worse.
 
@@ -423,7 +423,7 @@ Thinking: off
 
 <div>
 
-- MCP tools are not aligned to human promptingo
+- MCP tools are not aligned to human prompting
 - IDs vs. human-readable
 
 Our Approach:
