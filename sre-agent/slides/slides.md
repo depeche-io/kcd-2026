@@ -37,7 +37,6 @@ css: ./style.css
   #kcdczsk2026 #KubernetesCommunityDays #CloudNative #CNCF #Kubernetes
 </div>
 
-
 ---
 
 # Who
@@ -54,7 +53,6 @@ css: ./style.css
 </div>
 
 </div>
-
 
 ---
 
@@ -88,7 +86,6 @@ css: ./style.css
 
 </div>
 
-
 ---
 
 # The Golden Grail of SRE Agents
@@ -119,7 +116,6 @@ css: ./style.css
 </div>
 
 </div>
-
 
 ---
 
@@ -167,7 +163,6 @@ css: ./style.css
 
 </div>
 
-
 ---
 
 # What we actually shipped 🛠️
@@ -200,7 +195,6 @@ css: ./style.css
 
 </div>
 
-
 ---
 
 # Technicals
@@ -220,7 +214,6 @@ css: ./style.css
 
 </div>
 
-
 ---
 
 # Wrong Approach
@@ -239,7 +232,15 @@ Your wrapper around the real agent doesn't matter much and will likely change.
 
 Context and the workflow are.
 
+---
+class: text-center
+---
 
+<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
+  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part I</div>
+  <div class="text-5xl font-bold text-white">Context, Output</div>
+  <div class="text-5xl font-bold text-white">& Integration</div>
+</div>
 
 ---
 
@@ -271,12 +272,11 @@ Useful: absolutely not.
 
 </div>
 
-
 ---
 
 # You Need to Provide More Context
 
-Our approach:
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
 - mimic the local Claude Code setup
 - mono-repo style
 
@@ -289,7 +289,6 @@ Problem:
   Pruning beats hoarding.
 </div>
 
-
 ---
 
 # MCP vs. tool use for Wiki
@@ -301,14 +300,13 @@ Medium sized wiki (1000 pages):
 
 GitOps repos
 
-Our approach:
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
 - move from some proprietary wiki to Markdown
 - we needed to recreate wiki from scratch
 
 Typically 30 - 110 tool uses (Grep|Read|Glob) for a single prompt
 
 ~80MB of context, 8MB .tf, 3MB .md
-
 
 ---
 
@@ -320,7 +318,7 @@ Typically 30 - 110 tool uses (Grep|Read|Glob) for a single prompt
 
 Note: Token caching: 5 mins
 
-Our Approach:
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
 - each @mention is a new session
 
 Trade-off:
@@ -348,31 +346,41 @@ Example:
 
 </div>
 
+---
+
+# Slack Context
+
+Our original idea:
+- we absolutely must share the context of all Slack alerting channels, so the agent is aware of the general situation and can leverage it
+
+<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div>
+  <img src="/slack-input.png" alt="slack-input.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+</div>
+
+<div>
+  <img src="/slack-orientation.png" alt="slack-orientation.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+</div>
+
+</div>
 
 ---
 
-# Problem: How to Get Result in a Reasonable Time
+# Problem: Slack Context
 
-<img src="/timeout.png" alt="timeout.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-32" />
+- it uses tools like Grep|Sed - skips the context on purpose
 
-<div class="grid grid-cols-2 gap-6 mt-3 items-center">
+<img src="/slack-error.png" alt="slack-error.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+<img src="/slack-error-2.png" alt="slack-error-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
 
-<div>
+---
 
-Highly model + thinking budget dependent.
+# Problem: Context Or Code?
 
-It doesn't work well. Number of steps was even worse.
+Slack Output, Slack Fetching
 
-Also - we can't easily switch fast. vs in-depth answers.
-
-</div>
-
-<div>
-  <img src="/timeout-definition.png" alt="timeout-definition.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
-</div>
-
-</div>
-
+Hard to decide, even having both and experimenting between them.
 
 ---
 
@@ -417,6 +425,30 @@ Thinking: off
 
 ---
 
+# Problem: How to Get Result in a Reasonable Time
+
+<img src="/timeout.png" alt="timeout.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-32" />
+
+<div class="grid grid-cols-2 gap-6 mt-3 items-center">
+
+<div>
+
+Highly model + thinking budget dependent.
+
+It doesn't work well. Number of steps was even worse.
+
+Also - we can't easily switch fast. vs in-depth answers.
+
+</div>
+
+<div>
+  <img src="/timeout-definition.png" alt="timeout-definition.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+</div>
+
+</div>
+
+---
+
 # Problem: MCP on top of API
 
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
@@ -426,7 +458,7 @@ Thinking: off
 - MCP tools are not aligned to human prompting
 - IDs vs. human-readable
 
-Our Approach:
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
 - `/init`-like instruction for such MCPs
 
 </div>
@@ -448,6 +480,45 @@ Either you spend tokens on each usage + time or it doesn't work well.
 
 <img src="/pd-instructions.png" alt="pd-instructions.png" class="rounded shadow mt-4 mx-auto block w-full object-contain max-h-40" />
 
+---
+
+# Claude Code vs. Claude Agent SDK
+
+Same thing, so they say...
+
+Problem: 60s for MCP startup - fails 10% of the time
+
+<span style="color:var(--kcd-blue)">**Our approach**</span> — retry the evaluation 3 times on this failure.
+
+Problem: either use allowList for permission or callback function for "Bash" tool
+
+<span style="color:var(--kcd-blue)">**Our approach**</span>: yes, we parse shell ourselves...
+
+---
+
+# Problem: Is this Bash safe?
+
+The agent wants to run tool Bash: `...`
+
+(New feature - auto-mode classifier)
+
+`python vibe-coded-script-previously-written.py`
+
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
+- Writing into the context folder is not allowed
+- Only a very limited allowlist of commands, no piping `|`
+
+Not great...
+
+---
+class: text-center
+---
+
+<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
+  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part II</div>
+  <div class="text-5xl font-bold text-white">What Actually</div>
+  <div class="text-5xl font-bold text-white">Works</div>
+</div>
 
 ---
 
@@ -470,90 +541,6 @@ Either you spend tokens on each usage + time or it doesn't work well.
 </div>
 
 </div>
-
----
-
-# Claude Code vs. Claude Agent SDK
-
-Same thing, so they say...
-
-Problem: 60s for MCP startup - fails 10% of the time
-
-Our approach - retry the evaluation 3 times on this failure.
-
-Problem: either use allowList for permission or callback function for "Bash" tool
-
-Our approach: yes, we parse shell ourselves...
-
-
----
-
-# Problem: Is this Bash safe?
-
-The agent wants to run tool Bash: `...`
-
-(New feature - auto-mode classifier)
-
-`python vibe-coded-script-previously-written.py`
-
-Our Approach:
-- Writing into the context folder is not allowed
-- Only a very limited allowlist of commands, no piping `|`
-
-Not great...
-
-
----
-
-# Problem: Context Or Code?
-
-Slack Output, Slack Fetching
-
-Hard to decide, even having both and experimenting between them.
-
-
----
-
-# Slack Context
-
-Our original idea:
-- we absolutely must share the context of all Slack alerting channels, so the agent is aware of the general situation and can leverage it
-
-<div class="grid grid-cols-2 gap-6 mt-4 items-center">
-
-<div>
-  <img src="/slack-input.png" alt="slack-input.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
-</div>
-
-<div>
-  <img src="/slack-orientation.png" alt="slack-orientation.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
-</div>
-
-</div>
-
----
-
-# Problem: Slack Context
-
-- it uses tools like Grep|Sed - skips the context on purpose
-
-<img src="/slack-error.png" alt="slack-error.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-<img src="/slack-error-2.png" alt="slack-error-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-
----
-
-# Problem: User Trust Lost
-
-<img src="/trust-1.png" alt="trust-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-<img src="/trust-2.png" alt="trust-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-
----
-
-# Getting Feedback - Slack Reactions
-
-<img src="/reaction-1.png" alt="reaction-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-24" />
-<img src="/reaction-2.png" alt="reaction-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-<img src="/reaction-3.png" alt="reaction-3.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-24" />
 
 ---
 
@@ -605,6 +592,37 @@ Our original idea:
 
 ---
 
+# Big Win: Metrics MCP
+
+<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div>
+
+Not there yet:
+Predict `when disk will be full`
+
+(Logs and Traces coming...)
+
+</div>
+
+<div>
+  <img src="/metrics.png" alt="metrics.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+</div>
+
+</div>
+
+---
+class: text-center
+---
+
+<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
+  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part III</div>
+  <div class="text-5xl font-bold text-white">Trust &amp;</div>
+  <div class="text-5xl font-bold text-white">Security</div>
+</div>
+
+---
+
 # Security Layers
 
 <img src="/security-layers.png" alt="security-layers.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-[28rem]" />
@@ -625,43 +643,34 @@ Our original idea:
 
 You must have separate tokens as limited as you can have.
 
-
 ---
 
 # Prepare a Patch
 
-Our Approach - too scared so far to give a GitLab token
+<span style="color:var(--kcd-blue)">**Our approach**</span> — too scared so far to give a GitLab token
 
 <img src="/patch.png" alt="patch.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-[28rem]" />
 
 ---
 
-# Big Win: Metrics MCP
+# Problem: User Trust Lost
 
-<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+<img src="/trust-1.png" alt="trust-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+<img src="/trust-2.png" alt="trust-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
 
-<div>
+---
 
-Not there yet:
-Predict `when disk will be full`
+# Getting Feedback - Slack Reactions
 
-(Logs and Traces coming...)
-
-</div>
-
-<div>
-  <img src="/metrics.png" alt="metrics.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
-</div>
-
-</div>
-
+<img src="/reaction-1.png" alt="reaction-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-24" />
+<img src="/reaction-2.png" alt="reaction-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+<img src="/reaction-3.png" alt="reaction-3.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-24" />
 
 ---
 
 # Real Adoption?
 
 <img src="/harold-meme.jpg" alt="harold-meme.jpg" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-60" />
-
 
 ---
 
@@ -683,7 +692,6 @@ Predict `when disk will be full`
 
 </div>
 
-
 ---
 
 # Real takeaways
@@ -703,7 +711,6 @@ Predict `when disk will be full`
 </div>
 
 </div>
-
 
 ---
 class: text-center
@@ -747,4 +754,3 @@ class: text-center
 <div class="abs-bl m-6 text-sm opacity-75">
   KCD Czech-Slovak 2026 · #kcdczsk2026 #KubernetesCommunityDays #CloudNative #CNCF #Kubernetes
 </div>
-
