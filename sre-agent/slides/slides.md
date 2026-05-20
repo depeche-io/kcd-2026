@@ -1,5 +1,6 @@
 ---
 theme: default
+colorSchema: 'dark'
 title: 'We Built an AI Incident Responder'
 info: |
   We Built an AI Incident Responder. Here's What We Got Wrong.

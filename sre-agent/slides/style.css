@@ -1,3 +1,8 @@
+.slidev-layout {
+  background: #0d1117;
+  color: #e2e8f0;
+}
+
 :root {
   --kcd-blue: #0086FF;
   --kcd-blue-dark: #0066cc;
