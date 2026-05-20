@@ -24,7 +24,7 @@ css: ./style.css
 ## Here's What We Got Wrong.
 
 <div class="mt-10 text-lg opacity-90">
-  <strong>David Pech</strong> — Platform / SRE, Kubernetes, AWS, Postgres
+  <strong>David Pech</strong> — Wrike
 </div>
 
 <img src="/kcd-logo-white.png" class="abs-tr m-6 h-32 opacity-95" alt="KCD Czech & Slovak" />
@@ -206,13 +206,12 @@ layout: default
 
 # What we actually shipped 🛠️
 
-<div class="grid grid-cols-2 gap-6 mt-4 text-sm">
-
-<div>
 
 - internal "Product" <- the most important part
 
 TODO: make this slide nice, do NOT ADD more text
+
+TODO: image logo.png
 
 Who is it for?
 - We are not sure
@@ -222,19 +221,11 @@ What it should do?
 - We don't know
 - Investigate, research, maybe: fix things? Do we really want that?
 
-</div>
-
-</div>
-
 ---
 layout: default
 ---
 
 # Technicals
-
-<div class="grid grid-cols-2 gap-6 mt-4 text-sm">
-
-<div>
 
 - Python vibe-coded app on top of `Claude Agent SDK`
   - With MCPs to PagerDuty, VictoriaMetrics, Netbox, ...
@@ -250,21 +241,13 @@ layout: default
 
 TODO: make it nicer
 
-</div>
-
-</div>
-
 ---
 layout: default
 ---
 
 # Wrong Approach
 
-<div class="grid grid-cols-2 gap-6 mt-4 text-sm">
-
-<div>
-
-Vendor are selling the tool: `run agent on your alerts`
+Vendor are selling the tool: `run agent on your alerts, magic will happen`
 
 TODO: ai magic will happen
 
@@ -272,9 +255,10 @@ Our `ops-responder-agent`:
 - could sell you fresh bread over Slack with a different context...
 - can be replaced with Gemini Enterprise or any other in a month
 
-</div>
+Your wrapper around real agent is not much important and likely will change.
 
-</div>
+Context and the workflow are.
+
 
 ---
 layout: default
@@ -282,15 +266,9 @@ layout: default
 
 # What Can You get Without Context
 
-<div class="grid grid-cols-2 gap-6 mt-4 text-sm">
 
-<div>
+TODO: image pagerduty-event.png
 
-TODO: pagerduty-event.png
-
-</div>
-
-</div>
 
 ---
 layout: default
@@ -298,11 +276,8 @@ layout: default
 
 # Guess Work
 
-<div class="grid grid-cols-2 gap-6 mt-4 text-sm">
 
-<div>
-
-TODO: pagerduty-sre-agent.png
+TODO: image pagerduty-sre-agent.png
 
 Resume: Not bad given how few context it has.
 
@@ -310,10 +285,6 @@ Useful: absolutely not.
 
 @PagerDuty booth discussion on KubeCon NA 2025: "Can we add more context?" "No."
 (but it might have changed since...)
-
-</div>
-
-</div>
 
 ---
 layout: two-cols
@@ -340,13 +311,15 @@ For some reason - MCP significantly less effective.
 Medium sized wiki (1000 pages):
 - grep and other basic agent tools are very effective
 
+GitOps repos
+
 Our approach:
 - move from some proprietary wiki to Markdown
 - we needed to recreate wiki from scratch
 
 Typically 30 - 110 tool uses (Grep|Read|Glob) for single prompt
 
-
+~80MB of context, 8MB .tf, 3MB .md
 
 ---
 layout: two-cols
@@ -368,11 +341,13 @@ Suprisingly - not a problem
 
 Example:
 
-Alert A.
-
-@ops-responder-agent - find the definition of the alert
-
-@ops-responder-agent - based on the alert definition do X
+```
+- Alert A.
+- You: @ops-responder-agent - find the definition of the alert
+- Agent: Definition is ...
+- You: @ops-responder-agent - based on the alert definition do X
+- Agent: (start from scratch)
+```
 
 ---
 layout: two-cols
@@ -380,13 +355,13 @@ layout: two-cols
 
 # Problem: How to Get Result in Reasonable time
 
-TODO: timeout
+TODO: image timeout.png
 
-Highly model-dependant.
+Highly model + thiking budget dependant.
 
-TODO: screens shot from context
+TODO: image timeout-definition.png
 
-It doesn't work well.
+It doesn't work well. Number of steps was even worse.
 
 ---
 layout: two-cols
@@ -398,7 +373,7 @@ layout: two-cols
 - have a script replace .md / something to `Block Kit`
 - explain that in a context
 
-TODO: screenshot of context
+TODO: image slack-output.png
 
 ---
 layout: two-cols
@@ -410,11 +385,10 @@ Thinking: off
 
 "Extended thinking"
 
-TODO: screenshot of broken output
+TODO: image slack-broken.png
+TODO: image slack-broken2.png
 
-
-
-TODO: screenshot of context - YOU MUST NOT
+TODO: image force-output.png
 
 ---
 layout: two-cols
@@ -428,7 +402,7 @@ layout: two-cols
 Our Approach:
 - `/init`-like instruction for such MCPs
 
-TODO: netbox mcp image
+TODO: image netbox-usage.png
 
 
 ---
@@ -440,7 +414,7 @@ layout: two-cols
 - Superadmin token will give you all the teams in your company
 - You need only those that have category 'ops'
 
-TODO: mcp alerting
+TODO: image pd-instructions.png
 
 Either you spend tokens on each usage + time or doesn't work well.
 
