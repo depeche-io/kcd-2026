@@ -424,11 +424,16 @@ layout: two-cols
 
 # How People Interact With SRE Agent
 
-TODO: what can you do
+TODO: image example-cant-do.png
 
+---
+layout: two-cols
+---
 
-TODO: what you can't do
+# Examples
 
+TODO: examples-1.png
+TODO: examples-2.png
 
 ---
 layout: default
@@ -445,7 +450,6 @@ Our approach - retry 3 times the evalution on this failure.
 Problem: either use allowList for permission or callback function for "Bash" tool
 
 Our approach: yes, we parse shell ourselves...
-
 
 ---
 layout: default
@@ -484,9 +488,9 @@ layout: default
 Our original idea:
 - we absolutely must share the context of all slack alerting channels, so the agent is aware of some general situation and can leverage it
 
-TODO: Screen of MD context
+TODO: image slack-input.png
 
-TODO: of benefits
+TODO: image slack-orientation.png
 
 ---
 layout: default
@@ -496,7 +500,8 @@ layout: default
 
 - it uses tools like Grep|Sed - skips the context on purpose
 
-TODO: Error - message not found
+TODO: image slack-error.png
+TODO: image slack-error-2.png
 
 ---
 layout: default
@@ -504,9 +509,8 @@ layout: default
 
 # Problem: User Trust Lost
 
-TODO: timeout
-
-TODO: face-palm
+TODO: image trust-1.png
+TODO: image trust-2.png
 
 ---
 layout: default
@@ -514,9 +518,9 @@ layout: default
 
 # Getting Feedback - Slack Reactions
 
-TODO: examples
-
-<div class="opacity-50 text-sm mt-8">[ TODO: fill in — read emoji reactions (facepalm 🤦, 👍, ❌) as signal ]</div>
+TODO: image reaction-1.png
+TODO: image reaction-2.png
+TODO: image reaction-3.png
 
 ---
 layout: default
@@ -524,7 +528,9 @@ layout: default
 
 # General recon vs. research 🔍
 
-TODO: kafka
+TODO: image kafka-1.png
+TODO: image kafka-2.png
+TODO: image db.png
 
 ---
 layout: default
@@ -532,7 +538,7 @@ layout: default
 
 # Research: "are we vulnerable?" 🛡️
 
-TODO: image
+TODO: image vulnerable.png
 
 ---
 layout: default
@@ -540,8 +546,8 @@ layout: default
 
 # Recurring & historical fixes 🔁
 
-TODO: image
-
+TODO: image recurring.png
+TODO: image recurring-2.png
 
 ---
 layout: default
@@ -549,7 +555,7 @@ layout: default
 
 # Provide links 🔗
 
-TODO: image with links
+TODO: image links.png
 
 
 ---
@@ -558,7 +564,7 @@ layout: default
 
 # Security Layers
 
-TODO: screen from security
+TODO: image security-layers.png
 
 ---
 layout: default
@@ -566,7 +572,7 @@ layout: default
 
 # Security: secrets & context 🔒
 
-TODO: screen from protection
+TODO: image secrets.png
 
 ---
 layout: default
@@ -586,7 +592,7 @@ layout: default
 
 Our Approach - too scared so far to give a GitLab token
 
-TODO: patch
+TODO: image patch.png
 
 ---
 layout: default
