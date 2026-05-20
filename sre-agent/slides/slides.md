@@ -33,47 +33,23 @@ css: ./style.css
 </div>
 
 <div class="abs-br m-6 text-sm opacity-75">
-  #SREAgent · #KCDCzechSlovak2026
+  #kcdczsk2026 #KubernetesCommunityDays #CloudNative #CNCF #Kubernetes
 </div>
 
 
 ---
 
-# Intro: who, what, why
+# Who
 
-<div class="grid grid-cols-[1fr_2fr] gap-10 mt-4">
+<div class="flex flex-col items-center justify-center h-[80%] gap-6">
 
-<div>
+<img src="/david-pech.jpg" class="rounded-full w-44 h-44 object-cover ring-4 ring-blue-400 shadow-2xl" />
 
-### Who am I
+<div class="text-4xl font-bold tracking-tight">David Pech</div>
 
-<div class="kcd-card mt-2">
-  <strong>David Pech</strong><br/>
-  Platform / SRE @ <strong>Wrike</strong><br/>
-  <span class="opacity-80 text-sm">Kubernetes · AWS · Postgres · Argo · Puppet legacy</span>
-</div>
-
-<div class="mt-4 text-sm opacity-80">
-  Previously: KCD '24 / '25 speaker (sustainability, GitOps).<br/>
-  This year: <em>SRE agents — the honest version.</em>
-</div>
-
-</div>
-
-<div>
-
-### Why this talk
-
-- We — like seemingly everyone in this room — spent the last year building an "SRE agent"
-- Most vendor demos are <strong>a junior sysadmin in a trench coat</strong>
-- I want to share what <strong>actually worked</strong>, what didn't, and what surprised us
-
-### The honest split
-
-- 1/3 vibe-coding Python &nbsp;<span class="kcd-pill">easy</span>
-- 1/3 prompt + context engineering &nbsp;<span class="kcd-pill">80→95%</span>
-- 1/3 **security** &nbsp;<span class="kcd-pill" style="background:var(--kcd-danger)">hard</span>
-
+<div class="flex items-center gap-12 mt-2">
+  <img src="/wrike-logo.svg" class="h-16" style="filter: brightness(0) invert(1);" />
+  <img src="/kubestronaut.png" class="h-24" />
 </div>
 
 </div>
@@ -768,6 +744,6 @@ class: text-center
 </div>
 
 <div class="abs-bl m-6 text-sm opacity-75">
-  KCD Czech-Slovak 2026 · #SREAgent · #KCDCzechSlovak2026
+  KCD Czech-Slovak 2026 · #kcdczsk2026 #KubernetesCommunityDays #CloudNative #CNCF #Kubernetes
 </div>
 
