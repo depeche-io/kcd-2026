@@ -137,7 +137,7 @@ css: ./style.css
 │ namespace=prod, container=app, restarts=7  │
 └────────────────────────────────────────────┘
                     ▼
-   you: @agent increase mem for the agent
+   you: @agent increase mem for the app
                     ▼
    🤖 agent: opened PR #4172 in gitops/prod
             +  memory: 768Mi → 1Gi
@@ -186,12 +186,12 @@ css: ./style.css
   <strong>Who is it for?</strong>
   <ul class="mt-1">
     <li>We are not sure</li>
-    <li>Ops + maybe: DevOps, Developer, Managers…</li>
+    <li>Ops + maybe: DevOps, Developers, Managers…</li>
   </ul>
 </div>
 
 <div class="kcd-card kcd-card-warn">
-  <strong>What it should do?</strong>
+  <strong>What should it do?</strong>
   <ul class="mt-1">
     <li>We don't know</li>
     <li>Investigate, research, maybe: fix things? Do we really want that?</li>
@@ -209,14 +209,14 @@ css: ./style.css
 
 - Python vibe-coded app on top of <code>Claude Agent SDK</code>
   - With MCPs to PagerDuty, VictoriaMetrics, Netbox, ...
-- Tapped to Slack channels (both human and alerting)
+- Tapped into Slack channels (both human and alerting)
 - Bundled a lot of our repos
   - Wikis
   - Docs
   - GitOps repos
   - Terraform repos
   - ...
-- Workflow what to do (context)
+- Workflow: what to do (context)
 
 </div>
 
@@ -235,7 +235,7 @@ Our `ops-responder-agent`:
 - could sell you fresh bread over Slack with a different context...
 - can be replaced with Gemini Enterprise or any other in a month
 
-Your wrapper around real agent is not much important and likely will change.
+Your wrapper around the real agent doesn't matter much and will likely change.
 
 Context and the workflow are.
 
@@ -305,7 +305,7 @@ Our approach:
 - move from some proprietary wiki to Markdown
 - we needed to recreate wiki from scratch
 
-Typically 30 - 110 tool uses (Grep|Read|Glob) for single prompt
+Typically 30 - 110 tool uses (Grep|Read|Glob) for a single prompt
 
 ~80MB of context, 8MB .tf, 3MB .md
 
@@ -439,12 +439,12 @@ Our Approach:
 
 ---
 
-# Problem: MCP Offer Too Wide Data
+# Problem: MCPs Expose Too Much Data
 
 - Superadmin token will give you all the teams in your company
 - You need only those that have category 'ops'
 
-Either you spend tokens on each usage + time or doesn't work well.
+Either you spend tokens on each usage + time or it doesn't work well.
 
 <img src="/pd-instructions.png" alt="pd-instructions.png" class="rounded shadow mt-4 mx-auto block w-full object-contain max-h-40" />
 
@@ -477,9 +477,9 @@ Either you spend tokens on each usage + time or doesn't work well.
 
 Same thing, so they say...
 
-Problem: 60s for MCP startup - fails 10% times
+Problem: 60s for MCP startup - fails 10% of the time
 
-Our approach - retry 3 times the evalution on this failure.
+Our approach - retry the evaluation 3 times on this failure.
 
 Problem: either use allowList for permission or callback function for "Bash" tool
 
@@ -490,15 +490,15 @@ Our approach: yes, we parse shell ourselves...
 
 # Problem: Is this Bash safe?
 
-Agents wants to run tool Bash: `...`
+The agent wants to run tool Bash: `...`
 
 (New feature - auto-mode classifier)
 
 `python vibe-coded-script-previously-written.py`
 
 Our Approach:
-- Write into context folder is not allowed
-- Only very limited white-list of command, no piping `|`
+- Writing into the context folder is not allowed
+- Only a very limited allowlist of commands, no piping `|`
 
 Not great...
 
@@ -517,7 +517,7 @@ Hard to decide, even having both and experimenting between them.
 # Slack Context
 
 Our original idea:
-- we absolutely must share the context of all slack alerting channels, so the agent is aware of some general situation and can leverage it
+- we absolutely must share the context of all Slack alerting channels, so the agent is aware of the general situation and can leverage it
 
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
 
