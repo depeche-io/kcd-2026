@@ -9,9 +9,12 @@
     "export:pdf": "slidev export slides.md --output feel-the-breeze.pdf"
   },
   "dependencies": {
-    "@slidev/cli": "^0.50.0",
+    "@slidev/cli": "^52.15.2",
     "@slidev/theme-default": "^0.25.0",
     "slidev-addon-qrcode": "^1.0.2",
     "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.60.0"
   }
 }
