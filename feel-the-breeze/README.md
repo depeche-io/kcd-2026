@@ -92,8 +92,8 @@ set -a; source .env; set +a
 ### Solar power mode (real meter)
 
 Pi API now reads real power from FNIRSI FNB48P and derives state automatically:
-- `sun` when measured power is `> 0.5 W`
-- `cloud` when measured power is `<= 0.5 W`
+- `sun` when measured power is `> 0.2 W`
+- `cloud` when measured power is `<= 0.2 W`
 - if meter reading fails/stales, fallback is `cloud`
 
 Deploy/update the Pi API service:

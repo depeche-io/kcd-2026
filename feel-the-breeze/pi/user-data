@@ -24,6 +24,7 @@ packages:
   - ca-certificates
   - avahi-daemon
   - uhubctl
+  - raspi-config
 
 runcmd:
   - curl -sSLf https://get.k0s.sh | sh

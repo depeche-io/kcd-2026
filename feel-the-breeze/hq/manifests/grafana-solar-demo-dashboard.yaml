@@ -139,7 +139,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   { "color": "red", "value": null },
-                  { "color": "green", "value": 0.5 }
+                  { "color": "green", "value": 0.2 }
                 ]
               }
             },
@@ -195,7 +195,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.5",
+              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.2",
               "legendFormat": "solar-mode"
             }
           ],
@@ -336,7 +336,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.5",
+              "expr": "max(solar_generation_watts{cluster=\"factory-pi\"}) > bool 0.2",
               "legendFormat": "keda-led-active"
             }
           ],

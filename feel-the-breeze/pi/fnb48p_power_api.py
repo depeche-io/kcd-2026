@@ -30,7 +30,7 @@ FAN_CONTROLLER_ENABLED = Gauge(
 METER_CONNECTED = Gauge("solar_meter_connected", "Whether FNB48P meter is currently reachable")
 SOLAR_MODE = Gauge("solar_mode", "1=sun, 0=cloud/blackout")
 
-SUN_THRESHOLD_W = float(os.getenv("SUN_THRESHOLD_W", "0.5"))
+SUN_THRESHOLD_W = float(os.getenv("SUN_THRESHOLD_W", "0.2"))
 CLOUD_FALLBACK_W = float(os.getenv("CLOUD_FALLBACK_W", "0.2"))
 METER_STALE_SECONDS = float(os.getenv("METER_STALE_SECONDS", "10"))
 

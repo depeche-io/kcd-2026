@@ -44,16 +44,16 @@ Dashboard:
 ```
 
 Expected:
-- `solar_generation_watts > 0.5`
+- `solar_generation_watts > 0.2`
 - fan pod ON (`smart-vetrak-controller=1`)
 - led pod ON (`smart-led-controller=1`)
 
 ### B) Cloud mode (automatic from real power)
 
-Reduce panel input so measured power drops below `0.5 W`.
+Reduce panel input so measured power drops below `0.2 W`.
 
 Expected (after scrape/poll delay):
-- `solar_generation_watts <= 0.5`
+- `solar_generation_watts <= 0.2`
 - fan pod stays ON (`smart-vetrak-controller=1`)
 - led pod scales OFF (`smart-led-controller=0`)
 
