@@ -1,15 +1,16 @@
 {
-  "name": "feel-the-breeze-slides",
+  "name": "sre-agent-slides",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "slidev slides.md --open",
     "build": "slidev build slides.md",
+    "showcase": "slidev build slides.md && npx serve dist",
     "export": "slidev export slides.md",
-    "export:pdf": "slidev export slides.md --output feel-the-breeze.pdf"
+    "export:pdf": "slidev export slides.md --output sre-agent.pdf"
   },
   "dependencies": {
-    "@slidev/cli": "^52.15.2",
+    "@slidev/cli": "^0.50.0",
     "@slidev/theme-default": "^0.25.0",
     "slidev-addon-qrcode": "^1.0.2",
     "vue": "^3.4.0"

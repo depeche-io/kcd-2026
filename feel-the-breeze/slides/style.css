@@ -3,6 +3,9 @@
   --kcd-blue-dark: #0066cc;
   --kcd-ink: #0a0a0a;
   --kcd-mute: #6b7280;
+  --kcd-warn: #f59e0b;
+  --kcd-danger: #ef4444;
+  --kcd-ok: #10b981;
 }
 
 .slidev-layout h1 {
@@ -17,14 +20,14 @@
 }
 
 .slidev-layout.cover {
-  background: linear-gradient(135deg, var(--kcd-blue) 0%, #003a99 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #e8f4ff 0%, #dbeafe 100%);
+  color: var(--kcd-ink);
 }
 
 .slidev-layout.cover h1,
 .slidev-layout.cover h2,
 .slidev-layout.cover p {
-  color: #fff;
+  color: var(--kcd-blue);
 }
 
 .kcd-source {
@@ -32,6 +35,14 @@
   color: var(--kcd-mute);
   font-style: italic;
   margin-top: 1.5rem;
+}
+
+.kcd-source a {
+  color: var(--kcd-blue);
+  text-decoration: none;
+}
+.kcd-source a:hover {
+  text-decoration: underline;
 }
 
 .kcd-pill {
@@ -49,25 +60,22 @@ code {
 }
 
 .kcd-card {
-  background: #0a2540;
+  background: #eff6ff;
   border-left: 4px solid var(--kcd-blue);
   padding: 0.75rem 1rem;
   border-radius: 6px;
-  color: #f1f5f9;
+  color: var(--kcd-ink);
 }
 
-.kcd-card strong {
-  color: #ffffff;
-}
-
-.kcd-card em {
-  color: #b9d4ff;
-  font-style: italic;
-}
-
+.kcd-card strong { color: #0a0a0a; }
+.kcd-card em { color: var(--kcd-blue-dark); font-style: italic; }
 .kcd-card code {
-  background: rgba(255, 255, 255, 0.12);
-  color: #b9d4ff;
+  background: rgba(0, 134, 255, 0.1);
+  color: var(--kcd-blue-dark);
   padding: 0.05rem 0.3rem;
   border-radius: 3px;
 }
+
+.kcd-card-ok     { border-left-color: var(--kcd-ok);     background: #ecfdf5; }
+.kcd-card-warn   { border-left-color: var(--kcd-warn);   background: #fffbeb; }
+.kcd-card-danger { border-left-color: var(--kcd-danger); background: #fef2f2; }
