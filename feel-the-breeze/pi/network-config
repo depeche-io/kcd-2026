@@ -8,11 +8,5 @@ wifis:
     dhcp4: true
     optional: true
     access-points:
-      "depeche":
-        password: "sherlockholmes"
       "petrrais_redmi":
         password: "petr1997"
-      "David's iPhone":
-        password: "xhf7n63ighi3n"
-      "David’s iPhone":
-        password: "xhf7n63ighi3n"

@@ -89,6 +89,42 @@ set -a; source .env; set +a
   dashboard with the `cluster` label set to `factory` to show cross-cluster scrape.
 * Open the Kepler dashboard to show power per pod on HQ.
 
+### Solar power mode (real meter)
+
+Pi API now reads real power from FNIRSI FNB48P and derives state automatically:
+- `sun` when measured power is `> 0.2 W`
+- `cloud` when measured power is `<= 0.2 W`
+- if meter reading fails/stales, fallback is `cloud`
+
+Deploy/update the Pi API service:
+
+```bash
+./pi/deploy_fnb48p_api.sh
+```
+
+```bash
+# informational current auto-derived state
+./pi/solar-sim.sh sun
+./pi/solar-sim.sh cloud
+./pi/solar-sim.sh state
+
+# manual override states (API-controlled)
+./pi/solar-sim.sh blackout   # force both fan and LED off
+./pi/solar-sim.sh recover    # exit blackout and return to auto mode
+```
+
+On HQ this drives two controller pods in `default` namespace:
+
+* `smart-vetrak-controller` (fan) — KEDA/HPA scales `1` in `sun/cloud`, `0` in `blackout`
+* `smart-led-controller` (LED strip) — KEDA/HPA scales `0..1` from `solar_generation_watts`
+
+Grafana dashboard for this loop is provisioned from:
+
+* `hq/manifests/grafana-solar-demo-dashboard.yaml`
+* Dashboard title: **Solar Control Loop Demo**
+* `hq/manifests/grafana-kepler-power-dashboard.yaml`
+* Dashboard title: **Kepler Power Monitor**
+
 ## Files
 
 ```
@@ -105,6 +141,9 @@ hq/
     apps/
       kube-prometheus-stack/
       kepler/
+pi/
+  deploy_fnb48p_api.sh       Deploy real-power FNB48P API to Raspberry Pi
+  solar-sim.sh               Helper for state/blackout/recover API calls
 expose/
   cloudflared.sh             Quick tunnel to Grafana
 slides/
@@ -115,6 +154,8 @@ slides/
     CO2Bar.vue               Horizontal bar chart for the transport-CO2 slide
     KeplerLive.vue           Iframe wrapper around the live Grafana Kepler dashboard
   public/                    Static assets — drop logos + backup screenshot here
+docs/
+  demo-runbook.md            Operator checklist for live demo and recovery steps
 ```
 
 ## Slides

@@ -12,6 +12,11 @@ users:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICsfyCYHczC3h0s15XvKfWGQb1G2mLLqec6Wgi6rbuyx david.pech@prgm-dpech1
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINR16O0SpixE+neTQcgXC+hgDAiCX0co3EZa0KCzDCGH petr-rais@petr-rais-dell
 
+chpasswd:
+  list: |
+    ubuntu:ChangeMeNow123!
+  expire: false
+
 package_update: true
 package_upgrade: false
 packages:
@@ -19,6 +24,7 @@ packages:
   - ca-certificates
   - avahi-daemon
   - uhubctl
+  - raspi-config
 
 runcmd:
   - curl -sSLf https://get.k0s.sh | sh

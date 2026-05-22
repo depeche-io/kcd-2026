@@ -425,7 +425,7 @@ layout: default
 <div class="mt-3 text-base opacity-90">
   Silly hardware, real loop. Same control flow on a real grid:
   <strong>KEDA + carbon-aware-keda-operator</strong> reads
-  <strong>WattTime / Electricity Maps</strong> and time-shifts batch jobs to greener hours.
+  <strong>WattTime / Electricity Maps</strong> and shifts work to greener hours.
 </div>
 
 <div class="kcd-source">

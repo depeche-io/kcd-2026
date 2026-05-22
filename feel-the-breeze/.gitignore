@@ -3,3 +3,5 @@ factory.kubeconfig
 factory.kubeconfig.host
 *.token
 gitops-checkout/
+*.img
+*.xz

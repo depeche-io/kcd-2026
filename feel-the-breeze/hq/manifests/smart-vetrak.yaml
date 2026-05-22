@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-vetrak-controller
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smart-vetrak-controller
+  template:
+    metadata:
+      labels:
+        app: smart-vetrak-controller
+    spec:
+      containers:
+        - name: fan-controller
+          image: curlimages/curl:8.10.1
+          command: ["/bin/sh", "-c", "sleep infinity"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-led-controller
+  namespace: default
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: smart-led-controller
+  template:
+    metadata:
+      labels:
+        app: smart-led-controller
+    spec:
+      containers:
+        - name: led-controller
+          image: public.ecr.aws/docker/library/redis:8.2.3-alpine
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - wget -qO- --timeout=6 http://10.103.233.74:8000/led/on || true
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - wget -qO- --timeout=6 http://10.103.233.74:8000/led/off || true
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: led-autoscaler
+  namespace: default
+spec:
+  # KEDA creates an HPA for this Deployment and drives replicas from Prometheus.
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: smart-led-controller
+  # Keep 0 replicas while trigger is inactive (explicit for predictable demos).
+  idleReplicaCount: 0
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 10
+  pollingInterval: 5
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 0
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        metricName: solar_generation_watts
+        query: max(solar_generation_watts{cluster="factory-pi"})
+        activationThreshold: "0.2"
+        threshold: "0.2"
+        ignoreNullValues: "false"
