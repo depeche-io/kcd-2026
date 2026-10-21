@@ -70,11 +70,17 @@ vite:
 
 <div>
 
-## What KubeCon was about
+## What KubeCon EU was about
 
 - **Every other booth** had an "AI SRE"
 - Same demo, same Slack screenshot
 - Same promise: **no more on-call pages**
+
+## Reality Check
+
+- 🏷️ Seeing 80% of booths for the last time
+- 🧪 Just a few vendors with real production "read-write" experience
+- 🔌 **MCP-everywhere** - just wrapping original API servers oftentimes
 
 </div>
 
@@ -86,9 +92,7 @@ vite:
   Alert fires → agent investigates → agent fixes your precious production
 </div>
 
-<div class="mt-6 text-base opacity-85">
-  Sounds great. Reality is messier.
-</div>
+<img src="/trollface.png" class="mx-auto mt-8 h-44" />
 
 </div>
 
@@ -101,13 +105,6 @@ vite:
 <div class="grid grid-cols-[1fr_1fr] gap-12 mt-8">
 
 <div>
-
-## Reality Check
-
-- 🏷️ Seeing 80% of booths for the last time
-- 🧪 Just a few vendors with real production "read-write" experience
-- 🔌 **MCP-everywhere** - just wrapping original API servers oftentimes
-
 </div>
 
 <div>
