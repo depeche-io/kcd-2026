@@ -64,7 +64,7 @@ vite:
 
 ---
 
-# The Golden Grail of SRE Agents
+# The Holy Grail of SRE Agents
 
 <div class="grid grid-cols-[1fr_1fr] gap-12 mt-8">
 
@@ -136,7 +136,7 @@ vite:
   <div class="kcd-card">🧭 The agent already knows <strong>which</strong> GitOps repo, <strong>which</strong> overlay, <strong>which</strong> file</div>
   <div class="kcd-card">🪪 The agent has <strong>write</strong> credentials to a prod repo</div>
   <div class="kcd-card">🤝 The on-call person <strong>trusts</strong> a one-line Slack request</div>
-  <div class="kcd-card">🧠 +25% memory is actually the right fix (not a leak, not a noisy neighbor)</div>
+  <div class="kcd-card">🧠 +33% memory is actually the right fix (not a leak, not a noisy neighbor)</div>
   <div class="kcd-card">🔁 No one cycles the agent into a feedback loop with itself</div>
 </div>
 
@@ -233,7 +233,7 @@ Intended direction:
 
 ---
 
-# What Can You Get Without Context: Guess Work
+# What Can You Get Without Context: Guesswork
 
 <div class="grid grid-cols-[3fr_2fr] gap-6 mt-2 items-center">
 
@@ -244,7 +244,7 @@ Intended direction:
 
 <div>
 
-Resume: Not bad given how little context it has.
+Summary: Not bad given how little context it has.
 
 Useful: absolutely not.
 
@@ -367,25 +367,21 @@ Our original idea:
 <div class="mt-4 text-sm">
 <table>
   <thead><tr><th>POC</th><th>V1</th></tr></thead>
-  <tbody><tr><td>No further support</td><td>CLAUDE.md's almost everywhere, guidance in the context</td></tr></tbody>
+  <tbody><tr><td>No further support</td><td>CLAUDE.md's almost everywhere, guidance in the context, SYNONYMS.md</td></tr></tbody>
 </table>
 </div>
 
 ---
 
-# Problem: Context Or Code?
-
-Slack Output, Slack Fetching
-
-Hard to decide, even having both and experimenting between them.
-
----
-
-# Slack Output
+# Problem: Context or Code? Slack Output Example
 
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
 
 <div>
+
+Slack Output, Slack Fetching
+
+Hard to decide, even having both and experimenting between them.
 
 - no formatting
 - have a script replace .md / something to `Block Kit`
@@ -446,8 +442,8 @@ Also - we can't easily switch fast. vs in-depth answers.
 
 <div class="mt-3 text-sm">
 <table>
-  <thead><tr><th>POC</th><th>V1</th></tr></thead>
-  <tbody><tr><td>Opus</td><td>Sonnet</td></tr></tbody>
+  <thead><tr><th>POC</th><th>V1</th><th>V2</th></tr></thead>
+  <tbody><tr><td>Opus</td><td>Sonnet 4.6 <span class="opacity-70">(last with fixed thinking budgets)</span></td><td>?</td></tr></tbody>
 </table>
 </div>
 
@@ -681,6 +677,8 @@ Predict `when disk will be full`
     <li>sum up 24h of Slack alerts, suggest action to TOP1 item</li>
     <li>Triage vs. deep investigation</li>
     <li>Create GitLab MR</li>
+    <li>Incident co-pilot</li>
+    <li>Logs MCP</li>
     <li>...</li>
   </ul>
 </div>
@@ -720,7 +718,7 @@ Predict `when disk will be full`
   <strong>Automations:</strong> run on cron each day evaluation of all alerts and investigate TOP1 and suggest an action
 </div>
 
-<div class="mt-6 text-xl">→ BE team is cleaning up false-positives each day</div>
+<div class="mt-6 text-xl">→ BE team is cleaning up false positives each day</div>
 
 </div>
 
@@ -763,7 +761,7 @@ Predict `when disk will be full`
 # Do we trust it?
 
 <div class="my-8 text-center text-6xl py-10 rounded-lg" style="background:linear-gradient(135deg,var(--kcd-danger) 0%,#7c2d12 100%); color:#fff; font-weight:800; letter-spacing:-0.01em; text-shadow:0 2px 8px rgba(0,0,0,0.3);">
-  Absolutely no. <span class="opacity-80 text-3xl align-middle">(period)</span>
+  Absolutely not. <span class="opacity-80 text-3xl align-middle">(period)</span>
 </div>
 
 You must have separate tokens as limited as you can have.
@@ -790,7 +788,9 @@ YOU MUST NOT ssh!
 
 <div>
 
-<span style="color:var(--kcd-blue)">**Our approach**</span> — too scared so far to give a GitLab token
+<span style="color:var(--kcd-blue)">**Our approach**</span>:
+- initially too scared to give a GitLab token
+- today - maybe it's safe to create MRs
 
 </div>
 
