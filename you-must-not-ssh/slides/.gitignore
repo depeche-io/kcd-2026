@@ -2,3 +2,5 @@ node_modules/
 dist/
 .slidev/
 *.pdf
+_shot.mjs
+.shot*.mjs
