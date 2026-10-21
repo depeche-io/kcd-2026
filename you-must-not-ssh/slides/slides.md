@@ -100,30 +100,6 @@ vite:
 
 ---
 
-# The Golden Grail of SRE Agents
-
-<div class="grid grid-cols-[1fr_1fr] gap-12 mt-8">
-
-<div>
-</div>
-
-<div>
-
-## Realistic Pitch
-
-<div class="mt-3 grid gap-2 text-sm">
-  <div class="kcd-card kcd-card-warn">⚠️ <strong>Investigates</strong> = reads dashboards it was told about. New service? It doesn't know.</div>
-  <div class="kcd-card kcd-card-warn">⚠️ <strong>Fixes</strong> = opens a PR. Someone still merges. Often that's *you*, at 3 AM.</div>
-  <div class="kcd-card kcd-card-danger">⛔ <strong>Stay asleep</strong> = until the agent confidently does the wrong thing, twice, in prod.</div>
-  <div class="kcd-card kcd-card-ok">✅ <strong>Realistic win</strong>: cut the "context-gathering" minutes of an incident from 20 → 2.</div>
-</div>
-
-</div>
-
-</div>
-
----
-
 # Booth promise: the "$$$ profit" demo 💰
 
 <div class="grid grid-cols-2 gap-6 mt-4">
@@ -170,15 +146,15 @@ vite:
 
 ---
 
-# What we actually shipped 🛠️
+# POC: Proof of Concept 🛠️
 
 <img src="/logo.png" alt="logo.png" class="abs-tr m-6 max-h-24 rounded shadow" />
 
-<div class="text-lg opacity-95 mt-2">
-  internal "Product" <span class="opacity-70">←</span> <strong>the most important part</strong>
+<div class="inline-block text-xl mt-2 px-4 py-2 rounded-lg" style="background:linear-gradient(135deg,#7c3aed 0%,#0086FF 100%); color:#fff;">
+  internal "Product" <span class="opacity-80">←</span> <strong>the most important part</strong>
 </div>
 
-<div class="text-7xl text-center my-4">🤷</div>
+<div class="text-6xl text-center my-1">🤷</div>
 
 <div class="grid grid-cols-2 gap-4 mt-2">
 
@@ -200,9 +176,19 @@ vite:
 
 </div>
 
+<div class="kcd-card kcd-card-ok mt-4 text-sm">
+  <strong>Covered use-cases:</strong>
+  <ul class="mt-1">
+    <li>what is our setup of app Kafka cluster in QA</li>
+    <li>do we serve domain X via Cloudflare?</li>
+    <li>translate IP 10.1.2.3 to hostname</li>
+  </ul>
+  <div class="mt-2">+ Slack <code>@integration</code> <span class="opacity-70">(now Claude Tag)</span></div>
+</div>
+
 ---
 
-# Technicals
+# POC: Results ~January-March
 
 <div class="text-lg leading-relaxed mt-4">
 
@@ -219,49 +205,41 @@ vite:
 
 </div>
 
+<div class="abs-b mx-14 mb-8 text-sm">
+<table>
+  <thead><tr><th>Runtime</th><th>Credentials</th><th>Users</th><th>Tokens spent</th></tr></thead>
+  <tbody><tr><td>locally + skills</td><td><code>$HOME</code></td><td>? SysOps Juniors (but we don't have those)</td><td>~$2k</td></tr></tbody>
+</table>
+</div>
+
 ---
 
-# Wrong Approach
-
-Vendors are selling the tool: `run agent on your alerts,`
+# POC: Mistakes
 
 <div class="mt-3 mb-3 text-center text-3xl py-6 rounded-lg" style="background:linear-gradient(135deg,#7c3aed 0%,#0086FF 100%); color:#fff; font-weight:700; letter-spacing:0.02em;">
   ✨ &nbsp; AI &nbsp; magic &nbsp; will &nbsp; happen<sup class="text-base align-super">™</sup> &nbsp; ✨
 </div>
 
-Our `ops-responder-agent`:
-- could sell you fresh bread over Slack with a different context...
-- can be replaced with Gemini Enterprise or any other in a month
+**Main problem**: too generic, not much added value.
 
-Your wrapper around the real agent doesn't matter much and will likely change.
+Intended direction:
 
-Context and the workflow are.
-
----
-class: text-center
----
-
-<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
-  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part I</div>
-  <div class="text-5xl font-bold text-white">Context, Output</div>
-  <div class="text-5xl font-bold text-white">& Integration</div>
-</div>
+- ❌ Understand larger picture from multiple alerts at the same time
+- ❌ Fix the issue in QA <span class="opacity-70">(note: PROD was never target)</span>
+- ❌ Keep session open
+- ❌ Don't pollute with thinking
+- ❌ Do not allow any tools except for `Read`, `Glob`...
+- ❌ Semi-legacy Wiki exported into context
 
 ---
 
-# What Can You Get Without Context
+# What Can You Get Without Context: Guess Work
 
+<div class="grid grid-cols-[3fr_2fr] gap-6 mt-2 items-center">
 
-<img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-72" />
-
----
-
-# Guess Work
-
-<div class="grid grid-cols-2 gap-6 mt-4 items-center">
-
-<div>
-  <img src="/pagerduty-sre-agent.png" alt="pagerduty-sre-agent.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+<div class="grid grid-cols-2 gap-3 items-center">
+  <img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow block max-w-full object-contain max-h-96" />
+  <img src="/pagerduty-sre-agent.png" alt="pagerduty-sre-agent.png" class="rounded shadow block max-w-full object-contain max-h-96" />
 </div>
 
 <div>
@@ -287,7 +265,7 @@ Useful: absolutely not.
 
 Problem:
 - CLAUDE.md (AGENTS.md) in each repo
-- You should not provide out-of-date, legacy information (**THIS IS BIG**)
+- You should not provide out-of-date, legacy information <span class="px-2 py-1 rounded font-bold" style="background:var(--kcd-danger); color:#fff;">THIS IS BIG</span>
 
 <div class="kcd-card kcd-card-danger mt-3 text-base">
   🔥 <strong>Stale context = confident wrong answers.</strong>
@@ -358,16 +336,23 @@ Example:
 Our original idea:
 - we absolutely must share the context of all Slack alerting channels, so the agent is aware of the general situation and can leverage it
 
-<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+<div class="grid grid-cols-2 gap-6 mt-2 items-center">
 
 <div>
-  <img src="/slack-input.png" alt="slack-input.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+  <img src="/slack-input.png" alt="slack-input.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-44" />
 </div>
 
 <div>
-  <img src="/slack-orientation.png" alt="slack-orientation.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+  <img src="/slack-orientation.png" alt="slack-orientation.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-44" />
 </div>
 
+</div>
+
+<div class="mt-4 text-sm">
+<table>
+  <thead><tr><th>POC</th><th>V1</th></tr></thead>
+  <tbody><tr><td>Generate up-to-date Slack dump, caching + handling Slack</td><td>Replace with MCP called on-demand, saving 20s on each prompt (copying of the context each prompt)</td></tr></tbody>
+</table>
 </div>
 
 ---
@@ -378,6 +363,13 @@ Our original idea:
 
 <img src="/slack-error.png" alt="slack-error.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
 <img src="/slack-error-2.png" alt="slack-error-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+
+<div class="mt-4 text-sm">
+<table>
+  <thead><tr><th>POC</th><th>V1</th></tr></thead>
+  <tbody><tr><td>No further support</td><td>CLAUDE.md's almost everywhere, guidance in the context</td></tr></tbody>
+</table>
+</div>
 
 ---
 
@@ -447,9 +439,16 @@ Also - we can't easily switch fast. vs in-depth answers.
 </div>
 
 <div>
-  <img src="/timeout-definition.png" alt="timeout-definition.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
+  <img src="/timeout-definition.png" alt="timeout-definition.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-56" />
 </div>
 
+</div>
+
+<div class="mt-3 text-sm">
+<table>
+  <thead><tr><th>POC</th><th>V1</th></tr></thead>
+  <tbody><tr><td>Opus</td><td>Sonnet</td></tr></tbody>
+</table>
 </div>
 
 ---
@@ -499,6 +498,8 @@ Problem: either use allowList for permission or callback function for "Bash" too
 
 <span style="color:var(--kcd-blue)">**Our approach**</span>: yes, we parse shell ourselves...
 
+<span class="opacity-70 italic">HolmesGPT (at the time): BB-gun</span>
+
 ---
 
 # Problem: Is this Bash safe?
@@ -509,6 +510,8 @@ The agent wants to run tool Bash: `...`
 
 `python vibe-coded-script-previously-written.py`
 
+<span class="opacity-70 italic">...and try to get a security approval over here...</span>
+
 <span style="color:var(--kcd-blue)">**Our approach**</span>:
 - Writing into the context folder is not allowed
 - Only a very limited allowlist of commands, no piping `|`
@@ -516,13 +519,44 @@ The agent wants to run tool Bash: `...`
 Not great...
 
 ---
-class: text-center
----
 
-<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
-  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part II</div>
-  <div class="text-5xl font-bold text-white">What Actually</div>
-  <div class="text-5xl font-bold text-white">Works</div>
+# V1: What Actually Works ~April-August
+
+<div class="grid grid-cols-2 gap-4 mt-4">
+
+<div class="kcd-card">
+  <strong>Who is it for?</strong>
+  <ul class="mt-1">
+    <li>SysOps</li>
+    <li>some Engineering Managers</li>
+  </ul>
+</div>
+
+<div class="kcd-card kcd-card-warn">
+  <strong>What should it do?</strong>
+  <ul class="mt-1">
+    <li>automatically suggest actions</li>
+    <li>react on user prompts</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="kcd-card kcd-card-ok mt-4 text-sm">
+  <strong>Covered use-cases:</strong>
+  <ul class="mt-1">
+    <li>explain the request path for wrike.com/ <span class="opacity-70">(80% correct)</span></li>
+    <li>is this alert recurring?</li>
+    <li>are we vulnerable?</li>
+    <li>...</li>
+  </ul>
+</div>
+
+<div class="abs-b mx-14 mb-8 text-sm">
+<table>
+  <thead><tr><th>Runtime</th><th>Credentials</th><th>Users</th><th>Tokens spent</th></tr></thead>
+  <tbody><tr><td>remote</td><td>shared read-only tokens</td><td>SysOps</td><td>~$5k</td></tr></tbody>
+</table>
 </div>
 
 ---
@@ -602,6 +636,8 @@ class: text-center
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
 
 <div>
+
+<div class="kcd-card kcd-card-ok mb-4">Very surprising for us that Claude can really understand the time series.</div>
 
 Not there yet:
 Predict `when disk will be full`
