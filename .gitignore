@@ -20,3 +20,4 @@ you-must-not-ssh/slides/node_modules/
 you-must-not-ssh/slides/dist/
 you-must-not-ssh/slides/.slidev/
 you-must-not-ssh/slides/*.pdf
+!you-must-not-ssh/slides/you-must-not-ssh.pdf

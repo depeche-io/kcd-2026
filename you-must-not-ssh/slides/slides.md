@@ -653,13 +653,97 @@ Predict `when disk will be full`
 </div>
 
 ---
-class: text-center
+
+# V2: Real Partner
+
+<div class="grid grid-cols-2 gap-4 mt-4">
+
+<div class="kcd-card">
+  <strong>Who is it for?</strong>
+  <ul class="mt-1">
+    <li>+ Security</li>
+    <li>(+ Backend devs)</li>
+  </ul>
+</div>
+
+<div class="kcd-card kcd-card-warn">
+  <strong>What can it do?</strong>
+  <ul class="mt-1">
+    <li>provide you with "95%" accurate responses on infra</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="kcd-card kcd-card-ok mt-4 text-sm">
+  <strong>Covered use-cases:</strong>
+  <ul class="mt-1">
+    <li>sum up 24h of Slack alerts, suggest action to TOP1 item</li>
+    <li>Triage vs. deep investigation</li>
+    <li>Create GitLab MR</li>
+    <li>...</li>
+  </ul>
+</div>
+
+<div class="abs-b mx-14 mb-8 text-sm">
+<table>
+  <thead><tr><th>Runtime</th><th>Credentials</th><th>Users</th><th>Tokens spent</th></tr></thead>
+  <tbody><tr><td>remote</td><td>in addition some write-tokens</td><td>+ Security</td><td>~$8k</td></tr></tbody>
+</table>
+</div>
+
 ---
 
-<div class="flex flex-col items-center justify-center h-full gap-4" style="background:linear-gradient(135deg,#0a1628 0%,#0d2a4a 100%);">
-  <div class="text-blue-400 text-lg font-mono tracking-widest uppercase opacity-70">Part III</div>
-  <div class="text-5xl font-bold text-white">Trust &amp;</div>
-  <div class="text-5xl font-bold text-white">Security</div>
+# Lazy to Write Prompts → Follow-up Buttons
+
+<div class="grid grid-cols-[3fr_2fr] gap-6 mt-4 items-center">
+
+<div>
+  <img src="/follow-up-buttons.png" alt="follow-up-buttons.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+</div>
+
+<div>
+  <img src="/direct-follow-up.png" alt="direct-follow-up.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+</div>
+
+</div>
+
+---
+
+# Noisy Alerts
+
+<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div>
+
+<div class="kcd-card kcd-card-ok text-base">
+  <strong>Automations:</strong> run on cron each day evaluation of all alerts and investigate TOP1 and suggest an action
+</div>
+
+<div class="mt-6 text-xl">→ BE team is cleaning up false-positives each day</div>
+
+</div>
+
+<div>
+  <img src="/noisy-alerts.png" alt="noisy-alerts.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+</div>
+
+</div>
+
+---
+
+# Usage + Thinking Visible During the Investigation and After
+
+<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div>
+  <img src="/usage-1.png" alt="usage-1.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
+</div>
+
+<div>
+  <img src="/usage-2.png" alt="usage-2.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
+</div>
+
 </div>
 
 ---
@@ -684,20 +768,61 @@ class: text-center
 
 You must have separate tokens as limited as you can have.
 
+<div class="grid grid-cols-[3fr_1fr] gap-6 mt-4 items-center">
+
+<div>
+
+```md [CLAUDE.md]
+YOU MUST NOT ssh!
+```
+
+</div>
+
+<img src="/trollface.png" class="mx-auto h-28" />
+
+</div>
+
 ---
 
 # Prepare a Patch
 
+<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div>
+
 <span style="color:var(--kcd-blue)">**Our approach**</span> — too scared so far to give a GitLab token
 
-<img src="/patch.png" alt="patch.png" class="rounded shadow my-2 mx-auto block w-full object-contain max-h-[28rem]" />
+</div>
+
+<div>
+  <img src="/patch.png" alt="patch.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-64" />
+</div>
+
+</div>
+
+<div class="mt-4 text-sm">
+<table>
+  <thead><tr><th>POC</th><th>V1</th><th>V2</th></tr></thead>
+  <tbody><tr><td>Suggest a patch</td><td>git-pull and suggest patch (git clone other repos)</td><td>read-write permissions to create MR</td></tr></tbody>
+</table>
+</div>
 
 ---
 
-# Problem: User Trust Lost
+# Problem: Vibe-coded Harness → User Trust Lost
 
-<img src="/trust-1.png" alt="trust-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
-<img src="/trust-2.png" alt="trust-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+<div class="grid grid-cols-[3fr_2fr] gap-6 mt-4 items-center">
+
+<div>
+  <img src="/trust-1.png" alt="trust-1.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+  <img src="/trust-2.png" alt="trust-2.png" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-32" />
+</div>
+
+<div>
+  <img src="/timeout-2.png" alt="timeout-2.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+</div>
+
+</div>
 
 ---
 
@@ -711,24 +836,21 @@ You must have separate tokens as limited as you can have.
 
 # Real Adoption?
 
-<img src="/harold-meme.jpg" alt="harold-meme.jpg" class="rounded shadow my-2 mx-auto block max-w-full object-contain max-h-60" />
+<div class="grid grid-cols-3 gap-6 mt-8 items-start text-center">
 
----
-
-# Key takeaways
-
-<div class="grid grid-cols-1 gap-5 mt-10">
-
-<div class="kcd-card text-xl py-4 px-6">
-  <span class="text-3xl mr-3">1️⃣</span> Kick-off with what you have locally.
+<div>
+  <div class="text-xl font-bold mb-3">POC</div>
+  <img src="/harold-meme.jpg" alt="harold-meme.jpg" class="rounded shadow mx-auto block max-w-full object-contain max-h-60" />
 </div>
 
-<div class="kcd-card text-xl py-4 px-6">
-  <span class="text-3xl mr-3">2️⃣</span> Start small and build iteratively.
+<div>
+  <div class="text-xl font-bold mb-3">V1</div>
+  <img src="/adoption-v1.jpg" alt="adoption-v1.jpg" class="rounded shadow mx-auto block max-w-full object-contain max-h-60" />
 </div>
 
-<div class="kcd-card text-xl py-4 px-6">
-  <span class="text-3xl mr-3">3️⃣</span> It's Product - focus on value it brings and user feedback.
+<div>
+  <div class="text-xl font-bold mb-3">V2</div>
+  <img src="/adoption-v2.jpg" alt="adoption-v2.jpg" class="rounded shadow mx-auto block max-w-full object-contain max-h-60" />
 </div>
 
 </div>
