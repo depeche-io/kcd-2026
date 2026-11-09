@@ -13,10 +13,14 @@ users:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINR16O0SpixE+neTQcgXC+hgDAiCX0co3EZa0KCzDCGH petr-rais@petr-rais-dell
 
 chpasswd:
-  list: |
-    ubuntu:ChangeMeNow123!
+  users:
+    - name: ubuntu
+      password: ChangeMeNow123!
+      type: text
   expire: false
 
+# Legacy/manual seed. Linux flash renders this template with
+# prepare_autoflash.py, replacing packages/runcmd with the retrying bootstrap.
 package_update: true
 package_upgrade: false
 packages:

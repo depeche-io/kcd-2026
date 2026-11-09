@@ -1,81 +1,202 @@
-:root {
-  --kcd-blue: #0086FF;
-  --kcd-blue-dark: #0066cc;
-  --kcd-ink: #0a0a0a;
-  --kcd-mute: #6b7280;
-  --kcd-warn: #f59e0b;
-  --kcd-danger: #ef4444;
-  --kcd-ok: #10b981;
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/inter-400.ttf) format('truetype');
 }
 
-.slidev-layout h1 {
-  color: var(--kcd-blue);
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/inter-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/inter-700.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-400.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-700.ttf) format('truetype');
+}
+
+/* Salt Lake City palette, adapted for Kubernetes On Edge Day. */
+:root {
+  --kc-navy: #113E82;
+  --kc-navy-dark: #0B2C60;
+  --kc-purple: #4B3587;
+  --kc-sky: #4E73A7;
+  --kc-lavender: #B9C6E8;
+  --kc-bee: #FEF35B;
+  --kc-blue: #0086FF;
+  --kc-warn: #f59e0b;
+  --kc-danger: #f87171;
+  --kc-ok: #34d399;
+}
+
+.slidev-layout {
+  background: var(--kc-navy) url('/theme/content-bg.jpg') center bottom / cover no-repeat;
+  color: #f1f5f9;
+  padding-bottom: 4.5rem;
+}
+
+.slidev-layout.section {
+  background: var(--kc-navy) url('/theme/content-bg.jpg') center bottom / cover no-repeat;
+}
+
+.slidev-layout.section::after {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  width: 13.5rem;
+  height: 5.4rem;
+  background: #fff url('/theme/edge-day-logo.svg') center / 92% auto no-repeat;
+  border-radius: 0.25rem;
+  pointer-events: none;
+}
+
+.slidev-layout h1,
+.slidev-layout h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
-.slidev-layout h2 {
-  color: var(--kcd-blue-dark);
-  font-weight: 600;
+.slidev-layout h1 { color: #fff; }
+.slidev-layout h2 { color: var(--kc-lavender); }
+.slidev-layout.section h1 { font-size: 3.6rem; }
+.slidev-layout.section h2 { font-size: 1.8rem; font-weight: 600; }
+
+.slidev-layout a { color: var(--kc-bee); }
+
+.slidev-layout table { font-size: 0.95rem; }
+.slidev-layout th { color: var(--kc-lavender); border-bottom-color: var(--kc-lavender); }
+.slidev-layout td, .slidev-layout th { border-color: rgba(185, 198, 232, 0.25); }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-.slidev-layout.cover {
-  background: linear-gradient(135deg, #e8f4ff 0%, #dbeafe 100%);
-  color: var(--kcd-ink);
+.slidev-layout :not(pre) > code {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--kc-bee);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
 }
 
-.slidev-layout.cover h1,
-.slidev-layout.cover h2,
-.slidev-layout.cover p {
-  color: var(--kcd-blue);
+.slidev-layout pre.shiki {
+  background: var(--kc-navy-dark) !important;
+  border-radius: 6px;
 }
 
 .kcd-source {
   font-size: 0.7rem;
-  color: var(--kcd-mute);
+  color: var(--kc-lavender);
   font-style: italic;
   margin-top: 1.5rem;
-}
-
-.kcd-source a {
-  color: var(--kcd-blue);
-  text-decoration: none;
-}
-.kcd-source a:hover {
-  text-decoration: underline;
 }
 
 .kcd-pill {
   display: inline-block;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  background: var(--kcd-blue);
+  background: var(--kc-purple);
   color: #fff;
   font-size: 0.8rem;
   font-weight: 600;
 }
 
-code {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-}
-
 .kcd-card {
-  background: #eff6ff;
-  border-left: 4px solid var(--kcd-blue);
+  background: var(--kc-navy-dark);
+  border-left: 4px solid var(--kc-lavender);
   padding: 0.75rem 1rem;
   border-radius: 6px;
-  color: var(--kcd-ink);
+  color: #f1f5f9;
 }
 
-.kcd-card strong { color: #0a0a0a; }
-.kcd-card em { color: var(--kcd-blue-dark); font-style: italic; }
-.kcd-card code {
-  background: rgba(0, 134, 255, 0.1);
-  color: var(--kcd-blue-dark);
-  padding: 0.05rem 0.3rem;
-  border-radius: 3px;
+.kcd-card strong { color: #fff; }
+.kcd-card em { color: var(--kc-lavender); }
+
+.kcd-card-ok     { border-left-color: var(--kc-ok); }
+.kcd-card-warn   { border-left-color: var(--kc-warn); }
+.kcd-card-danger { border-left-color: var(--kc-danger); }
+.kcd-card-bee    { border-left-color: var(--kc-bee); }
+
+.chat {
+  background: var(--kc-navy-dark);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: #f1f5f9;
+  border-left: 3px solid var(--kc-lavender);
+  margin-bottom: 0.4rem;
+}
+.chat .who { color: var(--kc-lavender); font-weight: 600; margin-right: 0.4rem; }
+.chat .who.bot { color: var(--kc-bee); }
+.chat .who.human { color: #fff; }
+
+.diagram-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.75rem;
 }
 
-.kcd-card-ok     { border-left-color: var(--kcd-ok);     background: #ecfdf5; }
-.kcd-card-warn   { border-left-color: var(--kcd-warn);   background: #fffbeb; }
-.kcd-card-danger { border-left-color: var(--kcd-danger); background: #fef2f2; }
+/* Feel the Breeze adaptations of the supplied Salt Lake City template. */
+.slidev-layout h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 0.8rem; }
+.slidev-layout h2 { font-size: 1.55rem; }
+.slidev-layout h3 { color: var(--kc-lavender); font-size: 1.2rem; line-height: 1.35; margin-bottom: 0.9rem; }
+.slidev-layout p { line-height: 1.5; }
+.slidev-layout li { margin-top: 0.5rem; line-height: 1.45; }
+.slidev-layout .kcd-source { line-height: 1.4; margin-top: 1rem; font-size: 0.65rem; }
+.slidev-layout .slide-kicker { color: var(--kc-lavender); font-size: 0.9rem; margin-bottom: 1.2rem; }
+.slidev-layout .stat { color: var(--kc-bee); font-size: 2.6rem; font-weight: 700; line-height: 1.2; margin: 0.4rem 0 0.8rem; }
+.slidev-layout .stat small { font-size: 1rem; }
+.slidev-layout .step { color: var(--kc-lavender); font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 0.9rem; letter-spacing: 0.05em; }
+.slidev-layout .formula { color: var(--kc-bee); font-size: 1.65rem; font-family: 'Source Serif 4', Georgia, serif; }
+.slidev-layout .speaker-logo { filter: brightness(0) invert(1); }
+.slidev-layout.title-slide { padding-top: 7rem; }
+.title-block { max-width: 80%; text-align: left; }
+.slidev-layout.title-slide h1 { font-size: 4rem; margin-bottom: 1.3rem; }
+.slidev-layout.title-slide h2 { font-size: 1.5rem; line-height: 1.4; }
+.slidev-layout.section h1 { max-width: 80%; }
+.slidev-layout.section.text-center h1 { max-width: none; margin-left: auto; margin-right: auto; }
+.demo-flow { display: grid; grid-template-columns: 1fr auto 1.35fr auto 1.3fr; align-items: stretch; gap: 0.65rem; font-size: 0.95rem; }
+.demo-flow .flow-arrow { align-self: center; color: var(--kc-bee); font-size: 1.7rem; }
+.demo-flow .kcd-card div:not(.step) { margin-top: 0.5rem; }
+.demo-flow code { font-size: 0.72rem; }

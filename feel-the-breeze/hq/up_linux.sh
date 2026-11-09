@@ -3,6 +3,7 @@
 set -euo pipefail
 
 CLUSTER="${K3D_CLUSTER:-hq}"
+CONTEXT="k3d-$CLUSTER"
 SERVERS="${K3D_SERVERS:-1}"
 AGENTS="${K3D_AGENTS:-1}"
 # Pin a recent k3s. Override with K3S_IMAGE=rancher/k3s:v1.32.x-k3s1 if needed.
@@ -28,12 +29,29 @@ if ! require_cmd kubectl; then
   exit 1
 fi
 
+# Reuse the running cluster even when this shell cannot access its runtime.
+# In particular, do not create a second HQ in an unrelated Podman instance.
+HAVE_CONTEXT=0
+if kubectl config get-contexts "$CONTEXT" -o name 2>/dev/null | grep -Fxq "$CONTEXT"; then
+  HAVE_CONTEXT=1
+  if kubectl --context="$CONTEXT" --request-timeout=5s get nodes >/dev/null 2>&1; then
+    kubectl config use-context "$CONTEXT" >/dev/null
+    echo "==> Reusing the reachable HQ cluster: $CONTEXT"
+    exit 0
+  fi
+fi
+
 # Podman Desktop can expose a Docker-compatible API socket.
-# If DOCKER_HOST is unset and the socket exists, wire it automatically.
-if [ -z "${DOCKER_HOST:-}" ]; then
+# Prefer a working default runtime before trying the Podman socket.
+if [ -z "${DOCKER_HOST:-}" ] && ! k3d cluster list >/dev/null 2>&1; then
   RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
   PODMAN_SOCK="$RUNTIME_DIR/podman/podman.sock"
   if [ -S "$PODMAN_SOCK" ]; then
+    if [ "$HAVE_CONTEXT" -eq 1 ] && ! DOCKER_HOST="unix://$PODMAN_SOCK" k3d cluster list -o json 2>/dev/null | grep -q "\"name\": *\"$CLUSTER\""; then
+      echo "ERROR: existing context $CONTEXT is unreachable and its cluster is not in Podman." >&2
+      echo "Start the original cluster runtime or set DOCKER_HOST to its socket; refusing to create a duplicate." >&2
+      exit 1
+    fi
     export DOCKER_HOST="unix://$PODMAN_SOCK"
     echo "==> Using Podman socket for k3d: $DOCKER_HOST"
   fi
@@ -67,14 +85,15 @@ else
 fi
 
 # k3d names the kubeconfig context "k3d-<cluster>".
-CONTEXT="k3d-$CLUSTER"
 kubectl config use-context "$CONTEXT" >/dev/null
 
 # Sanity-check from inside the cluster that it can reach the factory API.
+if [ "${ENABLE_FACTORY_VM:-0}" = 1 ]; then
 echo "==> Sanity check: hq pod -> factory API via host.k3d.internal"
 kubectl run hq-net-check --rm -i --restart=Never \
   --image=curlimages/curl:8.10.1 --quiet -- \
   curl -ks --max-time 3 https://host.k3d.internal:6443/healthz \
   || echo "    (non-zero exit is fine if factory isn't up yet)"
+fi
 
 echo "==> hq is up. Current context: $(kubectl config current-context)"

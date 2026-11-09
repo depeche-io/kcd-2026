@@ -5,6 +5,9 @@ metadata:
   namespace: default
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
   selector:
     matchLabels:
       app: smart-vetrak-controller
@@ -17,6 +20,19 @@ spec:
         - name: fan-controller
           image: curlimages/curl:8.10.1
           command: ["/bin/sh", "-c", "sleep infinity"]
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - curl -fsS --max-time 6 http://factory-pi.local:8000/vetrak/on || true
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - curl -fsS --max-time 6 http://factory-pi.local:8000/vetrak/off || true
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -25,6 +41,9 @@ metadata:
   namespace: default
 spec:
   replicas: 0
+  strategy:
+    type: Recreate
+    rollingUpdate: null
   selector:
     matchLabels:
       app: smart-led-controller
@@ -43,13 +62,43 @@ spec:
                 command:
                   - /bin/sh
                   - -c
-                  - wget -qO- --timeout=6 http://10.103.233.74:8000/led/on || true
+                  - wget -qO- --timeout=6 http://factory-pi.local:8000/led/on || true
             preStop:
               exec:
                 command:
                   - /bin/sh
                   - -c
-                  - wget -qO- --timeout=6 http://10.103.233.74:8000/led/off || true
+                  - wget -qO- --timeout=6 http://factory-pi.local:8000/led/off || true
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: fan-autoscaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: smart-vetrak-controller
+  idleReplicaCount: 0
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 10
+  pollingInterval: 5
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 0
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        metricName: fan_controller_enabled
+        query: max(fan_controller_enabled{cluster="factory-pi"})
+        activationThreshold: "0.5"
+        threshold: "1"
+        ignoreNullValues: "false"
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject

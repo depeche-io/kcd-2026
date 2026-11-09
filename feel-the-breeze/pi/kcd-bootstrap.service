@@ -1,0 +1,17 @@
+[Unit]
+Description=Restore the KCD Pi after flashing
+Wants=network-online.target
+After=network-online.target cloud-final.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/kcd-bootstrap
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=30
+TimeoutStartSec=20min
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

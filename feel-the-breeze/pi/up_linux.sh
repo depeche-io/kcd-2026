@@ -2,7 +2,7 @@
 # Register the Raspberry Pi (factory-pi) with ArgoCD on HQ and wire up Prometheus scraping.
 #
 # Prerequisites:
-#   - ./factory/up.sh && ./hq/up.sh && ./hq/bootstrap-argocd.sh already done
+#   - HQ cluster, ArgoCD, and monitoring are already running
 #   - Pi booted and reachable at factory-pi.local (k0s running, first-boot done)
 #
 # Idempotent: safe to re-run (refreshes IP in CoreDNS + credentials).
@@ -12,8 +12,19 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PI_HOST="${PI_HOST:-factory-pi.local}"
 PI_USER="${PI_USER:-ubuntu}"
 CONTEXT="k3d-${K3D_CLUSTER:-hq}"
-SSH="ssh -n -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes"
-SSH_STDIN="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes"
+SSH_STDIN=(ssh -o ConnectTimeout=10 -o BatchMode=yes)
+if [ -n "${PI_SSH_IDENTITY_FILE:-}" ]; then
+  SSH_STDIN+=(-i "$PI_SSH_IDENTITY_FILE" -o IdentitiesOnly=yes)
+fi
+if [ -n "${PI_SSH_KNOWN_HOSTS_FILE:-}" ]; then
+  SSH_STDIN+=(-o "UserKnownHostsFile=$PI_SSH_KNOWN_HOSTS_FILE" -o StrictHostKeyChecking=yes)
+else
+  SSH_STDIN+=(-o StrictHostKeyChecking=accept-new)
+fi
+if [ -n "${PI_SSH_HOST_KEY_ALIAS:-}" ]; then
+  SSH_STDIN+=(-o "HostKeyAlias=$PI_SSH_HOST_KEY_ALIAS")
+fi
+SSH=("${SSH_STDIN[@]}" -n)
 K0S_WAIT_ATTEMPTS="${K0S_WAIT_ATTEMPTS:-30}"
 K0S_WAIT_SLEEP="${K0S_WAIT_SLEEP:-5}"
 
@@ -23,7 +34,7 @@ cd "$ROOT"
 # 1. Resolve Pi IP.
 # ---------------------------------------------------------------------------
 echo "==> Resolving $PI_HOST"
-PI_IP=$(ping -c1 -W3 "$PI_HOST" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+PI_IP=$(getent ahostsv4 "$PI_HOST" | awk 'NR==1 {ip=$1} END {print ip}' || true)
 if [ -z "$PI_IP" ]; then
   echo "ERROR: cannot reach $PI_HOST. Is the Pi up and on the same network?" >&2
   exit 1
@@ -34,7 +45,7 @@ echo "    $PI_HOST -> $PI_IP"
 # 2. Wait for k0s API to be ready on the Pi.
 # ---------------------------------------------------------------------------
 echo "==> Checking SSH access to $PI_USER@$PI_HOST"
-if ! SSH_CHECK_OUT=$($SSH "$PI_USER@$PI_HOST" "echo ssh-ok" 2>&1); then
+if ! SSH_CHECK_OUT=$("${SSH[@]}" "$PI_USER@$PI_HOST" "echo ssh-ok" 2>&1); then
   echo "ERROR: cannot SSH to $PI_USER@$PI_HOST" >&2
   echo "SSH error: $SSH_CHECK_OUT" >&2
   cat >&2 <<'EOF'
@@ -48,7 +59,7 @@ fi
 echo "    SSH is reachable"
 
 echo "==> Checking passwordless sudo on $PI_HOST"
-if ! SUDO_CHECK_OUT=$($SSH "$PI_USER@$PI_HOST" "sudo -n true" 2>&1); then
+if ! SUDO_CHECK_OUT=$("${SSH[@]}" "$PI_USER@$PI_HOST" "sudo -n true" 2>&1); then
   echo "ERROR: sudo without password is required for this script." >&2
   echo "sudo check output: $SUDO_CHECK_OUT" >&2
   echo "Fix on Pi: add NOPASSWD sudo for user '$PI_USER', then re-run." >&2
@@ -57,13 +68,13 @@ fi
 echo "    sudo -n is available"
 
 echo "==> Detecting Kubernetes runtime on $PI_HOST"
-if $SSH "$PI_USER@$PI_HOST" "command -v k0s >/dev/null 2>&1"; then
+if "${SSH[@]}" "$PI_USER@$PI_HOST" "command -v k0s >/dev/null 2>&1"; then
   PI_KUBECTL_CMD="sudo k0s kubectl"
-elif $SSH "$PI_USER@$PI_HOST" "command -v k3s >/dev/null 2>&1"; then
+elif "${SSH[@]}" "$PI_USER@$PI_HOST" "command -v k3s >/dev/null 2>&1"; then
   PI_KUBECTL_CMD="sudo k3s kubectl"
-elif $SSH "$PI_USER@$PI_HOST" "command -v microk8s >/dev/null 2>&1"; then
+elif "${SSH[@]}" "$PI_USER@$PI_HOST" "command -v microk8s >/dev/null 2>&1"; then
   PI_KUBECTL_CMD="sudo microk8s kubectl"
-elif $SSH "$PI_USER@$PI_HOST" "command -v kubectl >/dev/null 2>&1"; then
+elif "${SSH[@]}" "$PI_USER@$PI_HOST" "command -v kubectl >/dev/null 2>&1"; then
   PI_KUBECTL_CMD="kubectl"
 else
   echo "ERROR: no Kubernetes CLI found on Pi (k0s/k3s/microk8s/kubectl)." >&2
@@ -72,7 +83,7 @@ fi
 echo "    using '$PI_KUBECTL_CMD'"
 
 echo "==> Validating Kubernetes CLI on $PI_HOST"
-if ! KUBE_CHECK_OUT=$($SSH "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD get nodes 2>&1 || true"); then
+if ! KUBE_CHECK_OUT=$("${SSH[@]}" "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD get nodes 2>&1 || true"); then
   :
 fi
 if printf %s "$KUBE_CHECK_OUT" | grep -Eq 'k0s: command not found|k3s: command not found|microk8s: command not found'; then
@@ -91,7 +102,7 @@ fi
 echo "==> Waiting for Kubernetes API on $PI_HOST"
 LAST_HEALTH_OUT=""
 for i in $(seq 1 "$K0S_WAIT_ATTEMPTS"); do
-  HEALTH_OUT=$($SSH "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD get nodes >/dev/null 2>&1 && echo api:ready || true" 2>&1 || true)
+  HEALTH_OUT=$("${SSH[@]}" "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD get nodes >/dev/null 2>&1 && echo api:ready || true" 2>&1 || true)
   LAST_HEALTH_OUT="$HEALTH_OUT"
   if printf %s "$HEALTH_OUT" | grep -q '^api:ready$'; then
     echo "    Kubernetes API is ready"
@@ -111,13 +122,13 @@ fi
 # 3. Apply RBAC on the Pi.
 # ---------------------------------------------------------------------------
 echo "==> Applying hq-controller RBAC on $PI_HOST"
-$SSH_STDIN "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD apply -f -" < "$ROOT/pi/manifests/hq-controller-sa.yaml"
+"${SSH_STDIN[@]}" "$PI_USER@$PI_HOST" "$PI_KUBECTL_CMD apply -f -" < "$ROOT/pi/manifests/hq-controller-sa.yaml"
 
 # ---------------------------------------------------------------------------
 # 4. Extract bearer token + CA from the Pi.
 # ---------------------------------------------------------------------------
 echo "==> Extracting hq-controller token from $PI_HOST"
-TOKEN=$($SSH "$PI_USER@$PI_HOST" "
+TOKEN=$("${SSH[@]}" "$PI_USER@$PI_HOST" "
   for i in \$(seq 1 30); do
     T=\$($PI_KUBECTL_CMD -n hq-control get secret hq-controller-token \
           -o jsonpath='{.data.token}' 2>/dev/null | base64 -d || true)
@@ -126,19 +137,40 @@ TOKEN=$($SSH "$PI_USER@$PI_HOST" "
   done
   echo 'ERROR: token not populated in time' >&2; exit 1
 ")
-CA=$($SSH "$PI_USER@$PI_HOST" \
+CA=$("${SSH[@]}" "$PI_USER@$PI_HOST" \
   "$PI_KUBECTL_CMD -n hq-control get secret hq-controller-token \
      -o jsonpath='{.data.ca\.crt}'")
 
 kubectl config use-context "$CONTEXT" >/dev/null
 
 # ---------------------------------------------------------------------------
-# 4. Patch CoreDNS so k3d pods resolve factory-pi.local -> Pi IP.
+# 4. Add a persistent CoreDNS custom zone for factory-pi.local.
 # ---------------------------------------------------------------------------
-echo "==> Patching CoreDNS: factory-pi.local -> $PI_IP"
-HOST_K3D_IP=$(kubectl get cm coredns -n kube-system -o jsonpath='{.data.Corefile}' | awk '/host\.k3d\.internal/{print $1; exit}')
-HOST_K3D_IP="${HOST_K3D_IP:-192.168.5.2}"
-kubectl patch cm coredns -n kube-system --type=json -p="[{\"op\":\"replace\",\"path\":\"/data/Corefile\",\"value\":\".:53 {\n    errors\n    health\n    ready\n    kubernetes cluster.local in-addr.arpa ip6.arpa {\n      pods insecure\n      fallthrough in-addr.arpa ip6.arpa\n    }\n    hosts /etc/coredns/NodeHosts {\n      ${HOST_K3D_IP} host.k3d.internal\n      ${PI_IP} factory-pi.local\n      ttl 60\n      reload 15s\n      fallthrough\n    }\n    prometheus :9153\n    cache 30\n    loop\n    reload\n    loadbalance\n    import /etc/coredns/custom/*.override\n    forward . /etc/resolv.conf\n}\nimport /etc/coredns/custom/*.server\n\"}]"
+echo "==> Updating CoreDNS custom zone: factory-pi.local -> $PI_IP"
+# K3s reconciles the main Corefile. Use its supported custom import instead,
+# preserving node records and other custom zones across cluster restarts.
+if ! kubectl get cm coredns-custom -n kube-system >/dev/null 2>&1; then
+  kubectl create cm coredns-custom -n kube-system
+fi
+DNS_PATCH=$(python3 - "$PI_IP" <<'PY'
+import ipaddress
+import json
+import sys
+
+ip = str(ipaddress.IPv4Address(sys.argv[1]))
+zone = f"""factory-pi.local:53 {{
+    errors
+    cache 30
+    hosts {{
+        {ip} factory-pi.local
+        ttl 30
+    }}
+}}
+"""
+print(json.dumps({"data": {"factory-pi.server": zone}}))
+PY
+)
+kubectl patch cm coredns-custom -n kube-system --type=merge -p "$DNS_PATCH"
 kubectl rollout restart deployment/coredns -n kube-system
 kubectl rollout status deployment/coredns -n kube-system --timeout=60s
 
@@ -157,7 +189,7 @@ metadata:
 type: Opaque
 stringData:
   name: factory-pi
-  server: https://${PI_IP}:6443
+  server: https://factory-pi.local:6443
   config: |
     {
       "bearerToken": "${TOKEN}",
@@ -189,8 +221,8 @@ kubectl rollout restart statefulset/prometheus-kube-prometheus-stack-prometheus 
 # 7. Re-apply additional-scrape-configs.
 # ---------------------------------------------------------------------------
 echo "==> Updating Prometheus additional-scrape-configs"
-kubectl -n monitoring create secret generic additional-scrape-configs \
-  --from-file=prometheus-additional.yaml=./hq/gitops/apps/kube-prometheus-stack/additional-scrape-configs.yaml \
+"$ROOT/hq/render-scrape-config.sh" | kubectl -n monitoring create secret generic additional-scrape-configs \
+  --from-file=prometheus-additional.yaml=/dev/stdin \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # ---------------------------------------------------------------------------
@@ -200,6 +232,9 @@ echo "==> Applying factory-pi ArgoCD Applications"
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-prometheus-crds/application.yaml
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-kepler/application.yaml
 kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-exporters/application.yaml
+kubectl annotate -n argocd applications \
+  factory-pi-prometheus-crds factory-pi-kepler factory-pi-node-exporter factory-pi-kube-state-metrics \
+  argocd.argoproj.io/refresh=hard --overwrite
 
 # ---------------------------------------------------------------------------
 # 9. Ensure KEDA exists on HQ, then deploy solar-driven fan autoscaling demo.
@@ -250,7 +285,7 @@ cat <<EOF
 
     Pi:        $PI_HOST ($PI_IP)
     CoreDNS:   factory-pi.local -> $PI_IP (inside k3d)
-    ArgoCD:    cluster 'factory-pi' + 3 Applications (+ KEDA on HQ)
+    ArgoCD:    cluster 'factory-pi' + 4 Applications (+ KEDA on HQ)
     Prometheus: scraping factory-pi/* via factory-pi.local:6443
     Demo:      fan controller autoscaled by fan_controller_enabled + LED controller autoscaled by solar_generation_watts
 

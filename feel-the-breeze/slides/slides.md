@@ -1,11 +1,12 @@
 ---
 theme: default
-colorSchema: 'light'
+colorSchema: 'dark'
 title: 'Feel the Breeze'
 info: |
   Feel the Breeze: The High-Energy, Fan-Powered Guide to Sustainable Kubernetes
-  KCD Czech-Slovak 2026 — David Pech & Petr Rais
-class: text-center
+  Kubernetes On Edge Day 2026 — David Pech & Petr Rais
+layout: default
+class: section title-slide
 highlighter: shiki
 lineNumbers: false
 drawings:
@@ -15,26 +16,26 @@ mdc: true
 addons:
   - slidev-addon-qrcode
 fonts:
+  provider: none
   sans: 'Inter'
+  serif: 'Source Serif 4'
   mono: 'JetBrains Mono'
-css: ./style.css
 ---
 
-# Feel the Breeze 🌬️
+<div class="title-block">
 
-## The High-Energy, Fan-Powered Guide to Sustainable Kubernetes
+# Feel the Breeze
 
-<div class="mt-12 text-lg opacity-90">
-  <strong>David Pech</strong> — Kubernetes, ArgoCD, AWS, OCI, Postgres fan<br/>
-  <strong>Petr Rais</strong> — Software Engineer & DevOps enthusiast
+## The High-Energy, Fan-Powered Guide<br/>to Sustainable Kubernetes
+
+<div class="mt-9 text-lg leading-relaxed">
+  <strong>David Pech</strong> &amp; <strong>Petr Rais</strong>
+</div>
+<div class="mt-4 text-sm text-[var(--kc-lavender)]">
+  Kubernetes On Edge Day 2026<br/>
+  Salt Lake City, Utah · November 9
 </div>
 
-<div class="abs-bl m-6 text-sm opacity-75">
-  KCD Czech-Slovak 2026 · Prague
-</div>
-
-<div class="abs-br m-6 text-sm opacity-75">
-  #FeelTheBreeze
 </div>
 
 
@@ -45,19 +46,19 @@ css: ./style.css
 <div class="grid grid-cols-2 gap-12 items-center h-[80%]">
 
 <div class="flex flex-col items-center gap-4">
-  <img :src="'/david-pech.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-blue-400 shadow-2xl" />
+  <img :src="'/david-pech.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#B9C6E8] shadow-2xl" />
   <div class="text-3xl font-bold tracking-tight">David Pech</div>
   <div class="flex items-center gap-8 mt-2">
-    <img :src="'/wrike-logo.svg'" class="h-12" />
+    <img :src="'/wrike-logo.svg'" class="h-12 speaker-logo" />
     <img :src="'/kubestronaut.png'" class="h-20" />
   </div>
 </div>
 
 <div class="flex flex-col items-center gap-4">
-  <img :src="'/petr-rais.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-blue-400 shadow-2xl" />
+  <img :src="'/petr-rais.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#B9C6E8] shadow-2xl" />
   <div class="text-3xl font-bold tracking-tight">Petr Rais</div>
   <div class="flex items-center gap-8 mt-2">
-    <img :src="'/sluno-logo.svg'" class="h-12" />
+    <img :src="'/sluno-logo.svg'" class="h-12 speaker-logo" />
   </div>
 </div>
 
@@ -67,34 +68,40 @@ css: ./style.css
 layout: default
 ---
 
-# How did you get here? 🚆 ✈️ 🚌
+# How did you get here?
+
+<div class="slide-kicker">One-way to Salt Lake City · illustrative routes · per person</div>
 
 <CO2Bar :rows="[
-  { icon: '✈️', label: 'Flight Bratislava → Prague', distance: '200 km',  kg: 47,   display: '30–47' },
-  { icon: '🚌', label: 'Bus Brno → Prague',          distance: '210 km',  kg: 18.7, display: '18.7' },
-  { icon: '🚆', label: 'Train Ostrava → Prague',     distance: '360 km',  kg: 12.7, display: '12.7' },
-  { icon: '🚇', label: 'Metro Hl. nádraží → Dejvická (C+A)', distance: '4.5 km', kg: 0.18, display: '0.13–0.18' },
-  { icon: '🚶', label: 'Walk Bratislava → FIT ČVUT',          distance: '330 km', kg: 0,    display: '~0' },
-  { icon: '💡', label: '1 idle pod for a year (5 W avg, CZ grid)', distance: '5 W × 8760 h', kg: 15.8, display: '15.8' }
+  { icon: '✈️', label: 'New York → SLC', distance: '~2,000 mi', kg: 258, display: '~258' },
+  { icon: '🚗', label: 'Denver → SLC · solo driver', distance: '~520 mi', kg: 154.4, display: '~154' },
+  { icon: '✈️', label: 'San Francisco → SLC', distance: '~600 mi', kg: 77.4, display: '~77' },
+  { icon: '🚈', label: 'Airport → downtown · TRAX', distance: '~10 mi', kg: 0.93, display: '~0.9' },
+  { icon: '🚶', label: 'Downtown hotel → venue', distance: '~1 mi', kg: 0, display: '0 direct' }
 ]" />
 
-<div class="mt-2 grid grid-cols-2 gap-4 text-sm">
-
-<div class="kcd-card">
-  🔥 <strong>Burns fuel</strong> (jet, diesel)<br/>
-  <code>liters × emission factor</code>
+<div class="kcd-card kcd-card-bee mt-5 text-base">
+  An illustrative <strong>5 W always-on pod</strong> uses 43.8 kWh/year.<br/>
+  At Salt Lake City's grid factor: <strong>~25 kg CO₂e/year</strong>. Now count your replicas.
 </div>
 
-<div class="kcd-card">
-  ⚡ <strong>Uses electricity</strong> (metro, train, <em>your pods</em>)<br/>
-  <code>kWh × grid intensity (CZ ≈ 0.36 kg/kWh)</code>
+<div class="kcd-source">
+  <a href="https://www.epa.gov/system/files/documents/2025-01/ghg-emission-factors-hub-2025.pdf">EPA 2025, Table 10</a>: travel bars show kg CO₂; rail uses a US average, not UTA measurements. Approximate distances; flights exclude non-CO₂ effects.<br/>
+  Pod: assumed 5 W × 8,760 h × <a href="https://cloud.google.com/sustainability/region-carbon">568 gCO₂e/kWh (Google, 2025)</a>; IT energy only.
 </div>
 
-</div>
+<!--
+Travel calculations use EPA CO2 factors only, not the full CO2e factors:
+2,000 passenger-mi × 0.129 = 258 kg; 600 × 0.129 = 77.4 kg.
+520 vehicle-mi × 0.297 = 154.44 kg, allocated to one occupant.
+10 passenger-mi × 0.093 = 0.93 kg; national transit rail average.
+Distances are rounded teaching assumptions, not itinerary estimates.
+The TRAX Green Line connects SLC airport to downtown (UTA airport travel guide).
+Walking counts direct operational emissions only.
+Pod power is a hypothetical allocation, not a measured idle-pod baseline.
+43.8 kWh × 0.568 = 24.8784 kg CO2e. No facility PUE in this comparison.
+-->
 
-<div class="mt-2 text-base">
-  💡 One always-on 5 W pod ≈ <strong>one Ostrava→Prague train trip</strong> per year. Multiply by your replica count.
-</div>
 
 ---
 layout: default
@@ -102,19 +109,23 @@ layout: default
 
 # Even hyperscalers hit the wall
 
-**Meta cancelled its 200 MW Zeewolde campus (NL)** in early 2022:
+<div class="slide-kicker">The constraint is increasingly physical · IEA update, 2026</div>
 
-- 166 ha of farmland
-- ~1.4 TWh/yr power demand
-- Dutch Senate motion against it
-- Local + parliamentary opposition
+<div class="grid grid-cols-3 gap-5 mt-7">
+  <div class="kcd-card"><div class="stat">485 <small>TWh</small></div><div>Global data-centre electricity use in 2025</div></div>
+  <div class="kcd-card kcd-card-bee"><div class="stat">950 <small>TWh</small></div><div>Projected for 2030<br/>~3% of global demand</div></div>
+  <div class="kcd-card"><div class="stat">+17<small>%</small></div><div>Data-centre electricity demand growth in 2025</div></div>
+</div>
 
-**Netherlands hyperscale moratorium** still in force (≥70 MW / ≥10 ha).
+<div class="grid grid-cols-2 gap-7 mt-7 text-base">
+  <div><strong>Grid connections, transformers, permits.</strong><br/>IEA reports tighter bottlenecks and growing local opposition.</div>
+  <div><strong>US developers are turning to onsite gas.</strong><br/>Reliable supply can require 30–70% more generation capacity than the data-centre load.</div>
+</div>
 
-**Microsoft froze ~1.5 GW** of self-built DCs globally in early 2025 (UK, AU, ND).
+<div class="kcd-card kcd-card-bee mt-6">Our platform lever: <strong>reduce wasted capacity and make suitable workloads flexible.</strong></div>
 
 <div class="kcd-source">
-  Sources: Reuters · <a href="https://nltimes.nl/2022/03/31/facebooks-aggressive-uncompromising-lobbying-killed-zeewolde-data-center">NL Times</a> · <a href="https://www.datacenterdynamics.com/en/news/dutch-government-wont-sell-zeewolde-land-to-meta-hyperscale-data-center-development-moratorium-moves-forward/">DataCenterDynamics</a> · TD Cowen.
+  <a href="https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary">IEA — Key Questions on Energy and AI (2026)</a> · 2030 values are projections, not measured consumption. CC BY 4.0.
 </div>
 
 
@@ -122,50 +133,46 @@ layout: default
 layout: default
 ---
 
-# k0s on the Edge: Kubernetes that fits in your pocket 🥧
+# Kubernetes that fits in your pocket
 
-<div class="grid grid-cols-2 gap-8 mt-4 text-base">
+<div class="slide-kicker">k0s on a Raspberry Pi 4 · ARM64 · 2 GB RAM</div>
 
+<div class="grid grid-cols-2 gap-9 mt-7 text-base">
 <div>
 
-**k0s** — single static binary, zero config
-- No etcd to manage, no separate binaries
-- Runs on **Raspberry Pi 4 · ARM64 · 2 GB RAM**
-- `curl | sh` install, systemd service
-- Same `kubectl` as anywhere else
+### Small edge, familiar tools
 
-**Rebuilt from git in minutes:**
-- Wipe the Pi → reinstall k0s → profit
-- ArgoCD re-syncs all workloads automatically
-- No manual state to recover
+- k0s runs the Kubernetes control plane + worker
+- Same Kubernetes API and `kubectl`
+- Argo CD at HQ manages the remote cluster
+- Prometheus scrapes edge telemetry
 
 </div>
-
 <div>
 
-<div class="kcd-card text-sm">
-  <strong>What fits on a Raspberry Pi 4 (2 GB)?</strong><br/>
-  &nbsp;k0s control+worker <strong>~150 MB</strong><br/>
-  &nbsp;coredns ~20 MB · node-exporter ~15 MB<br/>
-  &nbsp;kube-state-metrics ~40 MB · Kepler DS ~60 MB<br/>
-  &nbsp;⇒ <strong>~285 MB observability+control</strong><br/>
-  &nbsp;⇒ <strong>~1.7 GB free for your workloads</strong>
-</div>
+### Rebuild from declared state
 
-<div class="mt-4 text-sm opacity-80">
-  k0s distro: <code>k0sproject.io</code> — CNCF member project, production-grade.
-</div>
+- Flash Ubuntu and apply cloud-init
+- Install k0s and register the Pi at HQ
+- Argo CD syncs the declared workloads
+- Restore device credentials separately
 
 </div>
-
 </div>
+
+<div class="kcd-card kcd-card-bee mt-8">
+  Keep the edge lean: put <strong>Argo CD, Prometheus and Grafana at HQ</strong>.<br/>
+  Measure the actual memory and power budget on your hardware.
+</div>
+
+<div class="kcd-source">Demo configuration: <a href="https://github.com/depeche-io/kcd-2026/tree/main/feel-the-breeze">our feel-the-breeze project repository</a> · <code>pi/</code> + <code>hq/</code></div>
 
 
 ---
 layout: default
 ---
 
-# One HQ, N edge clusters — ArgoCD remote management 🏢
+# One HQ, N edge clusters
 
 ```
    git push ──▶ ┌──── 🏢 HQ cluster (ArgoCD) ────┐
@@ -195,9 +202,9 @@ layout: default
 <div>
 
 **HQ does the heavy lifting**
-- 1 ArgoCD ≈ 250 MB amortized across N sites
+- Central services amortized across N sites
 - HQ Prometheus scrapes edge via API-server proxy
-- HQ can **suspend off-hours** (kube-green, scale-to-zero)
+- Suspend eligible **workloads** off-hours
 - 1 site or 1000 sites: **one git repo**
 
 </div>
@@ -206,231 +213,166 @@ layout: default
 
 
 ---
-layout: two-cols
----
-
-# Project Kepler 🔌
-
-**K**ubernetes-based **E**fficient **P**ower **L**evel **E**xporter
-
-eBPF + RAPL/hwmon + ML model
-→ **per-pod, per-container, per-process watts**
-
-- 🟢 CNCF **Sandbox** (since May 2023)
-- 📦 Latest stable: **v0.11.4** (Feb 2025)
-- 🔗 `github.com/sustainable-computing-io/kepler`
-
-**2025 highlights:**
-- GPU power (NVIDIA NVML)
-- Redfish BMC fallback
-- Kubelet polling rewrite
-- Native Grafana Labs integration
-
-::right::
-
-### Where the watts go — 2025 ballpark
-
-<div class="text-sm grid grid-cols-[1fr_4rem_6rem] gap-x-3 gap-y-1 items-baseline">
-
-<div class="font-semibold opacity-70">Component</div>
-<div class="font-semibold opacity-70 text-right">Idle</div>
-<div class="font-semibold opacity-70 text-right">Load</div>
-
-<div>🧠 Server CPU (32c Xeon/EPYC)</div><div class="text-right">~40 W</div><div class="text-right font-bold">250–350 W</div>
-<div>💻 Desktop CPU (i9 / Ryzen 9)</div><div class="text-right">~15 W</div><div class="text-right font-bold">125–250 W</div>
-<div>🥧 Raspberry Pi 5 / ARM SoC</div><div class="text-right">~2 W</div><div class="text-right font-bold">8–12 W</div>
-<div>💾 32 GB DDR5 ECC (per stick)</div><div class="text-right">~3 W</div><div class="text-right">~6 W</div>
-<div>💿 Consumer NVMe SSD</div><div class="text-right">~1 W</div><div class="text-right">5–8 W</div>
-<div>💿 Enterprise NVMe (U.2)</div><div class="text-right">~5 W</div><div class="text-right">10–25 W</div>
-<div>🎮 Gaming GPU (RTX 4090)</div><div class="text-right">~15 W</div><div class="text-right font-bold">350–450 W</div>
-<div>🤖 AI GPU (NVIDIA H100 SXM)</div><div class="text-right">~80 W</div><div class="text-right font-bold">~700 W</div>
-<div>🤖 AI GPU (NVIDIA B200)</div><div class="text-right">~150 W</div><div class="text-right font-bold">~1000 W</div>
-
-</div>
-
-<div class="mt-3 kcd-card text-sm">
-  ⚡ One H100 ≈ <strong>~100 Raspberry Pi 5s</strong> flat out.
-  An 8×H100 DGX node ≈ <strong>~10.2 kW</strong> — a small server room in one chassis.
-</div>
-
-
----
 layout: default
 ---
 
-# NVIDIA H100 SXM 🤖
+# Project Kepler
 
-<div class="grid grid-cols-2 gap-8 mt-6 items-start">
+<div class="slide-kicker">Kubernetes-based Efficient Power Level Exporter · CNCF Sandbox</div>
 
-<img :src="'/nvidia-h100.jpg'" class="w-full h-64 object-cover rounded-xl shadow-lg" />
-
-<div class="flex flex-col gap-3">
-  <div class="grid grid-cols-2 gap-3">
-    <div class="kcd-card">
-      <div class="text-2xl font-bold">700 W</div>
-      <div class="text-sm opacity-80">TDP at full load</div>
-    </div>
-    <div class="kcd-card">
-      <div class="text-2xl font-bold">~80 W</div>
-      <div class="text-sm opacity-80">Idle</div>
-    </div>
-  </div>
-  <div class="text-base flex flex-col gap-1 mt-1">
-    <div>🧠 <strong>80 GB</strong> HBM3</div>
-    <div>⚡ <strong>3.35 TB/s</strong> memory bandwidth</div>
-    <div>🔢 <strong>3,958 TFLOPS</strong> FP16</div>
-    <div>📅 Released 2022 — Hopper architecture</div>
-  </div>
-  <div class="kcd-card kcd-card-warn text-sm">
-    ≈ <strong>100× Raspberry Pi 5</strong> power at load
-  </div>
-</div>
-
-</div>
-
----
-layout: default
----
-
-# NVIDIA B200 🤖
-
-<div class="grid grid-cols-2 gap-8 mt-6 items-start">
-
-<img :src="'/nvidia-b200.jpg'" class="w-full h-64 object-cover rounded-xl shadow-lg" />
-
-<div class="flex flex-col gap-3">
-  <div class="grid grid-cols-2 gap-3">
-    <div class="kcd-card">
-      <div class="text-2xl font-bold">1,000 W</div>
-      <div class="text-sm opacity-80">TDP at full load</div>
-    </div>
-    <div class="kcd-card">
-      <div class="text-2xl font-bold">~150 W</div>
-      <div class="text-sm opacity-80">Idle</div>
-    </div>
-  </div>
-  <div class="text-base flex flex-col gap-1 mt-1">
-    <div>🧠 <strong>192 GB</strong> HBM3e</div>
-    <div>⚡ <strong>8 TB/s</strong> memory bandwidth</div>
-    <div>🔢 <strong>~9 PFLOPS</strong> FP16</div>
-    <div>📅 Released 2024 — Blackwell architecture</div>
-  </div>
-  <div class="kcd-card kcd-card-danger text-sm">
-    1.4× more power than H100 · 2.3× the bandwidth
-  </div>
-</div>
-
-</div>
-
----
-layout: default
----
-
-# NVIDIA DGX H100 — 8× H100 in one box 🏭
-
-<div class="grid grid-cols-2 gap-8 mt-6 items-start">
-
-<img :src="'/nvidia-dgx-h100.png'" class="w-full h-64 object-cover rounded-xl shadow-lg" />
-
-<div class="flex flex-col gap-3">
-  <div class="kcd-card kcd-card-danger">
-    <div class="text-2xl font-bold">~10.2 kW</div>
-    <div class="text-sm opacity-80">Full system TDP</div>
-  </div>
-  <div class="text-base flex flex-col gap-1 mt-1">
-    <div>🤖 <strong>8× H100 SXM5</strong> GPUs</div>
-    <div>🧠 <strong>640 GB</strong> total HBM3</div>
-    <div>🔗 <strong>NVLink 4.0</strong> — 900 GB/s interconnect</div>
-    <div>💾 <strong>2× 1.92 TB</strong> NVMe SSD</div>
-    <div>⚡ Requires <strong>3-phase power</strong> supply</div>
-  </div>
-  <div class="kcd-card kcd-card-warn text-sm">
-    A small server room in <strong>one 6U chassis</strong>.<br/>
-    ~5× a typical rack's power budget — for a single node.
-  </div>
-</div>
-
-</div>
-
----
-layout: default
----
-
-# CNCF TAG Environmental Sustainability 🌱
-
-<div class="grid grid-cols-2 gap-10 mt-8">
-
+<div class="grid grid-cols-2 gap-8 mt-6 text-base">
 <div>
 
-### 🟢 Green Reviews
-Public, per-project sustainability audits.
-Falco · KubeVirt · OpenTelemetry · …
-**You maintain a CNCF project? Request one.**
+### Current: v0.12.0 · Sep 22, 2026
 
-### 📊 Cloud Native Sustainability Landscape
-The map of who's doing what.
+- Hardware energy → workload attribution → Prometheus
+- CPU-time attribution using **procfs + sysfs**
+- RAPL; experimental hwmon, GPU and Redfish support
+- No eBPF capability required in the current architecture
 
 </div>
-
 <div>
 
-### 🎤 Recent talks worth watching
-- [*Green AI in Cloud Native*](https://www.youtube.com/watch?v=fznzH-gf9h8) — KubeCon EU 2025
-- [*How Green is My OpenTelemetry Collector?*](https://www.youtube.com/watch?v=ea2CKLX5vEs) — KubeCon EU 2025
-- [FinOps × GreenOps](https://www.youtube.com/watch?v=ubD4hg0cps8) — Sustainability Month Tokyo (Dec 2025)
+### What changed since the old deck?
+
+- The eBPF/model-server design is **legacy (≤0.9)**
+- v0.12 adds ARM64 images, hwmon fallback and MIG attribution via DCGM
+- Per-pod watts are **attributed**, not a dedicated physical meter
 
 </div>
-
 </div>
 
-<div class="mt-8 text-lg text-center">
-  🔗 <code>tag-env-sustainability.cncf.io</code> — weekly open meetings.
-</div>
-
-
----
-layout: cover
-class: text-center
----
-
-# Demo time! 🌞🌬️
-
-
----
-layout: default
----
-
-# Carbon-aware HPA: the **solar + fan** demo 🌞🌬️💡
-
-```
-                                          ┌─────────────────────────────────┐
-☀️ solar panel                            │         HQ cluster              │
-      │ power                             │                                 │
-      ▼                                   │  ┌────────────┐   ┌──────┐    │
-┌─────────────┐──power──▶ 🔋 powerbank   │  │ Prometheus │──▶│ KEDA │    │
-│ USB tester  │                           │  └─────┬──────┘   └──┬───┘    │
-└──────┬──────┘                           │        │ scrape       │ scale  │
-       │ data cable                       └────────┼─────────────┼────────┘
-       ▼                                           │             │
-┌─────────────────────────┐                       │             ▼
-│      Raspberry Pi       │──expose metrics──────▶┘      🌬️ fan / 💡 LED
-│  Python script (pyUSB)  │◀─────────────────────────────(GPIO on Pi)
-└─────────────────────────┘
-```
-
-<div class="mt-4 text-base">
-  USB tester measures solar watts → data cable to Pi → Python script reads USB tester &amp; exposes metrics → HQ Prometheus scrapes → KEDA scales the fan / LED belt pod on the Pi.
-</div>
-
-<div class="mt-3 text-base opacity-90">
-  Silly hardware, real loop. Same control flow on a real grid:
-  <strong>KEDA + carbon-aware-keda-operator</strong> reads
-  <strong>WattTime / Electricity Maps</strong> and shifts work to greener hours.
+<div class="kcd-card kcd-card-warn mt-5 text-base">
+  <strong>This demo uses the older Helm chart 0.5.10.</strong> On our Pi, Kepler values are model estimates; the USB tester measures solar input. These are different signals.
 </div>
 
 <div class="kcd-source">
-  Refs: <a href="https://github.com/Azure/carbon-aware-keda-operator"><code>Azure/carbon-aware-keda-operator</code></a> · Kubernetes WG-Batch · <a href="https://github.com/Green-Software-Foundation/carbon-aware-sdk">GSF Carbon Aware SDK</a>
+  <a href="https://github.com/sustainable-computing-io/kepler/releases/tag/v0.12.0">Kepler v0.12.0 release</a> · <a href="https://sustainable-computing.io/">Current documentation</a> · <a href="https://sustainable-computing.io/archive/">Legacy architecture</a> · verified November 4, 2026.
 </div>
+
+<!--
+Do not silently upgrade the live demo to match this slide. Its chart and dashboard
+use the older metric schema and the Pi lacks supported hardware energy counters.
+The current architecture attributes measured active node power by CPU time;
+it does not measure every pod independently or infer total facility consumption.
+-->
+
+
+---
+layout: default
+---
+
+# Watts are a signal. Work is the denominator.
+
+<div class="grid grid-cols-3 gap-5 mt-8 text-base">
+  <div class="kcd-card"><div class="step">01 / MEASURE</div><strong>W → kWh</strong><p>Integrate power over time. State which hardware boundary your sensor covers.</p></div>
+  <div class="kcd-card"><div class="step">02 / ATTRIBUTE</div><strong>Node → workload</strong><p>Label measured inputs and estimated shares. Keep idle power visible.</p></div>
+  <div class="kcd-card kcd-card-bee"><div class="step">03 / COMPARE</div><strong>Energy per useful result</strong><p>Compare the same job, request volume and SLO before and after.</p></div>
+</div>
+
+<div class="formula mt-7">Operational emissions = kWh × grid intensity</div>
+<div class="text-base mt-4">For a fuller view: <strong>SCI = (operational + embodied emissions) / unit of work.</strong></div>
+
+<div class="kcd-source">
+  <a href="https://sci.greensoftware.foundation/">Green Software Foundation — Software Carbon Intensity specification</a> · <a href="https://sustainable-computing.io/kepler/usage/power-attribution/">Kepler power attribution</a>.<br/>
+  To reduce node baseline power, consolidate workloads and scale down infrastructure.
+</div>
+
+---
+layout: default
+---
+
+# Move the work, keep the deadline
+
+<div class="slide-kicker">A worked example · hypothetical grid signals, same completed job</div>
+
+<div class="grid grid-cols-[1fr_auto_1fr] items-center gap-7 mt-7">
+  <div class="kcd-card"><div class="step">RUN NOW</div><div class="stat">50 <small>kg CO₂e</small></div><div>100 kWh × 500 gCO₂e/kWh</div></div>
+  <div class="text-4xl text-[var(--kc-bee)]">→</div>
+  <div class="kcd-card kcd-card-ok"><div class="step">RUN IN A CLEANER WINDOW</div><div class="stat">10 <small>kg CO₂e</small></div><div>100 kWh × 100 gCO₂e/kWh</div></div>
+</div>
+
+<div class="mt-6 text-xl"><strong>80% less operational carbon</strong> in this example, with the same energy and output.</div>
+
+<div class="grid grid-cols-2 gap-5 mt-5 text-base">
+  <div><strong>Good candidates</strong><br/>Batch analytics, CI, media transcoding, non-urgent backups.</div>
+  <div><strong>Keep the constraints explicit</strong><br/>Deadline, queue age, SLO, data locality and signal freshness.</div>
+</div>
+
+<div class="kcd-source">
+  Illustrative arithmetic, not a measured saving. Account for restart, transfer and waiting overhead.<br/>
+  <a href="https://github.com/Azure/carbon-aware-keda-operator">Carbon Aware KEDA Operator</a> can cap maximum replicas using an external carbon-intensity forecast; KEDA still determines demand.
+</div>
+
+---
+layout: default
+---
+
+# CNCF Environmental Sustainability
+
+<div class="slide-kicker">The former TAG now continues as a Technical Community Group (TCG)</div>
+
+<div class="grid grid-cols-2 gap-9 mt-7 text-base">
+<div>
+
+### Join the community
+
+- Energy and carbon metrics; tooling such as Kepler
+- Share measurements, patterns and case studies
+- Cloud Native Sustainability Month
+- Slack: **#tcg-environmental-sustainability**
+
+</div>
+<div>
+
+### Green Reviews: a new home
+
+Now a subproject of **TAG Operational Resilience**.
+
+Help CNCF projects assess their resource and energy footprint through structured, repeatable reviews.
+
+</div>
+</div>
+
+<div class="kcd-card kcd-card-bee mt-7">Bring one repeatable experiment. Share the workload, hardware, method and results.</div>
+
+<div class="kcd-source">
+  <a href="https://contribute.cncf.io/community/tcgs/environmental-sustainability/">Environmental Sustainability TCG</a> · <a href="https://contribute.cncf.io/community/tags/operational-resilience/#green-reviews">Green Reviews / TAG Operational Resilience</a> · <a href="https://ocgroups.dev/cncf/group/env">Current meetings</a> · verified November 4, 2026.
+</div>
+
+
+---
+layout: center
+class: section text-center
+---
+
+# Demo time!
+
+
+---
+layout: default
+---
+
+# The solar + fan control loop
+
+<div class="slide-kicker">A physical signal makes the scaling decision visible</div>
+
+<div class="demo-flow mt-7">
+  <div class="kcd-card"><div class="step">SUNLIGHT</div><strong>Solar panel</strong><div>↓ USB power</div><strong>FNB48P tester</strong></div>
+  <div class="flow-arrow">→</div>
+  <div class="kcd-card"><div class="step">RASPBERRY PI</div><strong>Python / pyUSB</strong><div>Measured solar watts</div><code>solar_generation_watts</code></div>
+  <div class="flow-arrow">→</div>
+  <div class="kcd-card"><div class="step">HQ CLUSTER</div><strong>Prometheus → KEDA</strong><div>Scale controller pods</div><div>↓ local LAN commands</div></div>
+</div>
+
+<div class="grid grid-cols-2 gap-6 mt-6 text-base">
+  <div class="kcd-card kcd-card-bee"><strong>LED: follows solar availability</strong><br/>Controller scales 0 ↔ 1 with measured input power.</div>
+  <div class="kcd-card"><strong>Fan: runs until blackout</strong><br/>Controller stays at 1 in sun/cloud; blackout scales it to 0.</div>
+</div>
+
+<div class="mt-5 text-base">A <strong>renewable-availability demo</strong>. A production carbon-aware loop needs a grid-intensity signal and workload constraints.</div>
+
+<div class="kcd-source">Meter → Pi API → HQ Prometheus/KEDA → controller → Tuya over LAN. Solar input is measured; Kepler on this Pi is estimated.</div>
 
 
 ---
@@ -444,7 +386,7 @@ layout: default
 <div class="flex items-start gap-4">
   <div class="text-5xl">1️⃣</div>
   <div>
-    <div class="text-2xl font-bold text-[var(--kcd-blue)]">K8s at the small edge is mature.</div>
+    <div class="text-2xl font-bold text-[var(--kc-bee)]">K8s at the small edge is mature.</div>
     <div class="text-base opacity-80 mt-1">k0s + ArgoCD-from-HQ + shared Prometheus = a real fleet pattern, not a toy.</div>
   </div>
 </div>
@@ -452,16 +394,16 @@ layout: default
 <div class="flex items-start gap-4">
   <div class="text-5xl">2️⃣</div>
   <div>
-    <div class="text-2xl font-bold text-[var(--kcd-blue)]">Power is observable now.</div>
-    <div class="text-base opacity-80 mt-1">Kepler turns watts-per-pod from "trust the cloud bill" into a Prometheus metric you can alert on.</div>
+    <div class="text-2xl font-bold text-[var(--kc-bee)]">Power is observable now.</div>
+    <div class="text-base opacity-80 mt-1">Kepler attributes energy to workloads. Verify the sensor coverage and label estimates.</div>
   </div>
 </div>
 
 <div class="flex items-start gap-4">
   <div class="text-5xl">3️⃣</div>
   <div>
-    <div class="text-2xl font-bold text-[var(--kcd-blue)]">The next scaling axis is carbon.</div>
-    <div class="text-base opacity-80 mt-1">HPA on CPU is table stakes. The win is scaling on grid intensity.</div>
+    <div class="text-2xl font-bold text-[var(--kc-bee)]">The next scaling axis is carbon.</div>
+    <div class="text-base opacity-80 mt-1">Move flexible work to cleaner hours or regions, while meeting the same deadline and SLO.</div>
   </div>
 </div>
 
@@ -472,60 +414,20 @@ layout: default
 layout: default
 ---
 
-# Same VM, different region: `n4-standard-8` /year
+# Same VM, different region
 
-<div class="text-sm opacity-80 mt-1">
-  8 vCPU / 32 GB · ~80 W avg load · ~700 kWh/yr · × Google's published per-region grid intensity (2024).
+<div class="slide-kicker"><code>n4-standard-8</code> / year · 8 vCPU, 32 GB · illustrative energy model</div>
+
+<div class="grid grid-cols-[0.95fr_1.05fr] gap-6 items-center mt-5">
+  <div><img :src="'/world-regions.svg'" alt="World map with six numbered Google Cloud region locations across six continents" class="w-full h-[11rem] object-contain"/><div class="text-xs opacity-70 text-center mt-2">Six continents · approximate region locations</div></div>
+  <RegionCarbon />
 </div>
 
-<div class="mt-3 flex flex-col gap-1 text-sm">
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇫🇷 <code>europe-west9</code> (Paris)</div>
-  <div class="h-5 rounded bg-emerald-500" style="width: 12%"></div>
-  <div class="text-right font-bold">~55 kg</div>
-</div>
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇫🇮 <code>europe-north1</code> (Finland)</div>
-  <div class="h-5 rounded bg-emerald-400" style="width: 19%"></div>
-  <div class="text-right font-bold">~89 kg</div>
-</div>
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇧🇪 <code>europe-west1</code> (Belgium)</div>
-  <div class="h-5 rounded bg-yellow-400" style="width: 25%"></div>
-  <div class="text-right font-bold">~118 kg</div>
-</div>
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇳🇱 <code>europe-west4</code> (Netherlands)</div>
-  <div class="h-5 rounded bg-orange-500" style="width: 65%"></div>
-  <div class="text-right font-bold">~301 kg</div>
-</div>
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇺🇸 <code>us-central1</code> (Iowa)</div>
-  <div class="h-5 rounded bg-orange-600" style="width: 82%"></div>
-  <div class="text-right font-bold">~378 kg</div>
-</div>
-
-<div class="grid grid-cols-[13rem_1fr_5rem] items-center gap-3">
-  <div>🇮🇳 <code>asia-south1</code> (Mumbai)</div>
-  <div class="h-5 rounded bg-red-600" style="width: 100%"></div>
-  <div class="text-right font-bold">~469 kg</div>
-</div>
-
-</div>
-
-<div class="mt-3 kcd-card text-sm">
-  ⚡ <strong>~8.5× spread</strong> for the <em>same</em> machine.
-  europe-west9 ≈ Paris flight; asia-south1 ≈ <strong>10 Paris flights</strong> per VM/yr.
-  Region selection is the cheapest single carbon decision your platform team can make.
-</div>
+<div class="kcd-card kcd-card-bee mt-5 text-base"><strong>~40× spread</strong> between Paris and Johannesburg under identical energy assumptions. Check latency, capacity and data residency before moving.</div>
 
 <div class="kcd-source">
-  Sources: <a href="https://cloud.google.com/sustainability/region-carbon">cloud.google.com/sustainability/region-carbon</a> (Google grid intensity 2024) · estimated 80 W avg, PUE 1.10.
+  <strong>Assumed</strong> 80 W IT × 8,760 h × PUE 1.10 = 770.88 kWh/year. Not measured N4 power.<br/>
+  <a href="https://cloud.google.com/sustainability/region-carbon">Google region data, 2025</a>: location-based grid averages, not Google's CFE% or your billed footprint. Excludes embodied hardware, storage and network. Map: Natural Earth.
 </div>
 
 
@@ -535,102 +437,70 @@ layout: default
 
 # Try it this week
 
-**1. Install Kepler in your existing cluster**
+<div class="grid grid-cols-[1.25fr_0.75fr] gap-8 mt-6 text-base">
+<div>
+
+### 1. Start with one supported node
 
 ```bash
-helm repo add kepler \
-  https://sustainable-computing-io.github.io/kepler-helm-chart
-helm install kepler kepler/kepler -n kepler --create-namespace
+helm install kepler \
+  oci://quay.io/sustainable_computing_io/charts/kepler \
+  --namespace kepler --create-namespace
 ```
 
-**2. Open your cloud's carbon dashboard**
+Check sensor support and the emitted metric names before building a dashboard. Pin chart and image versions after validation.
 
-- ☁️ GCP — Carbon Footprint console
-- ☁️ AWS — Customer Carbon Footprint Tool
-- ☁️ Azure — Emissions Impact Dashboard
+### 2. Pick one flexible workload
 
-**3. Pick one CPU-family swap at your next FinOps review**
+Record its energy, completed work and SLO. Test one cleaner time window or an eligible lower-carbon region.
 
-> Pinterest cut media-transcoding carbon **62%** by moving x86 → AWS Graviton.
-
-<div class="kcd-source">
-  Source: <a href="https://aws.amazon.com/solutions/case-studies/pinterest-graviton-case-study/">AWS — Pinterest Graviton case study, 2024</a>.
 </div>
+<div>
+
+### 3. Compare before / after
+
+- kWh per completed job
+- Operational CO₂e per job
+- Runtime and deadline met
+- Node idle time and baseline power
+
+<div class="kcd-card kcd-card-bee mt-5">A repeatable measurement beats a hardware-spec comparison.</div>
+
+</div>
+</div>
+
+<div class="kcd-source"><a href="https://sustainable-computing.io/">Kepler quick start</a> · This is the current upstream installation path; our Pi demo keeps its existing legacy chart.</div>
 
 
 ---
-layout: cover
-class: text-center
+layout: default
 ---
 
-# Thank you 🌬️
+# Thank you
 
-<div class="mt-4 text-xl">
-  Questions? Come <em>feel the breeze</em> on stage.
-</div>
+<div class="mt-3 text-xl">Questions? Come <em>feel the breeze</em> on stage.</div>
 
-<div class="grid grid-cols-2 gap-8 items-center mt-10">
-
+<div class="grid grid-cols-[1fr_auto] gap-10 items-center mt-6">
 <div class="text-left text-lg">
-  <div class="opacity-90">
-    <strong>David Pech</strong><br/>
-    <span class="text-base font-mono opacity-80">github.com/depeche-io</span>
-  </div>
-  <div class="mt-4 opacity-90">
-    <strong>Petr Rais</strong><br/>
-    <span class="text-base font-mono opacity-80">github.com/petrrais</span>
-  </div>
+  <div><strong>David Pech</strong><br/><a href="https://github.com/depeche-io" class="text-base">github.com/depeche-io</a></div>
+  <div class="mt-4"><strong>Petr Rais</strong><br/><a href="https://github.com/petrrais" class="text-base">github.com/petrrais</a></div>
+  <div class="mt-7 text-sm text-[var(--kc-lavender)]">Kubernetes On Edge Day 2026<br/>Salt Lake City, Utah · November 9</div>
+  <div class="mt-3 text-base text-[var(--kc-bee)]">#K8sEdgeDay · #FeelTheBreeze</div>
 </div>
-
-<div class="flex flex-col items-center">
-  <QRCode
-    :width="220"
-    :height="220"
-    type="svg"
+<div class="flex flex-col items-center mr-5">
+  <QRCode :width="210" :height="210" type="svg"
     data="https://github.com/depeche-io/kcd-2026/tree/main/feel-the-breeze"
-    :margin="4"
-    :dotsOptions="{ color: '#003a99' }"
-    :backgroundOptions="{ color: '#f0f7ff' }"
-  />
-  <div class="mt-3 text-sm font-mono opacity-90">
-    github.com/depeche-io/kcd-2026
-  </div>
-  <div class="mt-1 text-xs opacity-75">Repo + slides</div>
+    :margin="6" :dotsOptions="{ color: '#113E82' }" :backgroundOptions="{ color: '#ffffff' }" />
+  <div class="mt-3 text-sm">Demo repository + slides</div>
+</div>
 </div>
 
-</div>
-
-<div class="abs-bl m-6 text-sm opacity-75">
-  KCD Czech-Slovak 2026 · #FeelTheBreeze · #KCDCzechSlovak2026
-</div>
-
-<div class="abs-br m-6 text-sm opacity-75">
-  CNCF TAG Environmental Sustainability 🌱
-</div>
-
-
----
-layout: cover
-class: text-center
----
-
-# Backup Video 🎬
-
-## If the Demo gods are not on our side
 
 ---
 layout: center
-class: text-center
+class: section text-center
 ---
 
-<div class="flex justify-center">
-  <iframe
-    src="https://www.youtube.com/embed/wLwTw6Od3mw"
-    width="340"
-    height="600"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
-    class="rounded-xl shadow-2xl"
-  />
-</div>
+# Backup Video
+
+## If the demo gods are not on our side
