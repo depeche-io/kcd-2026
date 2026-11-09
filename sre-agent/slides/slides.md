@@ -18,6 +18,14 @@ fonts:
   sans: 'Inter'
   mono: 'JetBrains Mono'
 css: ./style.css
+vite:
+  server:
+    hmr:
+      overlay: false
+    fs:
+      allow:
+        - '.'
+        - '/'
 
 ---
 

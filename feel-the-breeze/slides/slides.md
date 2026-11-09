@@ -4,7 +4,7 @@ colorSchema: 'dark'
 title: 'Feel the Breeze'
 info: |
   Feel the Breeze: The High-Energy, Fan-Powered Guide to Sustainable Kubernetes
-  Kubernetes On Edge Day 2026 — David Pech & Petr Rais
+  Kubernetes on Edge Day 2026 — David Pech & Petr Rais
 layout: default
 class: section title-slide
 highlighter: shiki
@@ -32,7 +32,7 @@ fonts:
   <strong>David Pech</strong> &amp; <strong>Petr Rais</strong>
 </div>
 <div class="mt-4 text-sm text-[var(--kc-lavender)]">
-  Kubernetes On Edge Day 2026<br/>
+  Kubernetes on Edge Day 2026<br/>
   Salt Lake City, Utah · November 9
 </div>
 
@@ -70,19 +70,19 @@ layout: default
 
 # How did you get here?
 
-<div class="slide-kicker">One-way to Salt Lake City · illustrative routes · per person</div>
+<div class="slide-kicker">One-way trips to Salt Lake City · illustrative routes · per person</div>
 
 <CO2Bar :rows="[
   { icon: '✈️', label: 'New York → SLC', distance: '~2,000 mi', kg: 258, display: '~258' },
   { icon: '🚗', label: 'Denver → SLC · solo driver', distance: '~520 mi', kg: 154.4, display: '~154' },
   { icon: '✈️', label: 'San Francisco → SLC', distance: '~600 mi', kg: 77.4, display: '~77' },
-  { icon: '🚈', label: 'Airport → downtown · TRAX', distance: '~10 mi', kg: 0.93, display: '~0.9' },
-  { icon: '🚶', label: 'Downtown hotel → venue', distance: '~1 mi', kg: 0, display: '0 direct' }
+  { icon: '🚈', label: 'Airport → downtown · TRAX', distance: '~6 mi', kg: 0.56, display: '~0.6' },
+  { icon: '🚶', label: 'Downtown hotel → venue · walking (direct)', distance: '~1 mi', kg: 0, display: '0' }
 ]" />
 
 <div class="kcd-card kcd-card-bee mt-5 text-base">
   An illustrative <strong>5 W always-on pod</strong> uses 43.8 kWh/year.<br/>
-  At Salt Lake City's grid factor: <strong>~25 kg CO₂e/year</strong>. Now count your replicas.
+  At Google's us-west3 (Salt Lake City) grid factor: <strong>~25 kg CO₂e/year</strong>. Now count your replicas.
 </div>
 
 <div class="kcd-source">
@@ -94,7 +94,7 @@ layout: default
 Travel calculations use EPA CO2 factors only, not the full CO2e factors:
 2,000 passenger-mi × 0.129 = 258 kg; 600 × 0.129 = 77.4 kg.
 520 vehicle-mi × 0.297 = 154.44 kg, allocated to one occupant.
-10 passenger-mi × 0.093 = 0.93 kg; national transit rail average.
+6 passenger-mi × 0.093 = 0.56 kg; national transit rail average.
 Distances are rounded teaching assumptions, not itinerary estimates.
 The TRAX Green Line connects SLC airport to downtown (UTA airport travel guide).
 Walking counts direct operational emissions only.
@@ -112,20 +112,95 @@ layout: default
 <div class="slide-kicker">The constraint is increasingly physical · IEA update, 2026</div>
 
 <div class="grid grid-cols-3 gap-5 mt-7">
-  <div class="kcd-card"><div class="stat">485 <small>TWh</small></div><div>Global data-centre electricity use in 2025</div></div>
+  <div class="kcd-card"><div class="stat">485 <small>TWh</small></div><div>Global data center electricity use in 2025</div></div>
   <div class="kcd-card kcd-card-bee"><div class="stat">950 <small>TWh</small></div><div>Projected for 2030<br/>~3% of global demand</div></div>
-  <div class="kcd-card"><div class="stat">+17<small>%</small></div><div>Data-centre electricity demand growth in 2025</div></div>
+  <div class="kcd-card"><div class="stat">+17<small>%</small></div><div>Data center electricity demand growth in 2025</div></div>
 </div>
 
 <div class="grid grid-cols-2 gap-7 mt-7 text-base">
   <div><strong>Grid connections, transformers, permits.</strong><br/>IEA reports tighter bottlenecks and growing local opposition.</div>
-  <div><strong>US developers are turning to onsite gas.</strong><br/>Reliable supply can require 30–70% more generation capacity than the data-centre load.</div>
+  <div><strong>75% of US voters oppose a data center near them.</strong><br/>Up from 42% a year earlier. Gallup: 71% oppose one locally, vs 53% for a local nuclear plant.</div>
 </div>
 
 <div class="kcd-card kcd-card-bee mt-6">Our platform lever: <strong>reduce wasted capacity and make suitable workloads flexible.</strong></div>
 
 <div class="kcd-source">
-  <a href="https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary">IEA — Key Questions on Energy and AI (2026)</a> · 2030 values are projections, not measured consumption. CC BY 4.0.
+  <a href="https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary">IEA — Key Questions on Energy and AI (2026)</a> · 2030 values are projections, not measured consumption. CC BY 4.0.<br/>
+  <a href="https://heatmap.news/daily/data-center-opposition-poll-collapse">Heatmap Pro / Embold, Aug 2026</a> (n=2,045 RV) · <a href="https://news.gallup.com/poll/709772/americans-oppose-data-centers-area.aspx">Gallup, Mar 2026</a>
+</div>
+
+
+---
+layout: default
+---
+
+# How much is 1 TWh?
+
+<div class="slide-kicker">1 TWh = 1 billion kWh · data centers used ~485 of them in 2025</div>
+
+<div class="grid grid-cols-3 gap-5 mt-7">
+  <div class="kcd-card"><div class="stat">~530 <small>🚀</small></div><div>Falcon 9 launches<br/>~1.9 GWh of fuel energy each</div></div>
+  <div class="kcd-card"><div class="stat stat-long">10,000,000,000 <small>h</small></div><div>Desktop PC hours at 100 W<br/>= 1.1 M PCs running 24/7 for a year</div></div>
+  <div class="kcd-card kcd-card-bee"><div class="stat stat-long">~3,500,000,000,000</div><div>AI text prompts<br/>4.2–2.9 trillion at 0.24–0.34 Wh each</div></div>
+</div>
+
+<div class="kcd-card kcd-card-bee mt-8">
+  One prompt is tiny. <strong>Trillions of prompts, 24/7, are not.</strong>
+</div>
+
+<div class="kcd-source">
+  Falcon 9: ~529 t propellant, LOX:RP-1 2.36:1 → ~157 t RP-1 × 43 MJ/kg (<a href="https://sma.nasa.gov/LaunchVehicle/assets/spacex-falcon-9-v1.2-data-sheet.pdf">NASA SMA data sheet</a>); chemical energy, not propulsive.<br/>
+  PC: 80–120 W active office use (<a href="https://eta-publications.lbl.gov/sites/default/files/computers_lbnl_report_v4.pdf">LBNL</a>). Prompts: <a href="https://arxiv.org/abs/2508.15734">Google, median Gemini text prompt 0.24 Wh (2025)</a> · <a href="https://blog.samaltman.com/the-gentle-singularity">Sam Altman (OpenAI), avg ChatGPT query 0.34 Wh (Jun 2025)</a>.
+</div>
+
+<!--
+1 TWh / 1.88 GWh per Falcon 9 = ~532 launches. Starship full stack (~5,150 t propellant, CH4 ~1,120 t × 50 MJ/kg) ≈ 15.5 GWh → ~65 launches.
+1 TWh / 100 W = 10 billion hours = 1.14 M PC-years at 24/7.
+1 TWh / 0.24 Wh = 4.2 T prompts; / 0.34 Wh = 2.9 T. Reasoning-style queries cost ~10× more.
+-->
+
+
+---
+layout: default
+---
+
+# Efficient edge fleet: one HQ, N edge clusters
+
+```
+   git push ──────────▶ ┌──── 🏢 HQ cluster (Argo CD) ───┐
+                        │  ApplicationSet → N clusters   │
+                        │  Prometheus scrapes all edges  │
+                        │  Grafana · Kepler dashboards   │
+                        └──┬─────────────────────────────┘
+                           │ Argo CD remote cluster (SA token)
+          ┌────────────────┼────────────────┐
+          ▼                ▼                ▼
+   🥧 Pi site 1     🥧 Pi site 2     🥧 Pi site N
+   k0s + workloads  k0s + workloads  k0s + workloads
+```
+
+<div class="grid grid-cols-2 gap-4 mt-2 text-sm">
+
+<div>
+
+**Argo CD remote cluster feature**
+- Register edge cluster with a ServiceAccount token
+- HQ Argo CD manages apps on the remote k0s node
+- No Argo CD agent on the edge — HQ reaches out
+- `ApplicationSet` fans out one app to N clusters
+
+</div>
+
+<div>
+
+**HQ does the heavy lifting**
+- Central services amortized across N sites
+- HQ Prometheus scrapes edge via API-server proxy
+- Suspend eligible **workloads** off-hours
+- 1 site or 1,000 sites: **one Git repo**
+
+</div>
+
 </div>
 
 
@@ -172,50 +247,6 @@ layout: default
 layout: default
 ---
 
-# One HQ, N edge clusters
-
-```
-   git push ──▶ ┌──── 🏢 HQ cluster (ArgoCD) ────┐
-                │  ApplicationSet → N clusters    │
-                │  Prometheus scrapes all edges   │
-                │  Grafana · Kepler dashboards    │
-                └──┬──────────────────────────────┘
-                   │ ArgoCD remote cluster (SA token)
-         ┌─────────┼─────────┐
-         ▼         ▼         ▼
-   🥧 Pi site 1  🥧 Pi site 2  🥧 Pi site N
-   k0s + workloads  k0s + workloads  k0s + workloads
-```
-
-<div class="grid grid-cols-2 gap-4 mt-2 text-sm">
-
-<div>
-
-**ArgoCD remote cluster feature**
-- Register edge cluster with a ServiceAccount token
-- HQ ArgoCD manages apps on the remote k0s node
-- No ArgoCD agent on the edge — HQ reaches out
-- `ApplicationSet` fans out one app to N clusters
-
-</div>
-
-<div>
-
-**HQ does the heavy lifting**
-- Central services amortized across N sites
-- HQ Prometheus scrapes edge via API-server proxy
-- Suspend eligible **workloads** off-hours
-- 1 site or 1000 sites: **one git repo**
-
-</div>
-
-</div>
-
-
----
-layout: default
----
-
 # Project Kepler
 
 <div class="slide-kicker">Kubernetes-based Efficient Power Level Exporter · CNCF Sandbox</div>
@@ -223,7 +254,7 @@ layout: default
 <div class="grid grid-cols-2 gap-8 mt-6 text-base">
 <div>
 
-### Current: v0.12.0 · Sep 22, 2026
+### Current: v0.13.0 · Nov 6, 2026
 
 - Hardware energy → workload attribution → Prometheus
 - CPU-time attribution using **procfs + sysfs**
@@ -233,10 +264,10 @@ layout: default
 </div>
 <div>
 
-### What changed since the old deck?
+### What changed since v0.9?
 
 - The eBPF/model-server design is **legacy (≤0.9)**
-- v0.12 adds ARM64 images, hwmon fallback and MIG attribution via DCGM
+- v0.12 added ARM64 images, hwmon fallback and MIG attribution via DCGM
 - Per-pod watts are **attributed**, not a dedicated physical meter
 
 </div>
@@ -247,7 +278,7 @@ layout: default
 </div>
 
 <div class="kcd-source">
-  <a href="https://github.com/sustainable-computing-io/kepler/releases/tag/v0.12.0">Kepler v0.12.0 release</a> · <a href="https://sustainable-computing.io/">Current documentation</a> · <a href="https://sustainable-computing.io/archive/">Legacy architecture</a> · verified November 4, 2026.
+  <a href="https://github.com/sustainable-computing-io/kepler/releases/tag/v0.13.0">Kepler v0.13.0 release</a> · <a href="https://sustainable-computing.io/">Current documentation</a> · <a href="https://sustainable-computing.io/archive/">Legacy architecture</a>
 </div>
 
 <!--
@@ -255,6 +286,39 @@ Do not silently upgrade the live demo to match this slide. Its chart and dashboa
 use the older metric schema and the Pi lacks supported hardware energy counters.
 The current architecture attributes measured active node power by CPU time;
 it does not measure every pod independently or infer total facility consumption.
+-->
+
+
+---
+layout: default
+---
+
+# The same kWh is not the same carbon
+
+<div class="slide-kicker">Great Britain grid · one real week · Oct 26 – Nov 1, 2026 · gCO₂/kWh, hourly</div>
+
+<div class="grid grid-cols-[2fr_1fr] gap-7 mt-2 items-start">
+<div>
+  <GridWeek />
+  <div class="text-base mt-2"><strong>~4.5× swing in one week</strong>: 52 g on a windy Tuesday, 232 g on a still Thursday morning.</div>
+</div>
+<div class="kcd-card kcd-card-ok">
+  <div class="step">PUMPED-STORAGE HYDRO</div>
+  <PumpedStorage />
+  <div class="text-sm mt-1"><strong>The grid already time-shifts.</strong> Pumped hydro stores clean, cheap hours and spends them at peaks. Flexible workloads can do the same.</div>
+</div>
+</div>
+
+<div class="kcd-source">
+  <a href="https://carbonintensity.org.uk/">NESO Carbon Intensity API</a> (actual values, hourly means of half-hour data, UTC) · CC BY 4.0. Pumped-storage diagram is schematic.
+</div>
+
+<!--
+Data: api.carbonintensity.org.uk/intensity/2026-10-26T00:00Z/2026-11-02T00:00Z. Hourly-mean min 52 / max 232 (shown). Half-hour min 51 (Tue 27 Oct 10:00Z), max 233 (Thu 29 Oct 07:00Z), week mean ~149.
+Daily means: Mon 81, Tue 80, Wed 133, Thu 209, Fri 180, Sat 189, Sun 171.
+Mix (NESO /generation): Tue 27 Oct 10:00Z wind 53%, gas 10%. Thu 29 Oct 07:00Z gas 50%, wind 9%.
+GB is used because NESO publishes free, open, real-time intensity; US ISOs show the same pattern (e.g. CAISO solar dip midday).
+Pumped storage: still most of the world's stored grid energy (GWh); batteries now rival it in GW; round-trip efficiency ~70-80%.
 -->
 
 
@@ -271,7 +335,6 @@ layout: default
 </div>
 
 <div class="formula mt-7">Operational emissions = kWh × grid intensity</div>
-<div class="text-base mt-4">For a fuller view: <strong>SCI = (operational + embodied emissions) / unit of work.</strong></div>
 
 <div class="kcd-source">
   <a href="https://sci.greensoftware.foundation/">Green Software Foundation — Software Carbon Intensity specification</a> · <a href="https://sustainable-computing.io/kepler/usage/power-attribution/">Kepler power attribution</a>.<br/>
@@ -310,7 +373,7 @@ layout: default
 
 # CNCF Environmental Sustainability
 
-<div class="slide-kicker">The former TAG now continues as a Technical Community Group (TCG)</div>
+<div class="slide-kicker">The former TAG is now a Technical Community Group (TCG)</div>
 
 <div class="grid grid-cols-2 gap-9 mt-7 text-base">
 <div>
@@ -337,7 +400,7 @@ Help CNCF projects assess their resource and energy footprint through structured
 <div class="kcd-card kcd-card-bee mt-7">Bring one repeatable experiment. Share the workload, hardware, method and results.</div>
 
 <div class="kcd-source">
-  <a href="https://contribute.cncf.io/community/tcgs/environmental-sustainability/">Environmental Sustainability TCG</a> · <a href="https://contribute.cncf.io/community/tags/operational-resilience/#green-reviews">Green Reviews / TAG Operational Resilience</a> · <a href="https://ocgroups.dev/cncf/group/env">Current meetings</a> · verified November 4, 2026.
+  <a href="https://contribute.cncf.io/community/tcgs/environmental-sustainability/">Environmental Sustainability TCG</a> · <a href="https://contribute.cncf.io/community/tags/operational-resilience/#green-reviews">Green Reviews / TAG Operational Resilience</a> · <a href="https://ocgroups.dev/cncf/group/env">Current meetings</a>
 </div>
 
 
@@ -372,7 +435,53 @@ layout: default
 
 <div class="mt-5 text-base">A <strong>renewable-availability demo</strong>. A production carbon-aware loop needs a grid-intensity signal and workload constraints.</div>
 
-<div class="kcd-source">Meter → Pi API → HQ Prometheus/KEDA → controller → Tuya over LAN. Solar input is measured; Kepler on this Pi is estimated.</div>
+<div class="kcd-source">Meter → Pi API → HQ Prometheus/KEDA → controller → Pi API → Tuya over LAN. Solar input is measured; Kepler on this Pi is estimated.</div>
+
+
+---
+layout: default
+---
+
+# How would you cut your cloud VM's CO₂?
+
+<div class="slide-kicker">Audience question · one always-on VM · which lever would you pull first?</div>
+
+<div class="grid grid-cols-3 gap-4 mt-4 text-base">
+  <div class="kcd-card"><strong>🧠 Less RAM?</strong><br/>Memory draws power even when idle.</div>
+  <div class="kcd-card"><strong>📉 Smaller machine?</strong><br/>Right-size away from idle cores.</div>
+  <div class="kcd-card"><strong>🦾 ARM instead of x86?</strong><br/>Often more work per watt.</div>
+  <div class="kcd-card"><strong>🌙 Off outside work hours?</strong><br/>A 40 h work week leaves 128 of 168 h idle.</div>
+  <div class="kcd-card"><strong>📦 Pack more pods per node?</strong><br/>Fewer nodes, less baseline power.</div>
+  <div class="kcd-card kcd-card-bee"><strong>🌍 Different region?</strong><br/>Same VM, same energy, different grid.</div>
+</div>
+
+<div class="kcd-card kcd-card-bee mt-6">All of these help. <strong>Which one can change the result by ~40×?</strong></div>
+
+<!--
+Ask the room, take 2-3 answers, then reveal on the next slide.
+Efficiency levers (RAM, size, ARM, bin-packing, scheduling) cut kWh. Region changes gCO2e per kWh, with the same kWh.
+-->
+
+
+---
+layout: default
+---
+
+# Same VM, different region
+
+<div class="slide-kicker"><code>n4-standard-8</code> · 8 vCPU, 32 GB · one year · illustrative energy model</div>
+
+<div class="grid grid-cols-[0.95fr_1.05fr] gap-6 items-center mt-5">
+  <div><img :src="'/world-regions.svg'" alt="World map with six numbered Google Cloud region locations across six continents" class="w-full h-[11rem] object-contain"/><div class="text-xs opacity-70 text-center mt-2">Six continents · approximate region locations</div></div>
+  <RegionCarbon />
+</div>
+
+<div class="kcd-card kcd-card-bee mt-5 text-base"><strong>~40× spread</strong> between Paris and Johannesburg under identical energy assumptions. Check latency, capacity and data residency before moving.</div>
+
+<div class="kcd-source">
+  <strong>Assumed</strong> 80 W IT × 8,760 h × PUE 1.10 = 770.88 kWh/year. Not measured N4 power.<br/>
+  <a href="https://cloud.google.com/sustainability/region-carbon">Google region data, 2025</a>: location-based grid averages, not Google's CFE% or your billed footprint. Excludes embodied hardware, storage and network. Map: Natural Earth.
+</div>
 
 
 ---
@@ -381,13 +490,13 @@ layout: default
 
 # Key takeaways
 
-<div class="grid grid-cols-1 gap-8 mt-12">
+<div class="grid grid-cols-1 gap-5 mt-6">
 
 <div class="flex items-start gap-4">
   <div class="text-5xl">1️⃣</div>
   <div>
-    <div class="text-2xl font-bold text-[var(--kc-bee)]">K8s at the small edge is mature.</div>
-    <div class="text-base opacity-80 mt-1">k0s + ArgoCD-from-HQ + shared Prometheus = a real fleet pattern, not a toy.</div>
+    <div class="text-2xl font-bold text-[var(--kc-bee)]">Kubernetes at the small edge is mature.</div>
+    <div class="text-base opacity-80 mt-1">k0s + Argo CD-from-HQ + shared Prometheus = a real fleet pattern, not a toy.</div>
   </div>
 </div>
 
@@ -407,27 +516,14 @@ layout: default
   </div>
 </div>
 
+<div class="flex items-start gap-4">
+  <div class="text-5xl">4️⃣</div>
+  <div>
+    <div class="text-2xl font-bold text-[var(--kc-bee)]">Mind your cloud region's carbon footprint.</div>
+    <div class="text-base opacity-80 mt-1">The same VM can emit ~40× more in one region than another. Check region data before you deploy.</div>
+  </div>
 </div>
 
-
----
-layout: default
----
-
-# Same VM, different region
-
-<div class="slide-kicker"><code>n4-standard-8</code> / year · 8 vCPU, 32 GB · illustrative energy model</div>
-
-<div class="grid grid-cols-[0.95fr_1.05fr] gap-6 items-center mt-5">
-  <div><img :src="'/world-regions.svg'" alt="World map with six numbered Google Cloud region locations across six continents" class="w-full h-[11rem] object-contain"/><div class="text-xs opacity-70 text-center mt-2">Six continents · approximate region locations</div></div>
-  <RegionCarbon />
-</div>
-
-<div class="kcd-card kcd-card-bee mt-5 text-base"><strong>~40× spread</strong> between Paris and Johannesburg under identical energy assumptions. Check latency, capacity and data residency before moving.</div>
-
-<div class="kcd-source">
-  <strong>Assumed</strong> 80 W IT × 8,760 h × PUE 1.10 = 770.88 kWh/year. Not measured N4 power.<br/>
-  <a href="https://cloud.google.com/sustainability/region-carbon">Google region data, 2025</a>: location-based grid averages, not Google's CFE% or your billed footprint. Excludes embodied hardware, storage and network. Map: Natural Earth.
 </div>
 
 
@@ -484,8 +580,8 @@ layout: default
 <div class="text-left text-lg">
   <div><strong>David Pech</strong><br/><a href="https://github.com/depeche-io" class="text-base">github.com/depeche-io</a></div>
   <div class="mt-4"><strong>Petr Rais</strong><br/><a href="https://github.com/petrrais" class="text-base">github.com/petrrais</a></div>
-  <div class="mt-7 text-sm text-[var(--kc-lavender)]">Kubernetes On Edge Day 2026<br/>Salt Lake City, Utah · November 9</div>
-  <div class="mt-3 text-base text-[var(--kc-bee)]">#K8sEdgeDay · #FeelTheBreeze</div>
+  <div class="mt-7 text-sm text-[var(--kc-lavender)]">Kubernetes on Edge Day 2026<br/>Salt Lake City, Utah · November 9</div>
+  <div class="mt-3 text-base text-[var(--kc-bee)]">#FeelTheBreeze</div>
 </div>
 <div class="flex flex-col items-center mr-5">
   <QRCode :width="210" :height="210" type="svg"
@@ -501,6 +597,6 @@ layout: center
 class: section text-center
 ---
 
-# Backup Video
+# Backup video
 
 ## If the demo gods are not on our side
