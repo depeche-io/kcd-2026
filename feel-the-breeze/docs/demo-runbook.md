@@ -19,8 +19,9 @@ For the prepared laptop, a later Wi-Fi-only reflash uses
 `sudo ./pi/flash_linux.sh /dev/mmcblk0` after editing `pi/network-config`.
 Pi bootstrap and the user timer `kcd-pi-reconnect.timer` restore the setup
 automatically. First boot needs internet/NTP, and the Tuya devices must be on
-the reachable LAN with their original pairing/keys. The new automation still
-needs its first full reflash hardware validation.
+the reachable LAN with valid pairing/keys. Recovery after reflashing has been
+verified on the physical Pi; a new clean flash of the latest fixes has not been
+repeated. Fresh exporter images can take several minutes on the Pi's SD card.
 
 ## 1. Pre-flight (5-10 min before)
 
@@ -39,8 +40,10 @@ kubectl --context k3d-hq -n monitoring get pods
 ```
 
 If `k3d-hq-agent-0` remains `NotReady` after restarting the laptop, check the
-existing container with `sudo docker logs --tail 100 k3d-hq-agent-0` and restart
-it with `sudo docker restart k3d-hq-agent-0`. Then wait for the node, Prometheus
+existing container with `sudo bash hq/diagnose_linux.sh` (private log under
+`.local/demo/`) and run `sudo bash hq/power_linux.sh start`. The helper checks the
+k3s process and retries once if a changed container IP caused network-policy
+initialization to use the old Node IP. Then wait for the node, Prometheus
 and the ArgoCD application controller to become ready. A running Docker
 container or reachable Kubernetes API alone does not confirm HQ recovery.
 

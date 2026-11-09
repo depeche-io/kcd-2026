@@ -62,6 +62,30 @@ if [ "$ACTION" = start ]; then
   else
     "${DOCKER[@]}" start k3d-hq-agent-0
   fi
+  agent_ready() {
+    "${HOST_KUBECTL[@]}" wait node/k3d-hq-agent-0 --for=condition=Ready --timeout=60s || return 1
+    # The container's wrapper can remain alive after its k3s child has died.
+    # Also allow an initial stale Ready condition to expire before checking it.
+    sleep 5
+    "${DOCKER[@]}" exec k3d-hq-agent-0 sh -c 'ps | grep -Eq "[k]3s[ -]agent"' || return 1
+  }
+  if ! agent_ready; then
+    AGENT_STARTED="$("${DOCKER[@]}" inspect --format '{{.State.StartedAt}}' k3d-hq-agent-0)"
+    # A first boot after Docker IP changes may update the Node address but exit
+    # before network-policy initialization observes it. Retry this exact case.
+    AGENT_LOG="$("${DOCKER[@]}" logs --since "$AGENT_STARTED" k3d-hq-agent-0 2>&1)"
+    if ! grep -Fq 'failed to find interface with specified node ip' <<< "$AGENT_LOG"; then
+      echo 'ERROR: HQ agent is not ready; collect hq/diagnose_linux.sh before retrying.' >&2
+      exit 1
+    fi
+    echo 'Agent observed a stale Node IP; retrying once after its address update.'
+    "${DOCKER[@]}" restart --timeout 60 k3d-hq-agent-0
+    if ! agent_ready; then
+      echo 'ERROR: HQ agent did not recover; collect hq/diagnose_linux.sh.' >&2
+      exit 1
+    fi
+  fi
+  "${HOST_KUBECTL[@]}" wait nodes --all --for=condition=Ready --timeout=30s
 else
   # Stop the worker cleanly while its Kubernetes server is still available.
   "${DOCKER[@]}" stop --timeout 60 k3d-hq-agent-0

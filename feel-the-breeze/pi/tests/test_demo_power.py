@@ -1,6 +1,7 @@
 """Safety ordering for the operator's real start/stop workflow."""
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -66,6 +67,26 @@ class StopTests(unittest.TestCase):
 
 
 class StartTests(unittest.TestCase):
+    def test_busy_pi_retries_ssh_timeout_before_accepting_ready_boot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local = root / '.local/pi'
+            local.mkdir(parents=True)
+            (local / 'pending.json').write_text(json.dumps({
+                'instance_id': 'new-instance', 'host_public_key': 'ssh-ed25519 TEST'}))
+            (local / 'known_hosts').write_text('factory-pi.local ssh-ed25519 TEST\n')
+            demo = demo_linux.Demo.__new__(demo_linux.Demo)
+            demo.run = Mock(side_effect=[subprocess.TimeoutExpired(['ssh'], 30), 'ok',
+                json.dumps({'instance_id': 'new-instance', 'boot_id': 'boot'}) + '\nboot'])
+            demo.api = Mock(return_value={'status': 'ok'})
+            with patch.object(demo_linux, 'ROOT', root), \
+                 patch.object(demo_linux, 'resolve_ip', return_value='192.0.2.18'), \
+                 patch.object(demo_linux.time, 'sleep') as sleep:
+                demo.connect(wait=True)
+            sleep.assert_called_once_with(5)
+            self.assertEqual(demo.run.call_count, 3)
+            self.assertEqual(demo.ip, '192.0.2.18')
+
     def test_manual_start_records_verified_flash_before_timer_is_enabled(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

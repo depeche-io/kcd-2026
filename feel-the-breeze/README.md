@@ -199,7 +199,17 @@ ssh -i .local/pi/id_ed25519 \
 
 The laptop stores detailed failed-command diagnostics privately in
 `.local/pi/last-error.log`. Keep the Pi and Tuya devices powered while bootstrap
-runs. The first full hardware reflash test of this automation is still pending.
+runs. Recovery after reflashing has been exercised on the physical Pi over the
+iPhone hotspot. A new clean flash of the latest fixes has not been repeated.
+On a fresh 2 GB Pi, initial image downloads/unpacking can saturate SD I/O;
+startup allows up to ten minutes for the six monitoring targets to become healthy.
+
+Bootstrap runs under `cloud-init.target`, after `cloud-final.service`. Its
+readiness directory is readable by the SSH user, and the marker must match the
+current boot ID. If bootstrap reports `Check device key or version` after Tuya
+re-pairing, retrieve the current local keys from the linked Tuya project and
+update both `/opt/kcd-tuya/devices.env` and the private `.local/tuya/` backup.
+Changing IP addresses alone does not require new keys.
 
 ### Manual setup and recovery
 

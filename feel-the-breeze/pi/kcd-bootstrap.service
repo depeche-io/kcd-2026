@@ -14,4 +14,6 @@ TimeoutStartSec=20min
 UMask=0077
 
 [Install]
-WantedBy=multi-user.target
+# cloud-final is itself ordered after multi-user.target. Pulling this service
+# into multi-user.target while also ordering it after cloud-final creates a cycle.
+WantedBy=cloud-init.target

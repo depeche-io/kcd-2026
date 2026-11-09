@@ -23,8 +23,11 @@ for d in json.load(sys.stdin):
  print(json.dumps({"name":d["Name"],"state":d["State"],
   "networks":d["NetworkSettings"].get("Networks"),
   "connection":{k:env[k] for k in ("K3S_URL","K3S_NODE_IP") if k in env}},indent=2))'
-  "${DOCKER[@]}" logs --tail 350 k3d-hq-agent-0 2>&1 || true
+  AGENT_STARTED="$("${DOCKER[@]}" inspect --format '{{.State.StartedAt}}' k3d-hq-agent-0)"
+  # Keep the first fatal error; the wrapper's retry loop can bury it in minutes.
+  "${DOCKER[@]}" logs --since "$AGENT_STARTED" k3d-hq-agent-0 2>&1 || true
   "${DOCKER[@]}" exec k3d-hq-agent-0 sh -c 'ps; ip address; cat /etc/hosts; cat /etc/resolv.conf' 2>&1 || true
+  "${DOCKER[@]}" exec k3d-hq-agent-0 cat /bin/k3d-entrypoint.sh 2>&1 || true
   "${DOCKER[@]}" logs --tail 80 k3d-hq-server-0 2>&1 || true
 } >"$LOG" 2>&1
 echo "Diagnostics saved privately: $LOG"

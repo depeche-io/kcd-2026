@@ -77,7 +77,7 @@ class Demo:
                     raise RuntimeError('Pi API is not ready')
                 print('Authenticated Pi:', self.ip, flush=True)
                 return
-            except (OSError, RuntimeError, ValueError, Retry):
+            except (OSError, RuntimeError, ValueError, Retry, subprocess.TimeoutExpired):
                 if time.monotonic() >= deadline:
                     raise
                 print('Waiting for the Pi and its API on this LAN...', flush=True)
@@ -164,7 +164,9 @@ class Demo:
         expected = {'factory-pi/' + job for job in (
             'solar-simulation', 'cadvisor', 'kube-state-metrics', 'node-exporter', 'kubelet', 'kepler')}
         url = 'http://localhost:9090/api/v1/query?query=' + quote('up{cluster="factory-pi"}', safe='')
-        deadline = time.monotonic() + 180
+        # A fresh 2 GB Pi can saturate SD I/O while unpacking exporter images.
+        deadline = time.monotonic() + 600
+        report_at = 0
         while time.monotonic() < deadline:
             data = json.loads(self.kube('-n', 'monitoring', 'exec',
                 'prometheus-kube-prometheus-stack-prometheus-0', '-c', 'prometheus', '--',
@@ -174,6 +176,9 @@ class Demo:
             if expected <= healthy:
                 print('All six Pi monitoring targets are healthy.', flush=True)
                 return
+            if time.monotonic() >= report_at:
+                print('Waiting for Pi metrics: ' + ', '.join(sorted(expected - healthy)), flush=True)
+                report_at = time.monotonic() + 30
             time.sleep(5)
         raise RuntimeError('Pi monitoring targets did not all become healthy')
 
@@ -233,6 +238,10 @@ class Demo:
         wait_for_hq(KUBE)
         self.api('/recover')
         self.kube('-n', 'default', 'annotate', *SCALERS, 'autoscaling.keda.sh/paused-replicas-')
+        self.finish_start()
+
+    def finish_start(self):
+        """Wait and publish readiness without restarting already applied workloads."""
         self.wait_monitoring()
         deadline = time.monotonic() + 150
         while time.monotonic() < deadline:
