@@ -106,7 +106,7 @@
       regex: kube-state-metrics
       action: keep
     - source_labels: [__meta_kubernetes_pod_container_port_name]
-      regex: http-metrics
+      regex: http(-metrics)?
       action: keep
     - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
       regex: (.+);(.+)
@@ -144,7 +144,7 @@
     - source_labels: [__meta_kubernetes_pod_node_name]
       target_label: instance
 
-# ── factory-pi (Raspberry Pi k0s — factory-pi.local resolved via CoreDNS patch in pi/up.sh) ──
+# ── factory-pi (Raspberry Pi k0s — persistent CoreDNS custom zone from pi/up_linux.sh) ──
 
 - job_name: 'factory-pi/kubelet'
   scheme: https
@@ -251,7 +251,7 @@
       regex: kube-state-metrics
       action: keep
     - source_labels: [__meta_kubernetes_pod_container_port_name]
-      regex: http-metrics
+      regex: http(-metrics)?
       action: keep
     - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
       regex: (.+);(.+)

@@ -1,0 +1,15 @@
+[Unit]
+Description=KCD Tuya and FNB48P API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/kcd-tuya
+EnvironmentFile=/opt/kcd-tuya/devices.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/kcd-tuya/.venv/bin/python /opt/kcd-tuya/simulation.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

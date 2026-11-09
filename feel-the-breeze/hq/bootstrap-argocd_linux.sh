@@ -11,20 +11,23 @@ ARGOCD_INSTALL_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CLUSTER="${K3D_CLUSTER:-hq}"
 CONTEXT="k3d-$CLUSTER"
-FACTORY_KUBECONFIG="./factory.kubeconfig.host"
+FACTORY_KUBECONFIG="${FACTORY_KUBECONFIG:-./factory.kubeconfig.host}"
+ENABLE_FACTORY_VM="${ENABLE_FACTORY_VM:-0}"
+export ENABLE_FACTORY_VM
 
 cd "$ROOT"
 
-if [ -f "$FACTORY_KUBECONFIG" ]; then
-  HAVE_FACTORY=1
-else
-  HAVE_FACTORY=0
-  cat <<'EOF'
-==> factory.kubeconfig.host is missing.
-    Continuing in HQ-only mode (ArgoCD + monitoring on hq only).
-    Remote factory/factory-pi Applications will be skipped.
-EOF
-fi
+case "$ENABLE_FACTORY_VM" in
+  0) HAVE_FACTORY=0; echo "==> Using HQ + Pi mode (register the Pi with ./pi/up_linux.sh)." ;;
+  1)
+    if [ ! -f "$FACTORY_KUBECONFIG" ]; then
+      echo "ERROR: $FACTORY_KUBECONFIG is missing; prepare the factory VM first." >&2
+      exit 1
+    fi
+    HAVE_FACTORY=1
+    ;;
+  *) echo "ERROR: ENABLE_FACTORY_VM must be 0 or 1." >&2; exit 1 ;;
+esac
 
 kubectl config use-context "$CONTEXT" >/dev/null
 
@@ -36,6 +39,7 @@ echo "==> Configuring ArgoCD server for insecure (HTTP) mode"
 kubectl patch deploy argocd-server -n argocd \
   -p '{"spec":{"template":{"spec":{"containers":[{"name":"argocd-server","args":["argocd-server","--insecure"]}]}}}}'
 
+if [ "$HAVE_FACTORY" -eq 1 ]; then
 echo "==> Checking host.k3d.internal DNS from inside the cluster"
 if kubectl run hq-dns-check --rm -i --restart=Never --image=busybox:1.36 --quiet -- nslookup host.k3d.internal >/dev/null 2>&1; then
   echo "    host.k3d.internal resolves correctly"
@@ -45,12 +49,14 @@ else
     If factory registration fails, recreate the k3d cluster without --no-hostip.
 EOF
 fi
+fi
 
 echo "==> Waiting for ArgoCD to be ready"
 kubectl -n argocd rollout status deploy/argocd-server --timeout=300s
 kubectl -n argocd rollout status statefulset/argocd-application-controller --timeout=300s
 
-echo "==> Registering factory cluster"
+echo "==> Ensuring factory-pi registration exists"
+if ! kubectl get secret cluster-factory-pi -n argocd >/dev/null 2>&1; then
 kubectl apply -n argocd -f - <<'EOF'
 apiVersion: v1
 kind: Secret
@@ -71,6 +77,7 @@ stringData:
       }
     }
 EOF
+fi
 
 if [ "$HAVE_FACTORY" -eq 1 ]; then
   echo "==> Registering factory cluster"
@@ -83,6 +90,7 @@ else
   TOKEN="placeholder"
 fi
 
+if [ "$HAVE_FACTORY" -eq 1 ]; then
 kubectl apply -n argocd -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -103,10 +111,12 @@ stringData:
       }
     }
 EOF
+fi
 
 echo "==> Storing factory credentials for Prometheus scrape jobs"
 kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 
+if [ "$HAVE_FACTORY" -eq 1 ] || ! kubectl get secret factory-credentials -n monitoring >/dev/null 2>&1; then
 kubectl apply -n monitoring -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -118,7 +128,9 @@ data:
   token: $(printf %s "$TOKEN" | base64 | tr -d '\n')
   ca.crt: ${CA}
 EOF
+fi
 
+if ! kubectl get secret factory-pi-credentials -n monitoring >/dev/null 2>&1; then
 kubectl apply -n monitoring -f - <<'EOF'
 apiVersion: v1
 kind: Secret
@@ -130,9 +142,10 @@ data:
   token: cGxhY2Vob2xkZXI=
   ca.crt: cGxhY2Vob2xkZXI=
 EOF
+fi
 
-kubectl -n monitoring create secret generic additional-scrape-configs \
-  --from-file=prometheus-additional.yaml=./hq/gitops/apps/kube-prometheus-stack/additional-scrape-configs.yaml \
+"$ROOT/hq/render-scrape-config.sh" | kubectl -n monitoring create secret generic additional-scrape-configs \
+  --from-file=prometheus-additional.yaml=/dev/stdin \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo "==> Preparing k3d nodes for Kepler (/usr/src)"
@@ -215,7 +228,7 @@ if [ "$HAVE_FACTORY" -eq 1 ]; then
   kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-kepler/application.yaml
   kubectl apply -n argocd -f ./hq/gitops/apps/factory-pi-exporters/application.yaml
 else
-  echo "==> Skipping remote factory/factory-pi Applications (HQ-only mode)"
+  echo "==> Skipping legacy factory VM Applications; ./pi/up_linux.sh registers the physical Pi"
 fi
 
 echo "==> Waiting for kube-prometheus-stack to sync (this can take a few minutes)"

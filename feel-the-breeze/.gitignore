@@ -1,4 +1,8 @@
 .env
+.local/tuya/
+.local/pi/
+.local/demo/
+__pycache__/
 factory.kubeconfig
 factory.kubeconfig.host
 *.token
