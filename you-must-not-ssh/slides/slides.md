@@ -4,7 +4,7 @@ colorSchema: 'dark'
 title: '"YOU MUST NOT ssh!"'
 info: |
   "YOU MUST NOT ssh!" and Other Stories from Building Our SRE Agent
-  Cloud Native Days Poland 2026 — David Pech
+  Agentic Engineering Days Zurich 2026 — David Pech
 class: text-center
 highlighter: shiki
 lineNumbers: false
@@ -38,11 +38,11 @@ vite:
 </div>
 
 <div class="abs-bl m-6 text-sm opacity-75">
-  Cloud Native Days Poland 2026 · Warsaw
+  Agentic Engineering Days Zurich 2026 · 20 Nov
 </div>
 
 <div class="abs-br m-6 text-sm opacity-75">
-  #CNDPoland2026 #CloudNativeDays #CloudNative #CNCF #Kubernetes
+  #AEDZH26 #AgenticDays #AgenticAI #SRE
 </div>
 
 ---
@@ -66,23 +66,7 @@ vite:
 
 # The Holy Grail of SRE Agents
 
-<div class="grid grid-cols-[1fr_1fr] gap-12 mt-8">
-
-<div>
-
-## What KubeCon EU was about
-
-- **Every other booth** had an "AI SRE"
-- Same demo, same Slack screenshot
-- Same promise: **no more on-call pages**
-
-## Reality Check
-
-- 🏷️ Seeing 80% of booths for the last time
-- 🧪 Just a few vendors with real production "read-write" experience
-- 🔌 **MCP-everywhere** - just wrapping original API servers oftentimes
-
-</div>
+<div class="grid grid-cols-2 gap-6 mt-4">
 
 <div>
 
@@ -95,14 +79,6 @@ vite:
 <img src="/trollface.png" class="mx-auto mt-8 h-44" />
 
 </div>
-
-</div>
-
----
-
-# Booth promise: the "$$$ profit" demo 💰
-
-<div class="grid grid-cols-2 gap-6 mt-4">
 
 <div>
 
@@ -128,20 +104,18 @@ vite:
 
 </div>
 
-<div>
-
-### What this demo silently assumes
-
-<div class="grid gap-2">
-  <div class="kcd-card">🧭 The agent already knows <strong>which</strong> GitOps repo, <strong>which</strong> overlay, <strong>which</strong> file</div>
-  <div class="kcd-card">🪪 The agent has <strong>write</strong> credentials to a prod repo</div>
-  <div class="kcd-card">🤝 The on-call person <strong>trusts</strong> a one-line Slack request</div>
-  <div class="kcd-card">🧠 +33% memory is actually the right fix (not a leak, not a noisy neighbor)</div>
-  <div class="kcd-card">🔁 No one cycles the agent into a feedback loop with itself</div>
 </div>
 
-</div>
+---
 
+# &#36;&#36;&#36; Profit demo - assumptions
+
+<div class="grid gap-4 mt-8 text-xl">
+  <div class="kcd-card py-4 px-6">🧭 The agent already knows <strong>which</strong> GitOps repo, <strong>which</strong> overlay, <strong>which</strong> file</div>
+  <div class="kcd-card py-4 px-6">🪪 The agent has <strong>write</strong> credentials to a prod repo</div>
+  <div class="kcd-card py-4 px-6">🤝 The on-call person <strong>trusts</strong> a one-line Slack request</div>
+  <div class="kcd-card py-4 px-6">🧠 +33% memory is actually the right fix (not a leak, not a noisy neighbor)</div>
+  <div class="kcd-card py-4 px-6">🔁 No one cycles the agent into a feedback loop with itself</div>
 </div>
 
 ---
@@ -235,24 +209,14 @@ Intended direction:
 
 # What Can You Get Without Context: Guesswork
 
-<div class="grid grid-cols-[3fr_2fr] gap-6 mt-2 items-center">
-
-<div class="grid grid-cols-2 gap-3 items-center">
-  <img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow block max-w-full object-contain max-h-96" />
-  <img src="/pagerduty-sre-agent.png" alt="pagerduty-sre-agent.png" class="rounded shadow block max-w-full object-contain max-h-96" />
+<div class="grid grid-cols-2 gap-4 mt-2 items-center justify-items-center">
+  <img src="/pagerduty-event.png" alt="pagerduty-event.png" class="rounded shadow block max-w-full object-contain" style="max-height:340px;" />
+  <img src="/pagerduty-sre-agent.png" alt="pagerduty-sre-agent.png" class="rounded shadow block max-w-full object-contain" style="max-height:340px;" />
 </div>
 
-<div>
-
-Summary: Not bad given how little context it has.
-
-Useful: absolutely not.
-
-> @PagerDuty booth discussion on KubeCon NA 2025: "Can we add more context?" "No."
-> (but it might have changed since...)
-
-</div>
-
+<div class="mt-4 text-lg flex justify-center gap-10">
+  <span><strong>Summary:</strong> <em>not bad given how little context it has.</em></span>
+  <span><strong>Useful:</strong> <em style="color:var(--kcd-danger)">absolutely not.</em></span>
 </div>
 
 ---
@@ -399,21 +363,9 @@ Hard to decide, even having both and experimenting between them.
 
 # Problem: Output Gets Polluted
 
-Thinking: off
-
-"Extended thinking"
-
-<div class="grid grid-cols-2 gap-6 mt-3 items-center">
-
-<div class="flex flex-col gap-2">
-  <img src="/slack-broken.png" alt="slack-broken.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-32" />
-  <img src="/slack-broken2.png" alt="slack-broken2.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-48" />
-</div>
-
-<div>
-  <img src="/force-output.png" alt="force-output.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-72" />
-</div>
-
+<div class="flex flex-col gap-3 mt-2 items-center">
+  <img src="/slack-broken.png" alt="slack-broken.png" class="rounded shadow block max-w-full object-contain" style="max-height:200px;" />
+  <img src="/force-output.png" alt="force-output.png" class="rounded shadow block max-w-full object-contain" style="max-height:215px;" />
 </div>
 
 ---
@@ -443,7 +395,7 @@ Also - we can't easily switch fast. vs in-depth answers.
 <div class="mt-3 text-sm">
 <table>
   <thead><tr><th>POC</th><th>V1</th><th>V2</th></tr></thead>
-  <tbody><tr><td>Opus</td><td>Sonnet 4.6 <span class="opacity-70">(last with fixed thinking budgets)</span></td><td>?</td></tr></tbody>
+  <tbody><tr><td>Opus</td><td>Sonnet 4.6 <span class="opacity-70">(last with fixed thinking budgets)</span></td><td>Adaptive thinking model</td></tr></tbody>
 </table>
 </div>
 
@@ -464,7 +416,7 @@ Also - we can't easily switch fast. vs in-depth answers.
 </div>
 
 <div>
-  <img src="/mcp-netbox.png" alt="mcp-netbox.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
+  <img src="/mcp-netbox-blurred.png" alt="mcp-netbox-blurred.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
 </div>
 
 </div>
@@ -629,21 +581,20 @@ Not great...
 
 # Big Win: Metrics MCP
 
+<div class="mt-2">
+  <img src="/metrics.png" alt="metrics.png" class="rounded shadow mx-auto block max-w-full object-contain" style="max-height:320px;" />
+</div>
+
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
+
+<div class="kcd-card kcd-card-ok">Very surprising for us that Claude can really understand the time series.</div>
 
 <div>
 
-<div class="kcd-card kcd-card-ok mb-4">Very surprising for us that Claude can really understand the time series.</div>
-
-Not there yet:
-Predict `when disk will be full`
+Not there yet: predict `when disk will be full`
 
 (Logs and Traces coming...)
 
-</div>
-
-<div>
-  <img src="/metrics.png" alt="metrics.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-96" />
 </div>
 
 </div>
@@ -735,11 +686,11 @@ Predict `when disk will be full`
 <div class="grid grid-cols-2 gap-6 mt-4 items-center">
 
 <div>
-  <img src="/usage-1.png" alt="usage-1.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
+  <img src="/usage-1-blurred.png" alt="usage-1-blurred.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
 </div>
 
 <div>
-  <img src="/usage-2.png" alt="usage-2.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
+  <img src="/usage-2-blurred.png" alt="usage-2-blurred.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-80" />
 </div>
 
 </div>
@@ -784,7 +735,7 @@ YOU MUST NOT ssh!
 
 # Prepare a Patch
 
-<div class="grid grid-cols-2 gap-6 mt-4 items-center">
+<div class="grid grid-cols-2 gap-6 mt-4 items-start">
 
 <div>
 
@@ -795,12 +746,12 @@ YOU MUST NOT ssh!
 </div>
 
 <div>
-  <img src="/patch.png" alt="patch.png" class="rounded shadow mx-auto block max-w-full object-contain max-h-64" />
+  <img src="/patch.png" alt="patch.png" class="rounded shadow mx-auto block max-w-full object-contain" style="max-height:420px;" />
 </div>
 
 </div>
 
-<div class="mt-4 text-sm">
+<div class="abs-bl ml-14 mb-8 text-sm" style="width:52%;">
 <table>
   <thead><tr><th>POC</th><th>V1</th><th>V2</th></tr></thead>
   <tbody><tr><td>Suggest a patch</td><td>git-pull and suggest patch (git clone other repos)</td><td>read-write permissions to create MR</td></tr></tbody>
@@ -885,12 +836,7 @@ class: text-center
   Questions? Stories from your own SRE-agent build? Find me in the hallway.
 </div>
 
-<div class="grid grid-cols-2 gap-8 items-start mt-8">
-
-<div class="flex flex-col items-center">
-  <img src="/feedback-qr.png" class="rounded" style="height:240px;" />
-  <div class="mt-3 text-lg font-bold">Rate this talk ⭐</div>
-</div>
+<div class="flex flex-col items-center mt-8">
 
 <div class="flex flex-col items-center">
   <QRCode
@@ -908,5 +854,5 @@ class: text-center
 </div>
 
 <div class="abs-bl m-6 text-sm opacity-75">
-  Cloud Native Days Poland 2026 · #CNDPoland2026 #CloudNativeDays #CloudNative #CNCF #Kubernetes
+  Agentic Engineering Days Zurich 2026 · #AEDZH26 #AgenticDays #AgenticAI #SRE
 </div>
