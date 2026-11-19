@@ -836,7 +836,7 @@ class: text-center
   Questions? Stories from your own SRE-agent build? Find me in the hallway.
 </div>
 
-<div class="flex flex-col items-center mt-8">
+<div class="flex flex-row justify-center gap-16 mt-8">
 
 <div class="flex flex-col items-center">
   <QRCode
@@ -849,6 +849,19 @@ class: text-center
     :backgroundOptions="{ color: '#003a99' }"
   />
   <div class="mt-3 text-lg font-bold">Slides + notes</div>
+</div>
+
+<div class="flex flex-col items-center">
+  <QRCode
+    :width="220"
+    :height="220"
+    type="svg"
+    data="https://www.agenticdays.com/qna/1250380"
+    :margin="4"
+    :dotsOptions="{ color: '#ffffff' }"
+    :backgroundOptions="{ color: '#003a99' }"
+  />
+  <div class="mt-3 text-lg font-bold">Q&amp;A</div>
 </div>
 
 </div>
