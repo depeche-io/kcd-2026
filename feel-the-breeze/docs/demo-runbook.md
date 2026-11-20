@@ -47,6 +47,17 @@ initialization to use the old Node IP. Then wait for the node, Prometheus
 and the ArgoCD application controller to become ready. A running Docker
 container or reachable Kubernetes API alone does not confirm HQ recovery.
 
+If KEDA or ArgoCD pods show `ImagePullBackOff` with `lookup ghcr.io: Try again`,
+refresh the HQ nodes' upstream DNS from the current Wi-Fi:
+
+```bash
+sudo bash hq/refresh_dns_linux.sh
+python3 demo_linux.py start
+```
+
+The helper backs up the old resolvers and preserves running containers and data.
+Normal startup performs the same refresh automatically.
+
 Check Pi API health:
 
 ```bash

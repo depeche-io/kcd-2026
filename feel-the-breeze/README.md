@@ -111,7 +111,8 @@ python3 demo_linux.py start
 
 If necessary, enter the sudo password in the terminal for Docker (a launch
 without a terminal uses a system authentication dialog). The command starts
-the existing HQ server before its worker, authenticates the Pi, discovers Tuya
+the existing HQ server before its worker, refreshes both HQ nodes' upstream DNS
+from the laptop's current network, authenticates the Pi, discovers Tuya
 LAN addresses using keys already on the Pi, refreshes HQ DNS/credentials,
 unpauses KEDA, checks all six Pi metric targets and enables the local UI/timer.
 Grafana is at <http://localhost:3000>, ArgoCD at <http://localhost:8080>.
@@ -132,6 +133,13 @@ has captured output. Fix the reported network/device/runtime problem and rerun
 `start`. A stopped demo intentionally retains KEDA's
 [pause annotation](https://keda.sh/docs/2.21/concepts/scaling-deployments/#pausing-autoscaling);
 `start` removes it after Pi registration is restored.
+
+If HQ started before Wi-Fi was available, image pulls may fail with
+`ImagePullBackOff` and `lookup ghcr.io: Try again` despite working Pi metrics.
+Run `sudo bash hq/refresh_dns_linux.sh` to repair the two existing nodes' DNS
+without restarting them, then rerun `python3 demo_linux.py start`. Normal startup
+now performs this refresh too and checks the actual KEDA and ArgoCD workloads;
+an old `Ready` condition on a ScaledObject does not prove its operator is running.
 
 ### Automatic reflash on the prepared laptop
 

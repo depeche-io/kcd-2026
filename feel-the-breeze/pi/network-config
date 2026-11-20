@@ -8,5 +8,5 @@ wifis:
     dhcp4: true
     optional: true
     access-points:
-      "iPhone":
+      "petrrais_redmi":
         password: "petr1997"

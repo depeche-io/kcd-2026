@@ -116,9 +116,30 @@ class TuyaRefreshTests(unittest.TestCase):
 
     def test_missing_device_does_not_change_configuration(self):
         before = credentials()
-        with self.assertRaisesRegex(ValueError, 'device not found'):
-            refresh_tuya.refresh(before, {}, FakeDevice)
+        class UnreachableDevice(FakeDevice):
+            def status(self):
+                return {'Error': 'Network Error', 'Err': '901'}
+        with self.assertRaisesRegex(ValueError, 'cannot read switch DP'):
+            refresh_tuya.refresh(before, {}, UnreachableDevice)
         self.assertEqual(before, credentials())
+
+    def test_missing_broadcast_uses_stored_address_only_after_authentication(self):
+        before = credentials()
+        attempted = []
+        class QuietDevice(FakeDevice):
+            def __init__(self, device_id, ip, key, version):
+                attempted.append((device_id, ip, key, version))
+                super().__init__(device_id, ip, key, version)
+        result = refresh_tuya.refresh(before, {}, QuietDevice)
+        self.assertEqual(result, before)
+        self.assertEqual([item[:2] for item in attempted],
+                         [('fan-id', before['TUYA_FAN_IP']), ('led-id', before['TUYA_LED_IP'])])
+
+    def test_missing_broadcast_without_stored_address_is_rejected(self):
+        before = credentials()
+        del before['TUYA_FAN_IP']
+        with self.assertRaisesRegex(ValueError, 'no stored IP'):
+            refresh_tuya.refresh(before, {}, FakeDevice)
 
     def test_invalid_local_key_or_dp_is_rejected(self):
         values = credentials()
@@ -211,7 +232,13 @@ class ReconnectTests(unittest.TestCase):
         self.arm()
         for unavailable, after_refresh in (
             ('nodes', False), ('statefulset/argocd-application-controller', False),
+            ('deployment/argocd-server', False),
+            ('deployment/argocd-repo-server', False),
+            ('deployment/keda-operator', False),
+            ('deployment/keda-operator-metrics-apiserver', False),
+            ('deployment/keda-admission-webhooks', False),
             ('statefulset/prometheus-kube-prometheus-stack-prometheus', False),
+            ('deployment/keda-operator', True),
             ('statefulset/prometheus-kube-prometheus-stack-prometheus', True),
             ('scaledobject/led-autoscaler', True),
         ):
@@ -237,6 +264,17 @@ class ReconnectTests(unittest.TestCase):
                                      for call in command.call_args_list))
                 if not after_refresh:
                     ui.assert_not_called()
+
+    @patch('auto_reconnect.command')
+    def test_stale_scaler_status_cannot_hide_an_unavailable_operator(self, command):
+        def run(args, **kwargs):
+            if 'deployment/keda-operator' in args:
+                raise auto_reconnect.Retry('kubectl failed', 'ImagePullBackOff: DNS lookup failed')
+            return 'ready'
+        command.side_effect = run
+        with self.assertRaisesRegex(auto_reconnect.Retry, 'keda/deployment/keda-operator') as caught:
+            auto_reconnect.wait_for_hq(['kubectl'])
+        self.assertIn('ImagePullBackOff', caught.exception.diagnostics)
 
 
 if __name__ == '__main__':

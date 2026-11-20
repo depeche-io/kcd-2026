@@ -1,22 +1,20 @@
-# Feel the Breeze — Kubernetes On Edge Day 2026
+# Feel the Breeze — Techmeetup Ostrava 2026
 
 Editable Slidev source: `slides.md`. Deliverable: `feel-the-breeze.pdf`.
-The deck has **17 slides: 16 main slides and 1 backup-video slide**.
-The presentation is in English for Kubernetes On Edge Day in Salt Lake City,
-November 9, 2026. The event hashtag is **#K8sEdgeDay**; see the
-[official event page](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/kubernetes-on-edge-day/).
+The deck has **20 slides: 19 main slides and 1 backup-video slide**.
+The presentation is in English for **Techmeetup Ostrava 2026**, November 20, 2026,
+at Nová Aula VŠB-TUO in Ostrava-Poruba; see the [official conference page](https://techmeetup.cz/conference/).
+This edition changes the visual identity and slide 3 (travel to Ostrava); the
+technical content and the worldwide cloud-region comparison retain their current order.
 
 ## Speaker scripts
 
 - [English speaker script](speaker-notes.en.md)
 - [Česká řeč k prezentaci](speaker-notes.cs.md)
 
-Both scripts follow the current 17-slide order. They include a spoken narrative
-and transitions, with separate introductions for David and Petr. Slides 11 and 12
-have no prepared narration; slide 17 has an optional backup-video introduction.
-Allow approximately 13–16 minutes for the main script in either language, plus
-the live demo, audience interaction and questions. These are separate rehearsal
-documents; they do not add slides to the PDF.
+Both scripts follow the current slide titles. Their event introduction and slide 3
+have been adapted to Ostrava. The live demo retains its own narration.
+They are separate rehearsal documents and do not add slides to the PDF.
 
 ## Build and export
 
@@ -37,41 +35,48 @@ PDF export requires Playwright Chromium. If it is missing:
 npx playwright install chromium
 ```
 
-`style.css`, `slide-bottom.vue`, and `public/theme/content-bg.jpg` adapt the supplied
-`kubecon-2026-autoscaling-challenge-main/slides` style for Kubernetes On Edge Day.
-Section slides use `public/theme/edge-day-logo.svg`, downloaded from the
-[official event logo](https://events.linuxfoundation.org/wp-content/uploads/2024/05/K8ED_North-America_400x275-Logo-Color.svg)
-and displayed on a white badge. The previous main-conference logo background is no longer used.
-Fonts are bundled in
-`public/fonts/`, with their SIL Open Font Licenses; slides do not fetch web fonts.
-The QR codes retain the real demo repository URL. Video playback needs internet;
-prepare a local recording separately for a fully offline talk.
+`style.css` uses the official TechMeetup website's palette: lagoon `#01a182`,
+neon `#03ffce`, atlantic `#162635`, and dark `#070D14`. The local
+`public/theme/techmeetup-logo.png` is the [official website logo](https://techmeetup.cz/_astro/brand_logo.Cz1bTTO7.png).
+Barlow Semi Condensed is bundled locally for headings, alongside Inter and
+JetBrains Mono, with font licenses in `public/fonts/`. No web fonts are fetched
+when presenting. The previous conference background and Edge Day logo are not used.
+The QR code retains the real demo repository URL. Prepare a local backup recording
+separately for fully offline playback.
 
 ## Data and assumptions
 
-Checked **November 4, 2026**. Source links also appear on the relevant slides.
+Travel and event identity checked **November 20, 2026**. The technical-source notes below retain their previous verification date of November 4, 2026. Source links also appear on the relevant slides.
 
-### Travel to Salt Lake City
+### Travel to Ostrava
 
-[US EPA GHG Emission Factors Hub, January 2025, Table 10](https://www.epa.gov/system/files/documents/2025-01/ghg-emission-factors-hub-2025.pdf)
-was the latest EPA edition listed on the [Hub](https://www.epa.gov/climateleadership/ghg-emission-factors-hub)
-when checked. Travel bars use **CO₂**, not the full CO₂e factors or aviation's
-non-CO₂ effects. Distances are rounded illustrative assumptions, one-way:
+The slide uses rounded, **illustrative one-way distances**, not live route planning.
+For a transparent comparison it applies the CO₂ component of the
+[UK DESNZ 2026 conversion factors, full set](https://assets.publishing.service.gov.uk/media/6a29392bade52dc0882218a8/ghg-conversion-factors-2026-full-set.xlsx),
+worksheet **Business travel- land**, to these routes. These are **UK reference
+factors, not measured Czech Railways, coach-operator or DPO emissions**. They
+exclude upstream fuel supply and vehicle manufacture. No claim of a complete
+lifecycle footprint is made.
 
-| Example | Assumed distance | CO₂ factor | Result |
+| Example | Assumed distance | CO₂ factor | Modelled kg CO₂/person |
 | --- | ---: | ---: | ---: |
-| New York → SLC flight | 2,000 passenger-mi | 0.129 kg/passenger-mi | 258 kg |
-| Denver → SLC, solo driver | 520 vehicle-mi | 0.297 kg/vehicle-mi | 154.44 kg |
-| San Francisco → SLC flight | 600 passenger-mi | 0.129 kg/passenger-mi | 77.4 kg |
-| Airport → downtown, transit rail | 10 passenger-mi | 0.093 kg/passenger-mi | 0.93 kg |
+| Praha → Ostrava, solo petrol-car driver | 370 vehicle-km | 0.16084 kg/vehicle-km (I53) | 59.5 |
+| Praha → Ostrava, train | 350 passenger-km | 0.03056 kg/passenger-km (E87) | 10.7 |
+| Brno → Ostrava, coach | 170 passenger-km | 0.03899 kg/passenger-km (E82) | 6.6 |
+| Svinov → VŠB-TUO, tram | 6 passenger-km | 0.02093 kg/passenger-km (E89) | 0.13 |
+| Poruba → venue, walking | 1 km | zero direct operational emissions | 0 |
 
-The rail factor is a US average, **not measured UTA/TRAX emissions**.
-[UTA confirms the airport's TRAX Green Line connection](https://wp.rideuta.com/Rider-Tools/Plan-Your-Trip-With-UTA/Airport-Travel).
-Walking is zero direct operational emissions only.
+The car is allocated to one occupant. Public-transport factors already use a
+per-passenger basis; do not divide them by occupancy again.
 
-The pod comparison is hypothetical: `0.005 kW × 8,760 h = 43.8 kWh`;
-`43.8 × 0.568 = 24.8784 kg CO₂e/year`. It excludes facility overhead.
-Five watts is an assumed workload allocation, not a measured idle-pod baseline.
+The hypothetical 5 W workload uses `0.005 kW × 8,760 h = 43.8 kWh/year`.
+[MPO's Czech electricity report, 2025 data, Table 1](https://mpo.gov.cz/assets/cz/energetika/statistika/elektrina-a-teplo/2026/4/Metodika-emisni-faktor-CO2_elektrina_2025.pdf)
+gives a gross-generation CO₂ factor of `0.33 t/MWh = 0.33 kg/kWh`:
+`43.8 × 0.33 = 14.454 kg CO₂/year`, displayed as **~14.5 kg**.
+This is a national production proxy, excludes electricity imports/exports, and
+is not a measured Ostrava consumption factor. The example covers IT energy only,
+with no facility PUE, additional grid losses or embodied hardware emissions.
+Five watts remains an assumed workload allocation, not a measured idle-pod baseline.
 
 ### Hyperscaler constraints
 

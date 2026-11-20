@@ -4,7 +4,7 @@ colorSchema: 'dark'
 title: 'Feel the Breeze'
 info: |
   Feel the Breeze: The High-Energy, Fan-Powered Guide to Sustainable Kubernetes
-  Kubernetes on Edge Day 2026 — David Pech & Petr Rais
+  Techmeetup Ostrava 2026 — David Pech & Petr Rais
 layout: default
 class: section title-slide
 highlighter: shiki
@@ -18,7 +18,7 @@ addons:
 fonts:
   provider: none
   sans: 'Inter'
-  serif: 'Source Serif 4'
+  serif: 'Barlow Semi Condensed'
   mono: 'JetBrains Mono'
 ---
 
@@ -32,8 +32,8 @@ fonts:
   <strong>David Pech</strong> &amp; <strong>Petr Rais</strong>
 </div>
 <div class="mt-4 text-sm text-[var(--kc-lavender)]">
-  Kubernetes on Edge Day 2026<br/>
-  Salt Lake City, Utah · November 9
+  Techmeetup Ostrava 2026<br/>
+  Ostrava · November 20, 2026
 </div>
 
 </div>
@@ -46,7 +46,7 @@ fonts:
 <div class="grid grid-cols-2 gap-12 items-center h-[80%]">
 
 <div class="flex flex-col items-center gap-4">
-  <img :src="'/david-pech.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#B9C6E8] shadow-2xl" />
+  <img :src="'/david-pech.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#01a182] shadow-2xl" />
   <div class="text-3xl font-bold tracking-tight">David Pech</div>
   <div class="flex items-center gap-8 mt-2">
     <img :src="'/wrike-logo.svg'" class="h-12 speaker-logo" />
@@ -55,7 +55,7 @@ fonts:
 </div>
 
 <div class="flex flex-col items-center gap-4">
-  <img :src="'/petr-rais.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#B9C6E8] shadow-2xl" />
+  <img :src="'/petr-rais.jpg'" class="rounded-full w-40 h-40 object-cover ring-4 ring-[#01a182] shadow-2xl" />
   <div class="text-3xl font-bold tracking-tight">Petr Rais</div>
   <div class="flex items-center gap-8 mt-2">
     <img :src="'/sluno-logo.svg'" class="h-12 speaker-logo" />
@@ -70,36 +70,40 @@ layout: default
 
 # How did you get here?
 
-<div class="slide-kicker">One-way trips to Salt Lake City · illustrative routes · per person</div>
+<div class="slide-kicker">One-way trips to Ostrava · illustrative routes · per person</div>
 
 <CO2Bar :rows="[
-  { icon: '✈️', label: 'New York → SLC', distance: '~2,000 mi', kg: 258, display: '~258' },
-  { icon: '🚗', label: 'Denver → SLC · solo driver', distance: '~520 mi', kg: 154.4, display: '~154' },
-  { icon: '✈️', label: 'San Francisco → SLC', distance: '~600 mi', kg: 77.4, display: '~77' },
-  { icon: '🚈', label: 'Airport → downtown · TRAX', distance: '~6 mi', kg: 0.56, display: '~0.6' },
-  { icon: '🚶', label: 'Downtown hotel → venue · walking (direct)', distance: '~1 mi', kg: 0, display: '0' }
+  { icon: '🚗', label: 'Praha → Ostrava · solo driver', distance: '~370 km', kg: 59.5108, display: '~59.5' },
+  { icon: '🚆', label: 'Praha → Ostrava · train', distance: '~350 km', kg: 10.696, display: '~10.7' },
+  { icon: '🚌', label: 'Brno → Ostrava · coach', distance: '~170 km', kg: 6.6283, display: '~6.6' },
+  { icon: '🚈', label: 'Svinov → VŠB-TUO · tram', distance: '~6 km', kg: 0.12558, display: '~0.13' },
+  { icon: '🚶', label: 'Poruba → venue · walking (direct)', distance: '~1 km', kg: 0, display: '0' }
 ]" />
 
 <div class="kcd-card kcd-card-bee mt-5 text-base">
   An illustrative <strong>5 W always-on pod</strong> uses 43.8 kWh/year.<br/>
-  At Google's us-west3 (Salt Lake City) grid factor: <strong>~25 kg CO₂e/year</strong>. Now count your replicas.
+  At the Czech electricity generation factor: <strong>~14.5 kg CO₂/year</strong>. Now count your replicas.
 </div>
 
 <div class="kcd-source">
-  <a href="https://www.epa.gov/system/files/documents/2025-01/ghg-emission-factors-hub-2025.pdf">EPA 2025, Table 10</a>: travel bars show kg CO₂; rail uses a US average, not UTA measurements. Approximate distances; flights exclude non-CO₂ effects.<br/>
-  Pod: assumed 5 W × 8,760 h × <a href="https://cloud.google.com/sustainability/region-carbon">568 gCO₂e/kWh (Google, 2025)</a>; IT energy only.
+  <a href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026">DESNZ 2026</a>: UK reference factors, CO₂ component only; not measured ČD/DPO emissions. Rounded distances; fuel supply and vehicle manufacture excluded.<br/>
+  Pod: assumed 5 W × 8,760 h × <a href="https://mpo.gov.cz/assets/cz/energetika/statistika/elektrina-a-teplo/2026/4/Metodika-emisni-faktor-CO2_elektrina_2025.pdf">0.33 kg CO₂/kWh (MPO, Czech generation 2025)</a>; national proxy, IT energy only.
 </div>
 
 <!--
-Travel calculations use EPA CO2 factors only, not the full CO2e factors:
-2,000 passenger-mi × 0.129 = 258 kg; 600 × 0.129 = 77.4 kg.
-520 vehicle-mi × 0.297 = 154.44 kg, allocated to one occupant.
-6 passenger-mi × 0.093 = 0.56 kg; national transit rail average.
-Distances are rounded teaching assumptions, not itinerary estimates.
-The TRAX Green Line connects SLC airport to downtown (UTA airport travel guide).
-Walking counts direct operational emissions only.
-Pod power is a hypothetical allocation, not a measured idle-pod baseline.
-43.8 kWh × 0.568 = 24.8784 kg CO2e. No facility PUE in this comparison.
+Illustrative distances to Ostrava; use the same CO2-only convention as the chart.
+DESNZ 2026 full set, Business travel- land: average petrol car I53 = 0.16084
+kg CO2/vehicle-km; national rail E87 = 0.03056 kg CO2/passenger-km;
+coach E82 = 0.03899; light rail and tram E89 = 0.02093 kg CO2/passenger-km.
+370 × 0.16084 = 59.5108 kg, allocated to one car occupant.
+350 × 0.03056 = 10.696 kg; 170 × 0.03899 = 6.6283 kg;
+6 × 0.02093 = 0.12558 kg. UK reference factors illustrate travel choices;
+they are not measured Czech operators' emissions or route-specific estimates.
+Walking counts zero direct operational emissions only.
+Pod: assumed 0.005 kW × 8760 h = 43.8 kWh; × 0.33 = 14.454 kg CO2.
+MPO's 2025 gross-generation factor excludes electricity imports/exports;
+it is a national production proxy, not measured Ostrava consumption intensity.
+No PUE, embodied hardware emissions or grid losses are added to the pod model.
 -->
 
 
@@ -580,13 +584,13 @@ layout: default
 <div class="text-left text-lg">
   <div><strong>David Pech</strong><br/><a href="https://github.com/depeche-io" class="text-base">github.com/depeche-io</a></div>
   <div class="mt-4"><strong>Petr Rais</strong><br/><a href="https://github.com/petrrais" class="text-base">github.com/petrrais</a></div>
-  <div class="mt-7 text-sm text-[var(--kc-lavender)]">Kubernetes on Edge Day 2026<br/>Salt Lake City, Utah · November 9</div>
+  <div class="mt-7 text-sm text-[var(--kc-lavender)]">Techmeetup Ostrava 2026<br/>Ostrava · November 20, 2026</div>
   <div class="mt-3 text-base text-[var(--kc-bee)]">#FeelTheBreeze</div>
 </div>
 <div class="flex flex-col items-center mr-5">
   <QRCode :width="210" :height="210" type="svg"
     data="https://github.com/depeche-io/kcd-2026/tree/main/feel-the-breeze"
-    :margin="6" :dotsOptions="{ color: '#113E82' }" :backgroundOptions="{ color: '#ffffff' }" />
+    :margin="6" :dotsOptions="{ color: '#162635' }" :backgroundOptions="{ color: '#ffffff' }" />
   <div class="mt-3 text-sm">Demo repository + slides</div>
 </div>
 </div>

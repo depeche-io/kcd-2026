@@ -13,6 +13,21 @@ from urllib.request import build_opener, ProxyHandler
 
 ROOT = Path(__file__).resolve().parent.parent
 
+HQ_WORKLOADS = (
+    ('argocd', 'statefulset/argocd-application-controller'),
+    ('argocd', 'deployment/argocd-redis'),
+    ('argocd', 'deployment/argocd-repo-server'),
+    ('argocd', 'deployment/argocd-server'),
+    ('argocd', 'deployment/argocd-dex-server'),
+    ('argocd', 'deployment/argocd-applicationset-controller'),
+    ('argocd', 'deployment/argocd-notifications-controller'),
+    ('keda', 'deployment/keda-operator'),
+    ('keda', 'deployment/keda-operator-metrics-apiserver'),
+    ('keda', 'deployment/keda-admission-webhooks'),
+    ('monitoring', 'statefulset/prometheus-kube-prometheus-stack-prometheus'),
+    ('monitoring', 'deployment/kube-prometheus-stack-grafana'),
+)
+
 
 class Retry(Exception):
     def __init__(self, message, diagnostics=''):
@@ -74,12 +89,15 @@ def wait_for_hq(kube):
     # A reachable API can coexist with an offline worker and stranded StatefulSets.
     command(kube + ['wait', 'nodes', '--all', '--for=condition=Ready', '--timeout=90s'],
             timeout=110)
-    for namespace, workload in (
-        ('argocd', 'statefulset/argocd-application-controller'),
-        ('monitoring', 'statefulset/prometheus-kube-prometheus-stack-prometheus'),
-    ):
-        command(kube + ['-n', namespace, 'rollout', 'status', workload, '--timeout=180s'],
-                timeout=200)
+    # ScaledObject Ready can be stale while the KEDA operator is unable to start.
+    # Likewise, the application controller alone does not make ArgoCD usable.
+    for namespace, workload in HQ_WORKLOADS:
+        try:
+            command(kube + ['-n', namespace, 'rollout', 'status', workload, '--timeout=180s'],
+                    timeout=200)
+        except Retry as error:
+            raise Retry('HQ workload is not ready: ' + namespace + '/' + workload +
+                        '; check its pods for image pull or DNS errors', error.diagnostics) from error
 
 
 def update_interactive_known_hosts(ip, public_key):

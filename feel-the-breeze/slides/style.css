@@ -1,4 +1,28 @@
 @font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/barlow-semi-condensed-400.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/barlow-semi-condensed-600.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/barlow-semi-condensed-700.ttf) format('truetype');
+}
+
+@font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
@@ -54,28 +78,28 @@
   src: url(/fonts/source-serif-4-700.ttf) format('truetype');
 }
 
-/* Salt Lake City palette, adapted for Kubernetes On Edge Day. */
+/* Techmeetup Ostrava palette from techmeetup.cz: lagoon, neon and atlantic. */
 :root {
-  --kc-navy: #113E82;
-  --kc-navy-dark: #0B2C60;
-  --kc-purple: #4B3587;
-  --kc-sky: #4E73A7;
-  --kc-lavender: #B9C6E8;
-  --kc-bee: #FEF35B;
-  --kc-blue: #0086FF;
+  --kc-navy: #070D14;
+  --kc-navy-dark: #162635;
+  --kc-purple: #01a182;
+  --kc-sky: #03ffce;
+  --kc-lavender: #c1d5df;
+  --kc-bee: #03ffce;
+  --kc-blue: #01a182;
   --kc-warn: #f59e0b;
   --kc-danger: #f87171;
   --kc-ok: #34d399;
 }
 
 .slidev-layout {
-  background: var(--kc-navy) url('/theme/content-bg.jpg') center bottom / cover no-repeat;
+  background: linear-gradient(135deg, #070D14 0%, #0d1923 100%);
   color: #f1f5f9;
   padding-bottom: 4.5rem;
 }
 
 .slidev-layout.section {
-  background: var(--kc-navy) url('/theme/content-bg.jpg') center bottom / cover no-repeat;
+  background: radial-gradient(ellipse at top right, rgba(3, 255, 206, 0.10), transparent 60%), #070D14;
 }
 
 .slidev-layout.section::after {
@@ -83,16 +107,16 @@
   position: absolute;
   top: 1rem;
   right: 2rem;
-  width: 13.5rem;
-  height: 5.4rem;
-  background: #fff url('/theme/edge-day-logo.svg') center / 92% auto no-repeat;
+  width: 5.5rem;
+  height: 5.5rem;
+  background: url('/theme/techmeetup-logo.png') center / contain no-repeat;
   border-radius: 0.25rem;
   pointer-events: none;
 }
 
 .slidev-layout h1,
 .slidev-layout h2 {
-  font-family: 'Source Serif 4', Georgia, serif;
+  font-family: 'Barlow Semi Condensed', 'Inter', sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -177,7 +201,7 @@ code {
   padding: 0.75rem;
 }
 
-/* Feel the Breeze adaptations of the supplied Salt Lake City template. */
+/* Feel the Breeze layout, retained for the Techmeetup edition. */
 .slidev-layout h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 0.8rem; }
 .slidev-layout h2 { font-size: 1.55rem; }
 .slidev-layout h3 { color: var(--kc-lavender); font-size: 1.2rem; line-height: 1.35; margin-bottom: 0.9rem; }
@@ -189,7 +213,7 @@ code {
 .slidev-layout .stat.stat-long { font-size: 1.4rem; white-space: nowrap; letter-spacing: -0.02em; }
 .slidev-layout .stat small { font-size: 1rem; }
 .slidev-layout .step { color: var(--kc-lavender); font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 0.9rem; letter-spacing: 0.05em; }
-.slidev-layout .formula { color: var(--kc-bee); font-size: 1.65rem; font-family: 'Source Serif 4', Georgia, serif; }
+.slidev-layout .formula { color: var(--kc-bee); font-size: 1.65rem; font-family: 'Barlow Semi Condensed', 'Inter', sans-serif; }
 .slidev-layout .speaker-logo { filter: brightness(0) invert(1); }
 .slidev-layout.title-slide { padding-top: 7rem; }
 .title-block { max-width: 80%; text-align: left; }
@@ -201,3 +225,15 @@ code {
 .demo-flow .flow-arrow { align-self: center; color: var(--kc-bee); font-size: 1.7rem; }
 .demo-flow .kcd-card div:not(.step) { margin-top: 0.5rem; }
 .demo-flow code { font-size: 0.72rem; }
+
+
+.slidev-layout::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--kc-purple), var(--kc-sky) 32%, transparent 85%);
+  pointer-events: none;
+}

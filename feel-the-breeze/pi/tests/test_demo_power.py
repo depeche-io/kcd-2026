@@ -117,6 +117,22 @@ class StartTests(unittest.TestCase):
             demo.start()
         demo.runtime.assert_not_called()
 
+    def test_ready_nodes_still_refresh_dns_and_require_running_hq_workloads(self):
+        demo = demo_linux.Demo.__new__(demo_linux.Demo)
+        demo.suspend_services = Mock()
+        demo.run = Mock(return_value='k3d-hq')
+        node = {'status': {'conditions': [{'type': 'Ready', 'status': 'True'}]}}
+        demo.kube = Mock(return_value=json.dumps({'items': [node, node]}))
+        demo.runtime = Mock()
+        demo.pause_controllers = Mock()
+        demo.connect = Mock()
+        with patch.object(demo_linux, 'wait_for_hq', side_effect=demo_linux.Retry('KEDA unavailable')):
+            with self.assertRaisesRegex(demo_linux.Retry, 'KEDA unavailable'):
+                demo.start()
+        demo.runtime.assert_called_once_with('dns')
+        demo.pause_controllers.assert_not_called()
+        demo.connect.assert_not_called()
+
     def test_new_network_discovery_sends_only_public_code(self):
         demo = demo_linux.Demo.__new__(demo_linux.Demo)
         demo.ssh = ['ssh', 'ubuntu@192.0.2.18']

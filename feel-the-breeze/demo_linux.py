@@ -218,7 +218,11 @@ class Demo:
             ready = False
         if not ready:
             self.runtime('start')
+        else:
+            # Docker can retain an unusable upstream when HQ starts before Wi-Fi.
+            self.runtime('dns')
         self.kube('wait', 'nodes', '--all', '--for=condition=Ready', '--timeout=180s', timeout=200)
+        wait_for_hq(KUBE)
         self.pause_controllers()
         self.connect(wait=True)
         self.refresh_devices()
@@ -285,6 +289,8 @@ def main():
                 raise RuntimeError('Another demo start/stop is already running')
             getattr(demo, args.action)()
     except (OSError, RuntimeError, Retry, ValueError, subprocess.SubprocessError) as error:
+        if isinstance(error, Retry) and error.diagnostics:
+            private_write(demo.local / 'last-error.log', error.diagnostics, demo.owner)
         raise SystemExit('Demo ' + args.action + ' incomplete: ' + str(error))
 
 

@@ -44,7 +44,12 @@ def refresh(values, discovered, device_factory):
         prefix = 'TUYA_' + role + '_'
         found = by_id.get(values[prefix + 'DEVICE_ID'])
         if not found:
-            raise ValueError(role + ': device not found on this LAN')
+            # Discovery broadcasts can be intermittent, especially on hotspots.
+            # A stored address is safe to reuse only after authenticating it with
+            # the configured device ID/key and reading the expected switch DP.
+            if not values.get(prefix + 'IP'):
+                raise ValueError(role + ': device not found on this LAN; no stored IP to verify')
+            found = {'ip': values[prefix + 'IP'], 'version': values[prefix + 'VERSION']}
         ip = str(ipaddress.IPv4Address(found['ip']))
         version = str(found.get('version') or values[prefix + 'VERSION'])
         device = device_factory(values[prefix + 'DEVICE_ID'], ip,

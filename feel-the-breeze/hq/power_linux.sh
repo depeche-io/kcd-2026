@@ -2,7 +2,7 @@
 # Preserve the existing laptop HQ cluster. No cluster/container/data deletion.
 set -euo pipefail
 ACTION="${1:-}"
-case "$ACTION" in start|stop) ;; *) echo 'Usage: power_linux.sh start|stop' >&2; exit 2;; esac
+case "$ACTION" in start|stop|dns) ;; *) echo 'Usage: power_linux.sh start|stop|dns' >&2; exit 2;; esac
 SCRIPT="$(readlink -f "$0")"
 DOCKER=(/usr/bin/docker --host unix:///var/run/docker.sock)
 if ! timeout 10 "${DOCKER[@]}" info >/dev/null 2>&1; then
@@ -23,6 +23,10 @@ for name in k3d-hq-serverlb k3d-hq-server-0 k3d-hq-agent-0; do
   labels="$("${DOCKER[@]}" inspect --format '{{index .Config.Labels "app"}}/{{index .Config.Labels "k3d.cluster"}}' "$name")"
   [ "$labels" = k3d/hq ] || { echo "ERROR: unexpected ownership of $name" >&2; exit 1; }
 done
+
+if [ "$ACTION" = dns ]; then
+  exec /usr/bin/bash "$(dirname "$SCRIPT")/refresh_dns_linux.sh"
+fi
 
 if [ "$ACTION" = start ]; then
   # Use the same laptop kubeconfig that demo_linux.py uses. When this helper
@@ -86,6 +90,7 @@ if [ "$ACTION" = start ]; then
     fi
   fi
   "${HOST_KUBECTL[@]}" wait nodes --all --for=condition=Ready --timeout=30s
+  /usr/bin/bash "$(dirname "$SCRIPT")/refresh_dns_linux.sh"
 else
   # Stop the worker cleanly while its Kubernetes server is still available.
   "${DOCKER[@]}" stop --timeout 60 k3d-hq-agent-0
